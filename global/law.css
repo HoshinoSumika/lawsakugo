@@ -1,0 +1,174 @@
+:root {
+    --margin: 16px;
+}
+
+section {
+    margin-top: var(--margin);
+    margin-bottom: var(--margin);
+}
+
+rt {
+    text-align: center;
+}
+
+.LawTitle, .ArticleRange,
+.SupplProvisionLabel, .SupplProvisionLabelAmendLawNum,
+.SupplProvisionAppdxTableTitle, .AppdxTableTitle, .AppdxNoteTitle, .RelatedArticleNum,
+.PartTitle, .ChapterTitle, .SectionTitle, .SubsectionTitle, .DivisionTitle,
+.ArticleCaption, .ParagraphCaption,
+.ArticleTitle, .ParagraphNum,
+.ItemTitle, .Subitem1Title, .Subitem2Title, .Subitem3Title, .Subitem4Title, .Subitem5Title,
+.TableStructTitle {
+    font-weight: bold;
+}
+
+.PartTitle, .ChapterTitle, .SectionTitle, .SubsectionTitle, .DivisionTitle,
+.SupplProvisionLabel {
+    display: inline-block;
+}
+
+.Law {
+    width: 100%;
+    margin: 0px auto 0px auto;
+}
+.LawTitle {
+    margin-left: 2em;
+    font-size: 1.5em;
+}
+.EnactStatement {
+    text-indent: 1em;
+}
+
+.PartTitle {
+    margin-left: 2em;
+}
+.ChapterTitle,
+.SupplProvisionLabel {
+    margin-left: 3em;
+}
+.SectionTitle {
+    margin-left: 4em;
+}
+.SubsectionTitle {
+    margin-left: 5em;
+}
+.DivisionTitle {
+    margin-left: 6em;
+}
+
+.ArticleCaption, .ParagraphCaption {
+    margin-left: 1em;
+}
+.Paragraph {
+    margin-left: 1em;
+    text-indent: -1em;
+}
+.Preamble .Paragraph {
+    margin-left: 0em;
+    text-indent: 1em;
+}
+.Item, .Subitem1, .Subitem2, .Subitem3, .Subitem4, .Subitem5 {
+    margin-left: 1em;
+}
+.List, .Sublist1, .Sublist2, .Sublist3 {
+    margin-left: 1em;
+}
+
+/* TOC */
+
+.TOC span {
+    margin-left: 0em;
+    font-weight: normal;
+}
+.TOCChapter, .TOCSection, .TOCSubsection, .TOCDivision, .TOCSupplProvision {
+    margin-left: 1em;
+}
+
+/* Table */
+
+.TableStruct {
+    border-collapse: collapse;
+}
+.TableColumn {
+    padding: 0.5em;
+    border: 1px solid gray;
+}
+
+.TableColumn > .Sentence {
+    display: block;
+}
+
+.TableColumn[data-xml-bordertop="none"] {
+    border-top: none;
+}
+.TableColumn[data-xml-borderbottom="none"] {
+    border-bottom: none;
+}
+.TableColumn[data-xml-borderleft="none"] {
+    border-left: none;
+}
+.TableColumn[data-xml-borderright="none"] {
+    border-right: none;
+}
+
+/* SupplProvision */
+
+.SupplProvision > .ParagraphCaption {
+    margin-top: var(--margin);
+}
+.SupplProvision > .Paragraph {
+    margin-bottom: var(--margin);
+}
+.SupplProvision > :first-child:not(.Paragraph) + .Paragraph {
+    margin-top: var(--margin);
+}
+
+.SupplProvision > .Paragraph {
+    margin-left: 1em;
+    text-indent: -1em;
+}
+.SupplProvision > .Paragraph > .Item {
+    margin-left: 1em;
+    text-indent: -1em;
+}
+
+/* SupplProvisionAppdxTable */
+
+.SupplProvisionAppdxTable > .Remarks > .Item {
+    margin-left: 2em;
+    text-indent: -1em;
+}
+.SupplProvisionAppdxTable > .Remarks > .Sentence {
+    display: inline-block;
+    text-indent: 1em;
+}
+
+/* AppdxTable */
+
+.AppdxTable > .Item {
+    margin-left: 2em;
+    text-indent: -1em;
+}
+.AppdxTable > .Remarks > .Item {
+    margin-left: 2em;
+    text-indent: -1em;
+}
+.AppdxTable > .Remarks > .Sentence {
+    display: inline-block;
+    text-indent: 1em;
+}
+
+/* AppdxNote */
+
+/* ParagraphBlankNum */
+
+.MainProvision > .ParagraphBlankNum,
+.SupplProvision > .ParagraphBlankNum {
+    margin-left: 0em;
+    text-indent: 1em;
+}
+.MainProvision > .ParagraphBlankNum > .Item,
+.SupplProvision > .ParagraphBlankNum > .Item {
+    margin-left: 2em;
+    text-indent: -1em;
+}
