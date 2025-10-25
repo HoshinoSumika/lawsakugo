@@ -32,6 +32,12 @@ function init() {
         Message.notify('設定');
     });
 
+    const menuItemIndex = document.querySelector('#menu-item-index');
+    menuItemIndex.setAttribute('data-touch', '');
+    menuItemIndex.addEventListener('click', () => {
+        window.location.href = './';
+    });
+
     const menuItemInfo = document.querySelector('#menu-item-info');
     menuItemInfo.setAttribute('data-touch', '');
     menuItemInfo.addEventListener('click', () => {

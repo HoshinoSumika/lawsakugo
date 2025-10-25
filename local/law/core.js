@@ -34,8 +34,7 @@ async function initContent() {
     const loadingText = '<div style="width: 100%; text-align: center;">Loading...</div>';
     content.innerHTML = loadingIcon + loadingText;
 
-    const id = '129AC0000000089';
-    // const id = new URLSearchParams(window.location.search).get('id');
+    const id = new URLSearchParams(window.location.search).get('id');
 
     if (!id) {
         content.innerHTML = '<p style="color: red;">法令IDが指定されていません。</p>';
