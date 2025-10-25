@@ -20,23 +20,27 @@ function init() {
     });
 
     const menuItemClose = document.querySelector('#menu-item-close');
+    menuItemClose.setAttribute('data-touch', '');
     menuItemClose.addEventListener('click', () => {
         hide();
     });
 
     const menuItemConfig = document.querySelector('#menu-item-config');
+    menuItemConfig.setAttribute('data-touch', '');
     menuItemConfig.addEventListener('click', () => {
         hide();
         Message.notify('設定');
     });
 
     const menuItemInfo = document.querySelector('#menu-item-info');
+    menuItemInfo.setAttribute('data-touch', '');
     menuItemInfo.addEventListener('click', () => {
         hide();
         Message.notify('法令詳細');
     });
 
     const menuItemBookmark = document.querySelector('#menu-item-bookmark');
+    menuItemBookmark.setAttribute('data-touch', '');
     menuItemBookmark.addEventListener('click', () => {
         hide();
         Message.notify('ブックマーク');
