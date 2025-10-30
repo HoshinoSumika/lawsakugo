@@ -111,14 +111,14 @@ function init(el) {
 
     configItemFontSize = document.querySelector('#config-item-font-size');
     configItemFontSize.setAttribute('data-touch', '');
-    const fontSizeDefault = parseInt(window.getComputedStyle(contentEl).fontSize, 10);
-    const fontSizeStored = parseInt(localStorage.getItem('font-size') ?? fontSizeDefault, 10);
+    const fontSizeDefault = parseFloat(window.getComputedStyle(contentEl).fontSize);
+    const fontSizeStored = parseFloat(localStorage.getItem('font-size') ?? fontSizeDefault);
     contentEl.style.fontSize = fontSizeStored + 'px';
     configItemFontSize.querySelector('.config-seekbar').value = fontSizeStored;
     configItemFontSize.querySelector('.config-seekbar').addEventListener('input', (e) => {
         const value = e.target.value;
         contentEl.style.fontSize = value + 'px';
-        if (parseInt(e.target.value, 10) === fontSizeDefault) {
+        if (parseFloat(e.target.value) === fontSizeDefault) {
             localStorage.removeItem('font-size');
         } else {
             localStorage.setItem('font-size', value);
