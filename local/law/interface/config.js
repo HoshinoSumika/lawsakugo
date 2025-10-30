@@ -164,6 +164,7 @@ function show() {
         configOverlay.style.opacity = '1';
         configContainer.classList.add('show');
     });
+    configContent.scrollTop = 0;
 }
 
 function hide() {
