@@ -38,7 +38,7 @@ export function tagParen(htmlStr) {
                     } else if (part === '（' && quoteDepth === 0) {
                         depth++;
                         const span = document.createElement('span');
-                        span.className = 'class-tag-paren';
+                        span.className = 'tag-paren';
                         span.textContent = '（';
                         appendNode(span);
                         stack.push(span);
@@ -91,12 +91,12 @@ export function tagConj(htmlStr) {
     container.innerHTML = htmlStr;
 
     const CONJ_CLASS_MAP = {
-        '及び': 'class-tag-conj-h',
-        '並びに': 'class-tag-conj-h',
-        '又は': 'class-tag-conj-s',
-        '若しくは': 'class-tag-conj-s',
-        'とき': 'class-tag-condition',
-        '場合': 'class-tag-condition',
+        '及び': 'tag-conj-h',
+        '並びに': 'tag-conj-h',
+        '又は': 'tag-conj-s',
+        '若しくは': 'tag-conj-s',
+        'とき': 'tag-condition',
+        '場合': 'tag-condition',
     };
 
     const FULL_REGEX = /(及び|並びに|又は|若しくは|とき|場合)/g;

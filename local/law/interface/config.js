@@ -282,10 +282,10 @@ function showParenColor() {
     if (document.getElementById('style-paren-color')) return;
     const style = document.createElement('style');
     style.id = 'style-paren-color';
-    style.textContent = '.Sentence .class-tag-paren { color: mediumorchid; }';
-    style.textContent += '.Sentence .class-tag-paren > .class-tag-paren { color: mediumseagreen; }';
-    style.textContent += '.Sentence .class-tag-paren > .class-tag-paren > .class-tag-paren { color: coral; }';
-    style.textContent += '.Sentence .class-tag-paren > .class-tag-paren > .class-tag-paren > .class-tag-paren { color: gray; }';
+    style.textContent = '.Sentence .tag-paren { color: mediumorchid; }';
+    style.textContent += '.Sentence .tag-paren > .tag-paren { color: mediumseagreen; }';
+    style.textContent += '.Sentence .tag-paren > .tag-paren > .tag-paren { color: coral; }';
+    style.textContent += '.Sentence .tag-paren > .tag-paren > .tag-paren > .tag-paren { color: gray; }';
     document.head.appendChild(style);
 }
 
@@ -324,8 +324,8 @@ function showParenBackground() {
     if (document.getElementById('style-paren-background')) return;
     const style = document.createElement('style');
     style.id = 'style-paren-background';
-    style.textContent = '.Sentence .class-tag-paren { background: rgba(128, 128, 128, 0.15); }';
-    style.textContent += '.Sentence .class-tag-paren .class-tag-paren { background: none; }';
+    style.textContent = '.Sentence .tag-paren { background: rgba(128, 128, 128, 0.15); }';
+    style.textContent += '.Sentence .tag-paren .tag-paren { background: none; }';
     document.head.appendChild(style);
 }
 
@@ -364,8 +364,8 @@ function showConjColor() {
     if (document.getElementById('style-conj-color')) return;
     const style = document.createElement('style');
     style.id = 'style-conj-color';
-    style.textContent = '.Sentence .class-tag-conj-h { color: deeppink; }';
-    style.textContent += '.Sentence .class-tag-conj-s { color: deepskyblue; }';
+    style.textContent = '.Sentence .tag-conj-h { color: deeppink; }';
+    style.textContent += '.Sentence .tag-conj-s { color: deepskyblue; }';
     document.head.appendChild(style);
 }
 
@@ -404,7 +404,7 @@ function showConditionColor() {
     if (document.getElementById('style-condition-color')) return;
     const style = document.createElement('style');
     style.id = 'style-condition-color';
-    style.textContent = '.Sentence .class-tag-condition { color: crimson; }';
+    style.textContent = '.Sentence .tag-condition { color: crimson; }';
     document.head.appendChild(style);
 }
 
