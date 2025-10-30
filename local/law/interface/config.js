@@ -364,7 +364,7 @@ function showConjColor() {
     if (document.getElementById('style-conj-color')) return;
     const style = document.createElement('style');
     style.id = 'style-conj-color';
-    style.textContent = '.Sentence .tag-conj-h { color: deeppink; }';
+    style.textContent = '.Sentence .tag-conj-h { color: deepskyblue; }';
     style.textContent += '.Sentence .tag-conj-s { color: deepskyblue; }';
     document.head.appendChild(style);
 }
@@ -404,7 +404,7 @@ function showConditionColor() {
     if (document.getElementById('style-condition-color')) return;
     const style = document.createElement('style');
     style.id = 'style-condition-color';
-    style.textContent = '.Sentence .tag-condition { color: crimson; }';
+    style.textContent = '.Sentence .tag-condition { color: deeppink; }';
     document.head.appendChild(style);
 }
 
