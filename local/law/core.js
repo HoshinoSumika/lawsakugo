@@ -51,6 +51,7 @@ async function initContent() {
 
     try {
         result = await Storage.getItem(id);
+        await Storage.cleanup();
     } catch (e) {
     }
     if (!result) {

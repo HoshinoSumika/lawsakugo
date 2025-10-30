@@ -7,8 +7,9 @@ export const Storage = {
     getSize,
     getMaxSize,
     setMaxSize,
-    getMaxStorageTime,
-    setMaxStorageTime,
+    getMaxTime,
+    setMaxTime,
+    cleanup,
 };
 
 let dbName = null;
@@ -79,8 +80,6 @@ function getItem(key) {
         }
 
         try {
-            await cleanup();
-
             const tx = dbInstance.transaction(STORAGE_NAME_CONTENT, 'readonly');
             const store = tx.objectStore(STORAGE_NAME_CONTENT);
             const request = store.get(key);
@@ -158,7 +157,7 @@ function getSize() {
     });
 }
 
-const STORAGE_KEY_MAX_SIZE = 'key-index-storage-max-size';
+const STORAGE_KEY_MAX_SIZE = 'storage-max-size';
 
 function getMaxSize() {
     const value = localStorage.getItem(STORAGE_KEY_MAX_SIZE + '-' + dbName);
@@ -170,20 +169,20 @@ function setMaxSize(size) {
     localStorage.setItem(STORAGE_KEY_MAX_SIZE + '-' + dbName, String(size));
 }
 
-const STORAGE_KEY_MAX_STORAGE_TIME = 'key-index-storage-max-storage-time';
+const STORAGE_KEY_MAX_STORAGE_TIME = 'storage-max-time';
 
-function getMaxStorageTime() {
+function getMaxTime() {
     const value = localStorage.getItem(STORAGE_KEY_MAX_STORAGE_TIME + '-' + dbName);
-    const defaultTime = 7 * 24 * 60 * 60 * 1000;
+    const defaultTime = 1 * 24 * 60 * 60 * 1000;
     return value ? Number(value) : defaultTime;
 }
 
-function setMaxStorageTime(time) {
+function setMaxTime(time) {
     localStorage.setItem(STORAGE_KEY_MAX_STORAGE_TIME + '-' + dbName, String(time));
 }
 
 async function cleanup() {
-    const maxStorageTime = getMaxStorageTime();
+    const maxTime = getMaxTime();
     const maxSize = getMaxSize();
 
     await new Promise((resolve, reject) => {
@@ -198,7 +197,7 @@ async function cleanup() {
         timeStore.openCursor().onsuccess = e => {
             const cursor = e.target.result;
             if (cursor) {
-                if (now - cursor.value > maxStorageTime) {
+                if (now - cursor.value > maxTime) {
                     keysToDelete.push(cursor.key);
                 }
                 cursor.continue();
