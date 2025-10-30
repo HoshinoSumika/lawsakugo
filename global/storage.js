@@ -157,101 +157,97 @@ function getSize() {
     });
 }
 
-const STORAGE_KEY_MAX_SIZE = 'storage-max-size';
+const KEY_MAX_SIZE = 'storage-max-size';
+const VALUE_MAX_SIZE = 20 * 1024 * 1024;
 
 function getMaxSize() {
-    const value = localStorage.getItem(STORAGE_KEY_MAX_SIZE + '-' + dbName);
-    const defaultSize = 20 * 1024 * 1024;
-    return value ? Number(value) : defaultSize;
+    const value = localStorage.getItem(KEY_MAX_SIZE + '-' + dbName);
+    return value ? Number(value) : VALUE_MAX_SIZE;
 }
 
 function setMaxSize(size) {
-    localStorage.setItem(STORAGE_KEY_MAX_SIZE + '-' + dbName, String(size));
+    if (size === VALUE_MAX_SIZE) {
+        localStorage.removeItem(KEY_MAX_SIZE + '-' + dbName);
+    } else {
+        localStorage.setItem(KEY_MAX_SIZE + '-' + dbName, String(size));
+    }
 }
 
-const STORAGE_KEY_MAX_STORAGE_TIME = 'storage-max-time';
+const KEY_MAX_TIME = 'storage-max-time';
+const VALUE_MAX_TIME = 1 * 24 * 60 * 60 * 1000;
 
 function getMaxTime() {
-    const value = localStorage.getItem(STORAGE_KEY_MAX_STORAGE_TIME + '-' + dbName);
-    const defaultTime = 1 * 24 * 60 * 60 * 1000;
-    return value ? Number(value) : defaultTime;
+    const value = localStorage.getItem(KEY_MAX_TIME + '-' + dbName);
+    return value ? Number(value) : VALUE_MAX_TIME;
 }
 
 function setMaxTime(time) {
-    localStorage.setItem(STORAGE_KEY_MAX_STORAGE_TIME + '-' + dbName, String(time));
+    if (time === VALUE_MAX_TIME) {
+        localStorage.removeItem(KEY_MAX_TIME + '-' + dbName);
+    } else {
+        localStorage.setItem(KEY_MAX_TIME + '-' + dbName, String(time));
+    }
 }
 
 async function cleanup() {
     const maxTime = getMaxTime();
     const maxSize = getMaxSize();
-
+    const now = Date.now();
+    let currentSize = 0;
+    const allItems = [];
     await new Promise((resolve, reject) => {
-        const tx = dbInstance.transaction([STORAGE_NAME_TIME, STORAGE_NAME_CONTENT, STORAGE_NAME_SIZE], 'readwrite');
+        const tx = dbInstance.transaction([STORAGE_NAME_TIME, STORAGE_NAME_SIZE], 'readonly');
         const timeStore = tx.objectStore(STORAGE_NAME_TIME);
-        const contentStore = tx.objectStore(STORAGE_NAME_CONTENT);
         const sizeStore = tx.objectStore(STORAGE_NAME_SIZE);
-
-        const now = Date.now();
-        const keysToDelete = [];
-
-        timeStore.openCursor().onsuccess = e => {
+        let fetchedCount = 0;
+        const fetchSizeAndAdd = (key, time) => {
+            const sizeRequest = sizeStore.get(key);
+            sizeRequest.onsuccess = (e) => {
+                const size = e.target.result ?? 0;
+                allItems.push({ key, time, size });
+                currentSize += size;
+                fetchedCount++;
+            };
+            sizeRequest.onerror = (e) => reject(e.target.error);
+        };
+        const timeRequest = timeStore.openCursor();
+        timeRequest.onsuccess = (e) => {
             const cursor = e.target.result;
             if (cursor) {
-                if (now - cursor.value > maxTime) {
-                    keysToDelete.push(cursor.key);
-                }
+                fetchSizeAndAdd(cursor.key, cursor.value);
                 cursor.continue();
             } else {
-                for (const key of keysToDelete) {
-                    contentStore.delete(key);
-                    sizeStore.delete(key);
-                    timeStore.delete(key);
-                }
             }
         };
-
         tx.oncomplete = () => resolve();
-        tx.onerror = e => reject(e.target.error);
+        tx.onerror = (e) => reject(e.target.error);
     });
+    const expiredKeys = allItems.filter(item => now - item.time > maxTime).map(item => item.key);
+    let keysToDelete = [...expiredKeys];
+    let deleteSize = expiredKeys.reduce((sum, key) => sum + (allItems.find(i => i.key === key)?.size ?? 0), 0);
+    let remainingSize = currentSize - deleteSize;
+    if (remainingSize > maxSize) {
+        const nonExpiredItems = allItems.filter(item => !expiredKeys.includes(item.key)).sort((a, b) => a.time - b.time);
+        for (const item of nonExpiredItems) {
+            if (remainingSize <= maxSize) break;
+            keysToDelete.push(item.key);
+            remainingSize -= item.size;
+        }
+    }
+    if (keysToDelete.length > 0) {
+        await new Promise((resolve, reject) => {
+            const tx = dbInstance.transaction([STORAGE_NAME_CONTENT, STORAGE_NAME_SIZE, STORAGE_NAME_TIME], 'readwrite');
+            const contentStore = tx.objectStore(STORAGE_NAME_CONTENT);
+            const sizeStore = tx.objectStore(STORAGE_NAME_SIZE);
+            const timeStore = tx.objectStore(STORAGE_NAME_TIME);
 
-    let totalSize = await getSize();
-    if (totalSize <= maxSize) return;
-
-    await new Promise((resolve, reject) => {
-        const tx = dbInstance.transaction([STORAGE_NAME_TIME, STORAGE_NAME_CONTENT, STORAGE_NAME_SIZE], 'readwrite');
-        const timeStore = tx.objectStore(STORAGE_NAME_TIME);
-        const contentStore = tx.objectStore(STORAGE_NAME_CONTENT);
-        const sizeStore = tx.objectStore(STORAGE_NAME_SIZE);
-
-        const keysByOldest = [];
-
-        timeStore.openCursor().onsuccess = e => {
-            const cursor = e.target.result;
-            if (cursor) {
-                keysByOldest.push({key: cursor.key, time: cursor.value});
-                cursor.continue();
-            } else {
-                keysByOldest.sort((a, b) => a.time - b.time);
-
-                (function deleteUntilOk() {
-                    if (totalSize <= maxSize || keysByOldest.length === 0) {
-                        resolve();
-                        return;
-                    }
-                    const {key} = keysByOldest.shift();
-                    sizeStore.get(key).onsuccess = e => {
-                        const size = e.target.result ?? 0;
-                        contentStore.delete(key);
-                        sizeStore.delete(key);
-                        timeStore.delete(key);
-                        totalSize -= size;
-                        deleteUntilOk();
-                    };
-                    sizeStore.get(key).onerror = e => reject(e.target.error);
-                })();
+            for (const key of keysToDelete) {
+                contentStore.delete(key);
+                sizeStore.delete(key);
+                timeStore.delete(key);
             }
-        };
-
-        tx.onerror = e => reject(e.target.error);
-    });
+            tx.oncomplete = () => resolve();
+            tx.onerror = (e) => reject(e.target.error);
+        });
+    }
 }

@@ -51,7 +51,6 @@ async function initContent() {
 
     try {
         result = await Storage.getItem(id);
-        await Storage.cleanup();
     } catch (e) {
     }
     if (!result) {
@@ -63,6 +62,7 @@ async function initContent() {
     if (!result) {
         result = '<p style="color: red;">データを取得できませんでした。</p>';
     }
+    await Storage.cleanup();
     content.innerHTML = result;
     content.style.minHeight = '';
 
