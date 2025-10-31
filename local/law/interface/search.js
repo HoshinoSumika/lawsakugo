@@ -32,6 +32,7 @@ function init(el) {
     });
     searchInput.addEventListener('input', () => {
         if (searchInput.value !== '') {
+            updateResult(searchInput.value);
             searchClear.style.display = '';
         } else {
             searchClear.style.display = 'none';
@@ -70,4 +71,7 @@ function hide() {
 
     searchInput.value = '';
     searchInput.style.display = 'none';
+}
+
+function updateResult(value) {
 }

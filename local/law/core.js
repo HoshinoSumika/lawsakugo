@@ -48,6 +48,7 @@ async function initContent() {
 
     let result;
     await Storage.init('LawCacheBeta');
+    await Storage.cleanup();
 
     try {
         result = await Storage.getItem(id);
