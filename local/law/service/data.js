@@ -48,8 +48,8 @@ async function fetchInternet(id) {
         }
         let result = await res.text();
         result = convert(result);
-        result = tagParen(result);
-        result = tagConj(result);
+        // result = tagParen(result);
+        // result = tagConj(result);
         return result;
     } catch (e) {
         console.error(e);
