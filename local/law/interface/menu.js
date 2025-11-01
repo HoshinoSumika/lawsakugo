@@ -48,21 +48,6 @@ function init(el) {
         Message.notify('未定義の機能です（ブックマーク）。');
     });
 
-    const menuItemDownload = document.querySelector('#menu-item-download');
-    menuItemDownload.style.display = '';
-    menuItemDownload.setAttribute('data-touch', '');
-    menuItemDownload.addEventListener('click', () => {
-        const id = new URLSearchParams(window.location.search).get('id');
-        const blob = new Blob([el.innerHTML], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = id + '.html';
-        a.click();
-        URL.revokeObjectURL(url);
-        Message.notify('ダウンロードが開始されました。');
-    });
-
     const menuItemInfo = document.querySelector('#menu-item-info');
     Info.init(el);
     menuItemInfo.setAttribute('data-touch', '');
