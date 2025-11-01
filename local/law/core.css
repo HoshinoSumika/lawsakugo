@@ -6,43 +6,7 @@ main {
     overflow-y: auto;
 }
 
-#content {
-    flex: 1;
-    width: 100%; max-width: var(--width-limit); margin: 0px auto; padding: 16px;
-    line-height: 1.8; letter-spacing: 0.00em;
-}
-
-#button-menu,
-#button-search {
-    aspect-ratio: 1 / 1; height: var(--size-normal);
-    cursor: pointer;
-    user-select: none; -webkit-user-select: none;
-    display: flex; justify-content: center; align-items: center;
-    border-radius: var(--radius-normal);
-}
-#button-menu:hover,
-#button-search:hover {
-    background-color: var(--color-hover);
-}
-#button-menu:active,
-#button-search:active {
-    background-color: var(--color-active);
-}
-
-#title {
-    flex: 1;
-    height: var(--size-normal); min-width: 0;
-    display: flex; justify-content: center; align-items: center;
-    font-size: 20px;
-}
-#title > span {
-    overflow: hidden;
-    flex-shrink: 1;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.window-overlay {
+.overlay {
     z-index: 999;
     overflow: hidden; touch-action: none;
     position: fixed; top: 0; left: 0;
@@ -51,32 +15,52 @@ main {
     transition: opacity var(--transition-duration) ease;
     background-color: var(--color-translucent-overlay);
 }
-.window-container {
+.container {
     display: flex; flex-direction: column; justify-content: start; align-items: center;
     transition: transform var(--transition-duration) ease, width var(--transition-duration) ease, height var(--transition-duration) ease;
     background-color: var(--color-white);
 }
-.window-bar {
+.bar {
     width: 100%; min-height: var(--size-large); padding: 0px 8px 0px 8px;
     display: flex; justify-content: end; align-items: center;
     border-bottom: 1px solid var(--color-border);
 }
-.window-title {
+.title {
     flex: 1;
     width: 100%; height: var(--size-normal); padding: 8px 8px 8px 16px;
     user-select: none; -webkit-user-select: none;
     display: flex; justify-content: start; align-items: center;
 }
-.window-button {
+
+.button {
     aspect-ratio: 1 / 1; height: var(--size-normal);
     cursor: pointer;
     user-select: none; -webkit-user-select: none;
     display: flex; justify-content: center; align-items: center;
     border-radius: var(--radius-normal);
 }
-.window-button:hover {
+.button:hover {
     background-color: var(--color-hover);
 }
-.window-button:active {
+.button:active {
     background-color: var(--color-active);
+}
+
+#content {
+    flex: 1;
+    width: 100%; max-width: var(--width-limit); margin: 0px auto; padding: 16px;
+    line-height: 1.8; letter-spacing: 0.00em;
+}
+
+#header-title {
+    flex: 1;
+    height: var(--size-normal); min-width: 0;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 20px;
+}
+#header-title > span {
+    overflow: hidden;
+    flex-shrink: 1;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }

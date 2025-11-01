@@ -19,13 +19,13 @@
 <body>
 
     <header>
-        <div id="button-menu">
+        <div id="header-menu" class="button">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="M120-680v-80h720v80H120Zm0 480v-80h720v80H120Zm0-240v-80h720v80H120Z"/></svg>
         </div>
-        <div id="title">
+        <div id="header-title">
             <span>法令</span>
         </div>
-        <div id="button-search">
+        <div id="header-search" class="button">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg>
         </div>
     </header>
@@ -34,10 +34,10 @@
         <div id="content"></div>
     </main>
 
-    <div id="menu-overlay" class="window-overlay" style="pointer-events: none; opacity: 0;">
-        <div id="menu-container" class="window-container">
-            <div id="menu-bar" class="window-bar">
-                <div id="menu-close" class="window-button">
+    <div id="menu-overlay" class="overlay" style="pointer-events: none; opacity: 0;">
+        <div id="menu-container" class="container">
+            <div id="menu-bar" class="bar">
+                <div id="menu-close" class="button">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
                 </div>
             </div>
@@ -64,8 +64,8 @@
         </div>
     </div>
 
-    <div id="search-overlay" class="window-overlay" style="pointer-events: none; opacity: 0;">
-        <div id="search-container" class="window-container">
+    <div id="search-overlay" class="overlay" style="pointer-events: none; opacity: 0;">
+        <div id="search-container" class="container">
             <div id="search-bar">
                 <input id="search-input" type="text" placeholder="">
                 <div id="search-icon">
@@ -79,11 +79,11 @@
         </div>
     </div>
 
-    <div id="history-overlay" class="window-overlay" style="pointer-events: none; opacity: 0;">
-        <div id="history-container" class="window-container">
-            <div id="history-bar" class="window-bar">
-                <div id="history-title" class="window-title">改正履歴</div>
-                <div id="history-close" class="window-button">
+    <div id="history-overlay" class="overlay" style="pointer-events: none; opacity: 0;">
+        <div id="history-container" class="container">
+            <div id="history-bar" class="bar">
+                <div id="history-title" class="title">改正履歴</div>
+                <div id="history-close" class="button">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
                 </div>
             </div>
@@ -91,11 +91,11 @@
         </div>
     </div>
 
-    <div id="info-overlay" class="window-overlay" style="pointer-events: none; opacity: 0;">
-        <div id="info-container" class="window-container">
-            <div id="info-bar" class="window-bar">
-                <div id="info-title" class="window-title">法令詳細</div>
-                <div id="info-close" class="window-button">
+    <div id="info-overlay" class="overlay" style="pointer-events: none; opacity: 0;">
+        <div id="info-container" class="container">
+            <div id="info-bar" class="bar">
+                <div id="info-title" class="title">法令詳細</div>
+                <div id="info-close" class="button">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
                 </div>
             </div>
@@ -103,15 +103,15 @@
         </div>
     </div>
 
-    <div id="config-overlay" class="window-overlay" style="pointer-events: none; opacity: 0;">
-        <div id="config-container" class="window-container">
-            <div id="config-bar" class="window-bar">
-                <div id="config-title" class="window-title">設定</div>
-                <div id="config-size" class="window-button">
+    <div id="config-overlay" class="overlay" style="pointer-events: none; opacity: 0;">
+        <div id="config-container" class="container">
+            <div id="config-bar" class="bar">
+                <div id="config-title" class="title">設定</div>
+                <div id="config-size" class="button">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="M120-120v-200h80v120h120v80H120Zm520 0v-80h120v-120h80v200H640ZM120-640v-200h200v80H200v120h-80Zm640 0v-120H640v-80h200v200h-80Z"/></svg>
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="M240-120v-120H120v-80h200v200h-80Zm400 0v-200h200v80H720v120h-80ZM120-640v-80h120v-120h80v200H120Zm520 0v-200h80v120h120v80H640Z"/></svg>
                 </div>
-                <div id="config-close" class="window-button">
+                <div id="config-close" class="button">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
                 </div>
             </div>

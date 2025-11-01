@@ -19,14 +19,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function initMenuButton() {
     Menu.init(document.querySelector('#content'));
-    const button = document.querySelector('#button-menu');
+    const button = document.querySelector('#header-menu');
     button.setAttribute('data-touch', '');
     button.addEventListener('click', () => Menu.show());
 }
 
 function initSearchButton() {
     Search.init(document.querySelector('#content'));
-    const button = document.querySelector('#button-search');
+    const button = document.querySelector('#header-search');
     button.setAttribute('data-touch', '');
     button.addEventListener('click', () => Search.show());
 }
