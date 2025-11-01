@@ -3,11 +3,11 @@ export const Menu = {
     show,
 };
 
-import { Message } from '/global/message.js?v=20251024';
+import { Message } from '/global/message.js?v=20251101';
 
-import { Config } from './config.js?v=20251024';
-import { History } from './history.js?v=20251024';
-import { Info } from './info.js?v=20251024';
+import { Config } from './config.js?v=20251101';
+import { History } from './history.js?v=20251101';
+import { Info } from './info.js?v=20251101';
 
 let menuOverlay;
 let menuContainer;

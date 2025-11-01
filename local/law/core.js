@@ -1,11 +1,11 @@
-import { Sakugo } from '/global/sakugo.js?v=20251024';
-import { Storage } from '/global/storage.js?v=20251024';
+import { Sakugo } from '/global/sakugo.js?v=20251101';
+import { Storage } from '/global/storage.js?v=20251101';
 
-import { Menu } from './interface/menu.js?v=20251024';
-import { Search } from './interface/search.js?v=20251024';
+import { Menu } from './interface/menu.js?v=20251101';
+import { Search } from './interface/search.js?v=20251101';
 
-import { Data } from './service/data.js?v=20251024';
-import { Tag } from './service/tag.js?v=20251024';
+import { Data } from './service/data.js?v=20251101';
+import { Tag } from './service/tag.js?v=20251101';
 
 window.addEventListener('DOMContentLoaded', () => {
     initMenuButton();

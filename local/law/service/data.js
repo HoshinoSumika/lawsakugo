@@ -2,7 +2,7 @@ export const Data = {
     getLawData,
 };
 
-import { convert } from './convert.js?v=20251024';
+import { convert } from './convert.js?v=20251101';
 
 async function getLawData(id) {
     let result = await fetchServer(id);

@@ -1,4 +1,4 @@
-import { Data } from '/local/law/service/data.js?v=20251024';
+import { Data } from '/local/law/service/data.js?v=20251101';
 
 const content = ['321CONSTITUTION', '129AC0000000089', '417AC0000000086', '408AC0000000109', '140AC0000000045', '323AC0000000131'];
 const download = document.querySelector('#download');
