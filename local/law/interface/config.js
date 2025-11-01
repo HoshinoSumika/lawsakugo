@@ -324,7 +324,7 @@ function showParenBackground() {
     if (document.getElementById('style-paren-background')) return;
     const style = document.createElement('style');
     style.id = 'style-paren-background';
-    style.textContent = '.Sentence .tag-paren { background: rgba(128, 128, 128, 0.15); }';
+    style.textContent = '.Sentence .tag-paren { background: rgba(128, 128, 128, 0.2); }';
     style.textContent += '.Sentence .tag-paren .tag-paren { background: none; }';
     document.head.appendChild(style);
 }

@@ -14,11 +14,11 @@ main {
 
 #button-menu,
 #button-search {
-    aspect-ratio: 1 / 1; height: var(--size-button-normal); margin: 8px;
+    aspect-ratio: 1 / 1; height: var(--size-normal); margin: 8px;
     cursor: pointer;
     user-select: none; -webkit-user-select: none;
     display: flex; justify-content: center; align-items: center;
-    border-radius: var(--radius--button-normal);
+    border-radius: var(--radius-normal);
 }
 #button-menu:hover,
 #button-search:hover {

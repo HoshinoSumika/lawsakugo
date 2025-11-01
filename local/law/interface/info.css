@@ -27,17 +27,17 @@
 
 #info-title {
     flex: 1;
-    width: 100%; height: var(--size-button-normal); padding: 8px 8px 8px 16px;
+    width: 100%; height: var(--size-normal); padding: 8px 8px 8px 16px;
     user-select: none; -webkit-user-select: none;
     display: flex; justify-content: start; align-items: center;
 }
 
 #info-close {
-    aspect-ratio: 1 / 1; height: var(--size-button-normal);
+    aspect-ratio: 1 / 1; height: var(--size-normal);
     cursor: pointer;
     user-select: none; -webkit-user-select: none;
     display: flex; justify-content: center; align-items: center;
-    border-radius: var(--radius--button-normal);
+    border-radius: var(--radius-normal);
 }
 #info-close:hover {
     background-color: var(--color-hover);

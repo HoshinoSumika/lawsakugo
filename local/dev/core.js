@@ -10,7 +10,7 @@ download.addEventListener('click', async () => {
             const blob = new Blob([data], { type: 'text/html' });
             downloadData(blob, id);
             await new Promise(resolve => setTimeout(resolve, 300)); 
-        } catch (error) {
+        } catch (e) {
         }
     }
 });
