@@ -1,20 +1,6 @@
-#config-overlay {
-    z-index: 999;
-    overflow: hidden; touch-action: none;
-    position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%;
-    display: flex; justify-content: center; align-items: center;
-    transition: opacity var(--transition-duration) ease;
-    background-color: var(--color-translucent-overlay);
-}
-
 #config-container {
-    overflow-y: auto;
     transform: scale(0.95);
     width: min(80%, 640px); height: min(50%, 480px);
-    display: flex; flex-direction: column; justify-content: start; align-items: center;
-    transition: transform var(--transition-duration) ease, width var(--transition-duration) ease, height var(--transition-duration) ease;
-    background-color: var(--color-white);
 }
 #config-container.show {
     transform: scale(1.0);
@@ -31,36 +17,6 @@
     #config-container.show {
         transform: translateY(0);
     }
-}
-
-#config-bar {
-    width: 100%; padding: 8px;
-    display: flex; justify-content: start; align-items: end;
-    border-bottom: 1px solid var(--color-border);
-}
-
-#config-title {
-    flex: 1;
-    width: 100%; height: var(--size-normal); padding: 8px 8px 8px 16px;
-    user-select: none; -webkit-user-select: none;
-    display: flex; justify-content: start; align-items: center;
-}
-
-#config-size,
-#config-close {
-    aspect-ratio: 1 / 1; height: var(--size-normal);
-    cursor: pointer;
-    user-select: none; -webkit-user-select: none;
-    display: flex; justify-content: center; align-items: center;
-    border-radius: var(--radius-normal);
-}
-#config-size:hover,
-#config-close:hover {
-    background-color: var(--color-hover);
-}
-#config-size:active,
-#config-close:active {
-    background-color: var(--color-active);
 }
 
 #config-content {

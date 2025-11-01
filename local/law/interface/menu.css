@@ -1,20 +1,10 @@
 #menu-overlay {
-    z-index: 999;
-    overflow: hidden; touch-action: none;
-    position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%;
-    display: flex; justify-content: start; align-items: center;
-    transition: opacity var(--transition-duration) ease;
-    background-color: var(--color-translucent-overlay);
+    justify-content: start;
 }
 
 #menu-container {
-    overflow-y: auto;
     transform: translateX(-100%);
-    width: 100%; height: 100%; max-width: 320px; padding: 8px 8px 24px 8px;
-    display: flex; flex-direction: column; justify-content: start; align-items: center; gap: 8px;
-    transition: transform var(--transition-duration) ease;
-    background-color: var(--color-white);
+    width: 100%; height: 100%; max-width: 320px; padding: 0px 8px 16px 8px;
 }
 #menu-container.show {
     transform: translateX(0);
@@ -27,22 +17,7 @@
 }
 
 #menu-bar {
-    width: 100%; height: 48px; padding: 0px;
-    display: flex; flex-direction: column; justify-content: start; align-items: end;
-}
-
-#menu-close {
-    aspect-ratio: 1 / 1; height: var(--size-normal);
-    cursor: pointer;
-    user-select: none; -webkit-user-select: none;
-    display: flex; justify-content: center; align-items: center;
-    border-radius: var(--radius-normal);
-}
-#menu-close:hover {
-    background-color: var(--color-hover);
-}
-#menu-close:active {
-    background-color: var(--color-active);
+    border-bottom: none;
 }
 
 .menu-block {

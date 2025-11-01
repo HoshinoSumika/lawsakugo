@@ -6,6 +6,7 @@ export const Menu = {
 import { Message } from '/global/message.js?v=20251024';
 
 import { Config } from './config.js?v=20251024';
+import { History } from './history.js?v=20251024';
 import { Info } from './info.js?v=20251024';
 
 let menuOverlay;
@@ -42,18 +43,20 @@ function init(el) {
         window.location.href = './';
     });
 
-    const menuItemBookmark = document.querySelector('#menu-item-bookmark');
-    menuItemBookmark.setAttribute('data-touch', '');
-    menuItemBookmark.addEventListener('click', () => {
-        Message.notify('未定義の機能です（ブックマーク）。');
-    });
-
     const menuItemInfo = document.querySelector('#menu-item-info');
     Info.init(el);
     menuItemInfo.setAttribute('data-touch', '');
     menuItemInfo.addEventListener('click', () => {
         hide();
         Info.show();
+    });
+
+    const menuItemHistory = document.querySelector('#menu-item-history');
+    History.init(el);
+    menuItemHistory.setAttribute('data-touch', '');
+    menuItemHistory.addEventListener('click', () => {
+        hide();
+        History.show();
     });
 }
 
