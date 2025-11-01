@@ -5,6 +5,7 @@ import { Menu } from './interface/menu.js?v=20251024';
 import { Search } from './interface/search.js?v=20251024';
 
 import { Data } from './service/data.js?v=20251024';
+import { Tag } from './service/tag.js?v=20251024';
 
 window.addEventListener('DOMContentLoaded', () => {
     initMenuButton();
@@ -67,8 +68,8 @@ async function initContent() {
     content.innerHTML = result;
     content.style.minHeight = '';
 
-    tagParen(content);
-    tagConj(content);
+    Tag.paren(content);
+    Tag.term(content);
 
     const lawTitle = document.querySelector('.Law > .LawBody > .LawTitle')?.textContent || '';
     if (lawTitle) {

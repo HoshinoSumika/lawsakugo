@@ -3,7 +3,6 @@ export const Data = {
 };
 
 import { convert } from './convert.js?v=20251024';
-import { tagParen, tagConj } from './tag.js?v=20251024';
 
 async function getLawData(id) {
     let result = await fetchServer(id);
@@ -48,8 +47,6 @@ async function fetchInternet(id) {
         }
         let result = await res.text();
         result = convert(result);
-        // result = tagParen(result);
-        // result = tagConj(result);
         return result;
     } catch (e) {
         console.error(e);

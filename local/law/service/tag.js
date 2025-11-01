@@ -1,7 +1,9 @@
-export function tagParen(htmlStr) {
-    const container = document.createElement('div');
-    container.innerHTML = htmlStr;
+export const Tag = {
+    paren,
+    term,
+};
 
+function paren(container) {
     function wrapNodes(nodes, parent) {
         let depth = 0;
         let quoteDepth = 0;
@@ -82,14 +84,9 @@ export function tagParen(htmlStr) {
         container.textContent = '';
         original.forEach(node => container.appendChild(node));
     }
-
-    return container.innerHTML;
 }
 
-export function tagConj(htmlStr) {
-    const container = document.createElement('div');
-    container.innerHTML = htmlStr;
-
+function term(container) {
     const CONJ_CLASS_MAP = {
         '及び': 'tag-conj-h',
         '並びに': 'tag-conj-h',
@@ -130,6 +127,4 @@ export function tagConj(htmlStr) {
     for (const { old, frag } of replacements) {
         old.parentNode.replaceChild(frag, old);
     }
-
-    return container.innerHTML;
 }
