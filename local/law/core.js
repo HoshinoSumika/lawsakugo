@@ -1,11 +1,10 @@
+import { Kaiseki } from '/global/kaiseki.js?v=20251101';
 import { Sakugo } from '/global/sakugo.js?v=20251101';
+import { Service } from '/global/service.js?v=20251101';
 import { Storage } from '/global/storage.js?v=20251101';
 
 import { Menu } from './interface/menu.js?v=20251101';
 import { Search } from './interface/search.js?v=20251101';
-
-import { Data } from './service/data.js?v=20251101';
-import { Tag } from './service/tag.js?v=20251101';
 
 window.addEventListener('DOMContentLoaded', () => {
     initMenuButton();
@@ -56,7 +55,7 @@ async function initContent() {
     } catch (e) {
     }
     if (!result) {
-        result = await Data.getLawData(id);
+        result = await Service.getLawFullText(id);
         if (result) {
             await Storage.setItem(id, result);
         }
@@ -68,12 +67,12 @@ async function initContent() {
     content.innerHTML = result;
     content.style.minHeight = '';
 
-    Tag.paren(content);
-    Tag.term(content);
+    Kaiseki.tagParen(content);
+    Kaiseki.tagTerm(content);
 
     const lawTitle = document.querySelector('.Law > .LawBody > .LawTitle')?.textContent || '';
     if (lawTitle) {
         document.title = lawTitle;
-        document.querySelector('#title').innerHTML = '<span>' + lawTitle + '</span>';
+        document.querySelector('#header-title').innerHTML = '<span>' + lawTitle + '</span>';
     }
 }

@@ -1,9 +1,9 @@
-export const Tag = {
-    paren,
-    term,
+export const Kaiseki = {
+    tagParen,
+    tagTerm,
 };
 
-function paren(container) {
+function tagParen(container) {
     function wrapNodes(nodes, parent) {
         let depth = 0;
         let quoteDepth = 0;
@@ -86,7 +86,7 @@ function paren(container) {
     }
 }
 
-function term(container) {
+function tagTerm(container) {
     const CONJ_CLASS_MAP = {
         '及び': 'tag-conj-h',
         '並びに': 'tag-conj-h',

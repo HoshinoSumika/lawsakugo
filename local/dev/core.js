@@ -6,7 +6,7 @@ download.setAttribute('data-touch', '');
 download.addEventListener('click', async () => {
     for (const id of content) {
         try {
-            const data = await Data.getLawData(id);
+            const data = await Data.getLawFullText(id);
             const blob = new Blob([data], { type: 'text/html' });
             downloadData(blob, id);
             await new Promise(resolve => setTimeout(resolve, 300)); 
