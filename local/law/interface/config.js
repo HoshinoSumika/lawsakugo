@@ -272,7 +272,6 @@ function hideSupplProvision() {
     const style = document.createElement('style');
     style.id = 'style-suppl-provision';
     style.textContent = '.LawBody > .SupplProvision { display: none; }';
-    style.textContent += '.LawBody > .TOC > .TOCSupplProvision { display: none; }';
     document.head.appendChild(style);
 }
 
