@@ -1,1 +1,55 @@
+<!doctype html>
+<html lang="ja">
 
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="/global/style.css?v=20251101">
+    <link rel="stylesheet" href="./local/index/core.css?v=20251101">
+    <link rel="stylesheet" href="./local/index/interface/search.css?v=20251101">
+    <title>法令検索</title>
+</head>
+
+<body>
+
+    <header></header>
+
+    <main>
+        <div id="space"></div>
+        <div id="title">法令検索</div>
+        <div id="search-container">
+            <div id="search-bar">
+                <input id="search-input" type="text" placeholder="民法">
+                <div id="search-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-gray)"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg>
+                </div>
+                <div id="search-exec" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z"/></svg>
+                </div>
+            </div>
+            <div id="search-result" style="display: none;"></div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="left">
+            <div></div>
+        </div>
+        <div class="center">
+            <a href="/help">使い方</a>
+        </div>
+        <div class="right">
+            <a href="/about">当サイトについて</a>
+            <div>・</div>
+            <a href="/privacy">プライバシー</a>
+            <div>・</div>
+            <a href="/terms">利用規約</a>
+        </div>
+    </footer>
+
+    <script type="module" src="./local/index/core.js?v=20251101"></script>
+
+</body>
+
+</html>
