@@ -151,6 +151,8 @@ function updateResult(isUnlimited) {
                 let nodeToPush;
                 if (el.closest('.Article')) {
                     nodeToPush = el.closest('.Article');
+                } else if (el.closest('.ParagraphContainer') ) {
+                    nodeToPush = el.closest('.ParagraphContainer');
                 } else if (el.closest('.Preamble')) {
                     nodeToPush = el.closest('.Preamble');
                 } else if (el.closest('.SupplProvisionAppdxTable')) {
@@ -159,8 +161,6 @@ function updateResult(isUnlimited) {
                     nodeToPush = el.closest('.AppdxTable');
                 } else if (el.closest('.AppdxNote')) {
                     nodeToPush = el.closest('.AppdxNote');
-                } else if (el.closest('.ParagraphContainer') ) {
-                    nodeToPush = el.closest('.ParagraphContainer');
                 } else {
                     nodeToPush = el;
                 }
@@ -219,10 +219,10 @@ function renderResult(list, value) {
             item.appendChild(contentClone);
         }
 
-        if (!content.classList.contains('limit')) {
-            item.addEventListener('click', () => scrollToElement(content, value));
-        } else {
+        if (content.classList.contains('limit')) {
             item.addEventListener('click', () => updateResult(true));
+        } else {
+            item.addEventListener('click', () => scrollToElement(content, value));
         }
 
         fragment.appendChild(item);
