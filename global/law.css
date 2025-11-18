@@ -116,25 +116,6 @@ section {
 
 /* SupplProvision */
 
-.SupplProvision > .ParagraphCaption {
-    margin-top: var(--law-margin);
-}
-.SupplProvision > .Paragraph {
-    margin-bottom: var(--law-margin);
-}
-.SupplProvision > :first-child:not(.Paragraph) + .Paragraph {
-    margin-top: var(--law-margin);
-}
-
-.SupplProvision > .Paragraph {
-    margin-left: 1em;
-    text-indent: -1em;
-}
-.SupplProvision > .Paragraph > .Item {
-    margin-left: 1em;
-    text-indent: -1em;
-}
-
 /* SupplProvisionAppdxTable */
 
 .SupplProvisionAppdxTable > .Remarks > .Item {
