@@ -17,6 +17,7 @@ export function convert(xmlStr) {
     temp = addOldParagraphCircledNums(temp); // 番号のない項に丸数字の番号を追加
     temp = extractParagraphCaptionBeforeParagraph(temp); // 段落見出しを抽出しないと、段落（span）のインデントが困難
     temp = tagParagraphBlankNum(temp); // 番号のない段落にタグを追加
+    temp = addParagraphContainer(temp);
 
     temp = trim(temp);
 
@@ -287,6 +288,32 @@ function tagParagraphBlankNum(el) {
         if (!pn || pn.textContent.trim()) return;
         p.classList.add('ParagraphBlankNum');
     });
+    return el;
+}
+
+function addParagraphContainer(el) {
+    el.querySelectorAll('.Paragraph').forEach(p => {
+        if (p.closest('.Article')) return;
+
+        const parent = p.parentNode;
+        if (!parent) return;
+
+        const prev = p.previousElementSibling;
+        const hasCaption = prev && prev.classList.contains('ParagraphCaption');
+
+        const container = el.ownerDocument.createElement('section');
+        container.className = 'ParagraphContainer';
+
+        const insertBeforeNode = hasCaption ? prev : p;
+        parent.insertBefore(container, insertBeforeNode);
+
+        if (hasCaption) {
+            container.appendChild(prev);
+        }
+
+        container.appendChild(p);
+    });
+
     return el;
 }
 

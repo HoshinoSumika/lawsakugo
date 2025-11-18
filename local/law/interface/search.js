@@ -159,8 +159,8 @@ function updateResult(isUnlimited) {
                     nodeToPush = el.closest('.AppdxTable');
                 } else if (el.closest('.AppdxNote')) {
                     nodeToPush = el.closest('.AppdxNote');
-                } else if (el.closest('.Paragraph')) {
-                    nodeToPush = el.closest('.Paragraph');
+                } else if (el.closest('.ParagraphContainer') ) {
+                    nodeToPush = el.closest('.ParagraphContainer');
                 } else {
                     nodeToPush = el;
                 }
@@ -200,19 +200,7 @@ function renderResult(list, value) {
     list.forEach(content => {
         const item = document.createElement('div');
 
-        if (content.classList.contains('ArticleTitle')) {
-            const article = content.closest('.Article');
-            const articleCaption = article ? article.querySelector('.ArticleCaption') : null;
-            let captionText = '';
-            if (articleCaption) {
-                const captionClone = articleCaption.cloneNode(true);
-                captionClone.querySelectorAll('rt').forEach(el => el.remove());
-                captionText = captionClone.textContent.trim();
-            }
-            const titleText = formatArticleLabel(content.textContent.trim());
-            item.innerHTML = titleText + captionText;
-            item.style.fontWeight = 'bold';
-        } else if (content.matches('.Article, .Paragraph, .ParagraphCaption')) {
+        if (content.matches('.Article, .ParagraphContainer')) {
             const contentClone = content.cloneNode(true);
             highlightText(contentClone, value);
             const supplProvision = content.closest('.SupplProvision');
@@ -222,19 +210,7 @@ function renderResult(list, value) {
                     item.appendChild(labelClone);
                 }
             }
-            if (content.classList.contains('Paragraph') && supplProvision) {
-                const prevClone = content.previousElementSibling.cloneNode(true);
-                if (prevClone && prevClone.classList.contains('ParagraphCaption')) {
-                    item.appendChild(prevClone);
-                }
-            }
             item.appendChild(contentClone);
-            if (content.classList.contains('ParagraphCaption') && supplProvision) {
-                const nextClone = content.nextElementSibling.cloneNode(true);
-                if (nextClone && nextClone.classList.contains('Paragraph')) {
-                    item.appendChild(nextClone);
-                }
-            }
         } else {
             const contentClone = content.cloneNode(true);
             if (!content.classList.contains('limit')) {
@@ -243,13 +219,9 @@ function renderResult(list, value) {
             item.appendChild(contentClone);
         }
 
-        if (content.classList.contains('ArticleTitle')) {
-            const article = content.closest('.Article');
-            const targetEl = article ? article : content;
-            item.addEventListener('click', () => scrollToElement(targetEl, formatArticleLabel(content.textContent.trim())));
-        } else if (!content.classList.contains('limit')) {
+        if (!content.classList.contains('limit')) {
             item.addEventListener('click', () => scrollToElement(content, value));
-        } else if (content.classList.contains('limit')) {
+        } else {
             item.addEventListener('click', () => updateResult(true));
         }
 

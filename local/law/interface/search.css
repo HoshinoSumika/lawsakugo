@@ -76,20 +76,7 @@
 #search-result > div:active {
     background-color: var(--color-active);
 }
-#search-result > div > .Article,
-#search-result > div > .AppdxTable,
-#search-result > div > .SupplProvision,
-#search-result > div > .SupplProvision > .ParagraphCaption,
-#search-result > div > .SupplProvision > .Paragraph,
-#search-result > div > .SupplProvision > :first-child:not(.Paragraph) + .Paragraph {
+#search-result > div > section {
     margin-top: 0px;
     margin-bottom: 0px;
-}
-#search-result > div > .ParagraphBlankNum {
-    margin-left: 0em;
-    text-indent: 1em;
-}
-#search-result > div > .ParagraphBlankNum > .Item {
-    margin-left: 2em;
-    text-indent: -1em;
 }

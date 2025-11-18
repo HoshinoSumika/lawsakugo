@@ -165,13 +165,11 @@ section {
 
 /* ParagraphBlankNum */
 
-.MainProvision > .ParagraphBlankNum,
-.SupplProvision > .ParagraphBlankNum {
+.ParagraphBlankNum {
     margin-left: 0em;
     text-indent: 1em;
 }
-.MainProvision > .ParagraphBlankNum > .Item,
-.SupplProvision > .ParagraphBlankNum > .Item {
+.ParagraphBlankNum > .Item {
     margin-left: 2em;
     text-indent: -1em;
 }
