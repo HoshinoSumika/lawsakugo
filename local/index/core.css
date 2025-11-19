@@ -44,12 +44,12 @@ footer {
     text-decoration: underline;
 }
 
-#yohaku {
+#spacer {
     width: 100%; height: calc(100dvh / 3.6);
 }
 
 @media (max-width: 640px) {
-    #yohaku {
+    #spacer {
         display: none;
     }
 }
