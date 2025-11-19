@@ -114,7 +114,7 @@ function updateResult(isUnlimited) {
         }
     }
 
-    let limit = 50;
+    let limit = 100;
     if (isUnlimited) {
         limit = 10000;
     } else {
@@ -124,8 +124,6 @@ function updateResult(isUnlimited) {
             limit = 20;
         } else if (value.length === 3) {
             limit = 20;
-        } else {
-            limit = 100;
         }
     }
 

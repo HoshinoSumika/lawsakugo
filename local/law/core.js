@@ -10,10 +10,8 @@ import { Menu } from './interface/menu.js?v=20251101';
 import { Mokuji } from './interface/mokuji.js?v=20251101';
 import { Search } from './interface/search.js?v=20251101';
 
-const contentEl = document.querySelector('#content');
-const scrollEl = contentEl.parentNode;;
-
 window.addEventListener('DOMContentLoaded', () => {
+    const contentEl = document.querySelector('#content');
     Config.init(contentEl);
     History.init();
     Info.init(contentEl);

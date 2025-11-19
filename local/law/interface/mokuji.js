@@ -117,8 +117,6 @@ function generate() {
             padding = 4 + paddingOffset;
         } else if (el.classList.contains('DivisionTitle')) {
             padding = 5 + paddingOffset;
-        } else {
-            padding = 1;
         }
         const item = document.createElement('div');
         const isLawNum = el.classList.contains('LawNum');
@@ -213,8 +211,7 @@ function resize() {
             show();
         }
     } else if (isMobile && wasDesktop) {
-        const isShowing = mokujiOverlay.style.display !== 'none';
-        wasShown = isShowing;
+        wasShown = mokujiOverlay.style.display !== 'none';
         hide();
         mokujiOverlay.style.display = 'none';
         mokujiPlaceholder.style.display = 'none';

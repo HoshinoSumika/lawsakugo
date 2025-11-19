@@ -31,7 +31,7 @@ function touch() {
     }
 }
 
-function resize(resizeEl) {
+function resize(resizeEl, scrollEl) {
     const elements = Array.from(resizeEl.querySelectorAll('*')).filter(el => el.offsetParent !== null);
     const topVisibleEl = elements.find(el => {
         const rect = el.getBoundingClientRect();
