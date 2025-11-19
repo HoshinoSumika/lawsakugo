@@ -73,7 +73,6 @@ a {
 }
 
 .content {
-    flex-grow: 1;
     width: 100%; max-width: var(--width-limit); padding: 16px;
 }
 

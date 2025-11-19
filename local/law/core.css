@@ -4,7 +4,7 @@ html, body {
 
 main {
     overflow-y: auto;
-    display: flex; flex-direction: row; justify-content: center; align-items: start; gap: 32px;
+    display: flex; flex-direction: row; justify-content: center; align-items: start; gap: 16px;
 }
 
 .overlay {
@@ -50,4 +50,8 @@ main {
     position: absolute; top: 0; left: 0;
     width: 100%; padding: 32px;
     display: flex; justify-content: center; align-items: center;
+}
+
+#content {
+    flex: 0 1 auto;
 }
