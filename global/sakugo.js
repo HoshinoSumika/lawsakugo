@@ -32,21 +32,27 @@ function touch() {
 }
 
 function resize(resizeEl, scrollEl) {
-    const elements = Array.from(resizeEl.querySelectorAll('*')).filter(el => el.offsetParent !== null);
-    const topVisibleEl = elements.find(el => {
-        const rect = el.getBoundingClientRect();
-        return rect.top >= 0 && rect.bottom > 0;
-    });
-    if (!topVisibleEl) {
-        return;
-    }
-    const beforeTop = topVisibleEl.getBoundingClientRect().top;
-    requestAnimationFrame(() => {
-        const afterTop = topVisibleEl.getBoundingClientRect().top;
-        const diff = afterTop - beforeTop;
-        if (Math.abs(diff) < 1) {
-            return;
+    let topElement = null;
+    let topElementOffset = 0;
+    scrollEl.addEventListener('scroll', () => {
+        const elements = Array.from(resizeEl.querySelectorAll('*')).filter(el => el.offsetParent !== null);
+        const topVisibleEl = elements.find(el => {
+            const rect = el.getBoundingClientRect();
+            return rect.top >= 0 && rect.bottom > 0;
+        });
+        if (topVisibleEl) {
+            topElement = topVisibleEl;
+            topElementOffset = topVisibleEl.getBoundingClientRect().top;
         }
-        scrollEl.scrollBy(0, diff);
+    });
+    window.addEventListener('resize', () => {
+        requestAnimationFrame(() => {
+            if (!topElement) return;
+            const rect = topElement.getBoundingClientRect();
+            const diff = rect.top - topElementOffset;
+            if (Math.abs(diff) >= 1) {
+                scrollEl.scrollBy(0, diff);
+            }
+        });
     });
 }
