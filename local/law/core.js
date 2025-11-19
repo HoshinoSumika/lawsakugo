@@ -28,14 +28,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('load', () => {
     Sakugo.normalizeTouch();
+    Sakugo.maintainScrollPosition(contentEl, scrollEl);
 });
 
 window.addEventListener('popstate', () => {
     initContent().then(() => {});
-});
-
-window.addEventListener('resize', () => {
-    Sakugo.maintainScrollPosition(contentEl, scrollEl);
 });
 
 function initMenuButton() {

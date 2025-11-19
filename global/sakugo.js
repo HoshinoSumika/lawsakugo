@@ -35,10 +35,10 @@ function maintainScrollPosition(contentEl, scrollEl) {
     let topElement = null;
     let topElementOffset = 0;
     scrollEl.addEventListener('scroll', () => {
-        const elements = Array.from(contentEl.querySelectorAll('*')).filter(el => el.offsetParent !== null);
+        const elements = Array.from(contentEl.querySelectorAll('section'));
         const topVisibleEl = elements.find(el => {
             const rect = el.getBoundingClientRect();
-            return rect.top >= 0 && rect.bottom > 0;
+            return rect.height > 0 && rect.top >= 0 && rect.bottom > 0;
         });
         if (topVisibleEl) {
             topElement = topVisibleEl;
