@@ -8,7 +8,7 @@ export const Mokuji = {
 let contentEl;
 let scrollEl;
 let mokujiOverlay;
-let mokujiPlaceholder;
+let mokujiSpacer;
 let mokujiContainer;
 let mokujiContent;
 let mokujiBar;
@@ -23,7 +23,7 @@ function init(el) {
         hide();
     });
 
-    mokujiPlaceholder = document.querySelector('#mokuji-placeholder');
+    mokujiSpacer = document.querySelector('#mokuji-spacer');
 
     mokujiContainer = document.querySelector('#mokuji-container');
     mokujiContainer.addEventListener('click', (e) => {
@@ -214,7 +214,7 @@ function resize() {
         wasShown = mokujiOverlay.style.display !== 'none';
         hide();
         mokujiOverlay.style.display = 'none';
-        mokujiPlaceholder.style.display = 'none';
+        mokujiSpacer.style.display = 'none';
     }
     wasDesktop = !isMobile;
 }
@@ -228,7 +228,7 @@ function show() {
     mokujiContent.style.fontSize = fontSize + 'px';
 
     mokujiOverlay.style.display = '';
-    mokujiPlaceholder.style.display = '';
+    mokujiSpacer.style.display = '';
     mokujiOverlay.style.pointerEvents = 'auto';
     requestAnimationFrame(() => {
         mokujiOverlay.style.opacity = '1';
@@ -242,7 +242,7 @@ function hide() {
     if (!isUnderThreshold()) {
         mokujiOverlay.style.display = 'none';
     }
-    mokujiPlaceholder.style.display = 'none';
+    mokujiSpacer.style.display = 'none';
     mokujiOverlay.style.pointerEvents = 'none';
     mokujiOverlay.style.opacity = '0';
     mokujiContainer.classList.remove('show');
