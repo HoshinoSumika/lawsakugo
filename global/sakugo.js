@@ -1,9 +1,9 @@
 export const Sakugo = {
-    touch,
-    resize,
+    normalizeTouch,
+    maintainScrollPosition,
 };
 
-function touch() {
+function normalizeTouch() {
     document.body.setAttribute('ontouchstart', '');
     if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
         for (const sheet of document.styleSheets) {
@@ -31,11 +31,11 @@ function touch() {
     }
 }
 
-function resize(resizeEl, scrollEl) {
+function maintainScrollPosition(contentEl, scrollEl) {
     let topElement = null;
     let topElementOffset = 0;
     scrollEl.addEventListener('scroll', () => {
-        const elements = Array.from(resizeEl.querySelectorAll('*')).filter(el => el.offsetParent !== null);
+        const elements = Array.from(contentEl.querySelectorAll('*')).filter(el => el.offsetParent !== null);
         const topVisibleEl = elements.find(el => {
             const rect = el.getBoundingClientRect();
             return rect.top >= 0 && rect.bottom > 0;

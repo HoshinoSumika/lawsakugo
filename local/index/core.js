@@ -6,5 +6,5 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener('load', () => {
-    Sakugo.touch();
+    Sakugo.normalizeTouch();
 });

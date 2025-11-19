@@ -10,8 +10,10 @@ import { Menu } from './interface/menu.js?v=20251101';
 import { Mokuji } from './interface/mokuji.js?v=20251101';
 import { Search } from './interface/search.js?v=20251101';
 
+const contentEl = document.querySelector('#content');
+const scrollEl = contentEl.parentElement;
+
 window.addEventListener('DOMContentLoaded', () => {
-    const contentEl = document.querySelector('#content');
     Config.init(contentEl);
     History.init();
     Info.init(contentEl);
@@ -25,11 +27,15 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener('load', () => {
-    Sakugo.touch();
+    Sakugo.normalizeTouch();
 });
 
 window.addEventListener('popstate', () => {
     initContent().then(() => {});
+});
+
+window.addEventListener('resize', () => {
+    Sakugo.maintainScrollPosition(contentEl, scrollEl);
 });
 
 function initMenuButton() {
