@@ -238,7 +238,10 @@ function show() {
     mokujiContent.style.fontSize = fontSize + 'px';
 
     mokujiOverlay.style.display = '';
-    mokujiSpacer.style.display = '';
+    if (!isUnderThreshold()) {
+        mokujiSpacer.style.display = '';
+    }
+
     mokujiOverlay.style.pointerEvents = 'auto';
     requestAnimationFrame(() => {
         mokujiOverlay.style.opacity = '1';
@@ -253,6 +256,7 @@ function hide() {
         mokujiOverlay.style.display = 'none';
     }
     mokujiSpacer.style.display = 'none';
+
     mokujiOverlay.style.pointerEvents = 'none';
     mokujiOverlay.style.opacity = '0';
     mokujiContainer.classList.remove('show');
