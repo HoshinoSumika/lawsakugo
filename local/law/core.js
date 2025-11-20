@@ -21,6 +21,15 @@ window.addEventListener('DOMContentLoaded', () => {
     Mokuji.init(contentEl);
     Search.init(contentEl);
 
+    scrollEl.addEventListener('scroll', () => {
+        getScrollAnchor();
+    });
+
+    const observer = new ResizeObserver(() => {
+        setScrollAnchor();
+    });
+    observer.observe(contentEl);
+
     initMenuButton();
     initSearchButton();
     initContent().then(() => {});
@@ -28,12 +37,36 @@ window.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('load', () => {
     Sakugo.normalizeTouch();
-    Sakugo.maintainScrollPosition(contentEl, scrollEl);
 });
 
 window.addEventListener('popstate', () => {
     initContent().then(() => {});
 });
+
+let anchor;
+
+function getScrollAnchor() {
+    const elements = Array.from(contentEl.querySelectorAll('section'));
+    const topVisibleEl = elements.find(el => {
+        const rect = el.getBoundingClientRect();
+        return rect.height > 0 && rect.top >= 0 && rect.bottom > 0;
+    });
+    if (!topVisibleEl) return null;
+    console.log(topVisibleEl);
+    console.log(topVisibleEl.getBoundingClientRect().top);
+    anchor = { element: topVisibleEl, offset: topVisibleEl.getBoundingClientRect().top };
+}
+
+function setScrollAnchor() {
+    if (!anchor || !anchor.element || !anchor.element.isConnected) return;
+    const currentRect = anchor.element.getBoundingClientRect();
+    const diff = currentRect.top - anchor.offset;
+    if (Math.abs(diff) >= 1) {
+        scrollEl.scrollBy(0, diff);
+    }
+}
+
+window.setScrollAnchor = setScrollAnchor;
 
 function initMenuButton() {
     const button = document.querySelector('#header-menu');
