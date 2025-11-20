@@ -1,5 +1,6 @@
 export const Config = {
     init,
+    register,
     show,
 };
 
@@ -104,6 +105,7 @@ function init(el) {
     updateConfigItemWidthLimit();
     configItemWidthLimit.addEventListener('click', () => {
         updateConfigItemWidthLimit();
+        restoreScrollPosition();
     });
 
     configItemFontSize = document.querySelector('#config-item-font-size');
@@ -180,6 +182,14 @@ function init(el) {
             localStorage.setItem('paragraph-spacing', value);
         }
     });
+}
+
+let restoreScrollPosition = () => {};
+
+function register(name, func) {
+    if (name === 'restoreScrollPosition') {
+        restoreScrollPosition = func;
+    }
 }
 
 function show() {

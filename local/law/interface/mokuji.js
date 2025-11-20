@@ -1,5 +1,6 @@
 export const Mokuji = {
     init,
+    register,
     toggle,
     update,
     clear,
@@ -52,6 +53,14 @@ function init(el) {
         if (localStorage.getItem('mokuji') === 'false') {
             hide();
         }
+    }
+}
+
+let restoreScrollPosition = () => {};
+
+function register(name, func) {
+    if (name === 'restoreScrollPosition') {
+        restoreScrollPosition = func;
     }
 }
 
@@ -215,6 +224,7 @@ function resize() {
         hide();
         mokujiOverlay.style.display = 'none';
         mokujiSpacer.style.display = 'none';
+        restoreScrollPosition();
     }
     wasDesktop = !isMobile;
 }

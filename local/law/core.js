@@ -15,20 +15,13 @@ const scrollEl = contentEl.parentElement;
 
 window.addEventListener('DOMContentLoaded', () => {
     Config.init(contentEl);
+    Config.register('restoreScrollPosition', restoreScrollPosition);
     History.init();
     Info.init(contentEl);
     Menu.init();
     Mokuji.init(contentEl);
+    Mokuji.register('restoreScrollPosition', restoreScrollPosition);
     Search.init(contentEl);
-
-    scrollEl.addEventListener('scroll', () => {
-        getScrollAnchor();
-    });
-
-    const observer = new ResizeObserver(() => {
-        setScrollAnchor();
-    });
-    observer.observe(contentEl);
 
     initMenuButton();
     initSearchButton();
@@ -37,36 +30,36 @@ window.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('load', () => {
     Sakugo.normalizeTouch();
+
+    scrollEl.addEventListener('scroll', () => {
+        recordScrollPosition();
+    });
 });
 
 window.addEventListener('popstate', () => {
     initContent().then(() => {});
 });
 
-let anchor;
+let scrollReference;
 
-function getScrollAnchor() {
+function recordScrollPosition() {
     const elements = Array.from(contentEl.querySelectorAll('section'));
     const topVisibleEl = elements.find(el => {
         const rect = el.getBoundingClientRect();
         return rect.height > 0 && rect.top >= 0 && rect.bottom > 0;
     });
     if (!topVisibleEl) return null;
-    console.log(topVisibleEl);
-    console.log(topVisibleEl.getBoundingClientRect().top);
-    anchor = { element: topVisibleEl, offset: topVisibleEl.getBoundingClientRect().top };
+    scrollReference = { element: topVisibleEl, offset: topVisibleEl.getBoundingClientRect().top };
 }
 
-function setScrollAnchor() {
-    if (!anchor || !anchor.element || !anchor.element.isConnected) return;
-    const currentRect = anchor.element.getBoundingClientRect();
-    const diff = currentRect.top - anchor.offset;
+function restoreScrollPosition() {
+    if (!scrollReference || !scrollReference.element || !scrollReference.element.isConnected) return;
+    const currentRect = scrollReference.element.getBoundingClientRect();
+    const diff = currentRect.top - scrollReference.offset;
     if (Math.abs(diff) >= 1) {
         scrollEl.scrollBy(0, diff);
     }
 }
-
-window.setScrollAnchor = setScrollAnchor;
 
 function initMenuButton() {
     const button = document.querySelector('#header-menu');

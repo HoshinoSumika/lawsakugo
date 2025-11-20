@@ -1,6 +1,5 @@
 export const Sakugo = {
     normalizeTouch,
-    maintainScrollPosition,
 };
 
 function normalizeTouch() {
@@ -29,31 +28,4 @@ function normalizeTouch() {
             }
         }
     }
-}
-
-function maintainScrollPosition(resizeEl, scrollEl) {
-    let topElement = null;
-    let topElementOffset = 0;
-    scrollEl.addEventListener('scroll', () => {
-        const elements = Array.from(resizeEl.querySelectorAll('section'));
-        const topVisibleEl = elements.find(el => {
-            const rect = el.getBoundingClientRect();
-            return rect.height > 0 && rect.top >= 0 && rect.bottom > 0;
-        });
-        if (topVisibleEl) {
-            topElement = topVisibleEl;
-            topElementOffset = topVisibleEl.getBoundingClientRect().top;
-        }
-    });
-    const observer = new ResizeObserver(() => {
-        requestAnimationFrame(() => {
-            if (!topElement) return;
-            const rect = topElement.getBoundingClientRect();
-            const diff = rect.top - topElementOffset;
-            if (Math.abs(diff) >= 1) {
-                scrollEl.scrollBy(0, diff);
-            }
-        });
-    });
-    observer.observe(resizeEl);
 }
