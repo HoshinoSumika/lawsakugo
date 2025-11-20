@@ -1,5 +1,6 @@
 export const History = {
     init,
+    register,
     show,
 };
 
@@ -28,6 +29,14 @@ function init() {
     historyClose.addEventListener('click', () => {
         hide();
     });
+}
+
+let initContent = () => {};
+
+function register(name, func) {
+    if (name === 'initContent') {
+        initContent = func;
+    }
 }
 
 function show() {
@@ -136,7 +145,7 @@ function renderContent() {
                 const url = new URL(window.location.href);
                 url.searchParams.set('id', id);
                 window.history.pushState(null, '', url);
-                window.initContent();
+                initContent();
             }
         });
         historyContent.appendChild(item);

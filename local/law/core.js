@@ -17,6 +17,7 @@ window.addEventListener('DOMContentLoaded', () => {
     Config.init(contentEl);
     Config.register('restoreScrollPosition', restoreScrollPosition);
     History.init();
+    History.register('initContent', initContent);
     Info.init(contentEl);
     Menu.init();
     Mokuji.init(contentEl);
@@ -133,5 +134,3 @@ async function initContent() {
         document.querySelector('#header-title').innerHTML = '<span>' + lawTitle + '</span>';
     }
 }
-
-window.initContent = initContent;
