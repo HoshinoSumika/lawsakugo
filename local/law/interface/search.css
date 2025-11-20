@@ -5,7 +5,7 @@
 #search-container {
     overflow: hidden;
     transform: scale(0.9);
-    width: 100%; max-width: min(calc(var(--width-limit) - 128px), calc(100% - 128px)); max-height: calc(100dvh - calc(var(--size-normal) * 4));
+    width: 100%; max-width: min(calc(var(--width-limit) - 128px), calc(100% - 256px)); max-height: calc(100dvh - calc(var(--size-normal) * 4));
     margin: calc(var(--size-normal) * 2) 0px 0px 0px; padding: 0px;
     border-radius: var(--radius-normal);
 }
