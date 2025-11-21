@@ -53,11 +53,9 @@
     #search-input {
         padding: 0px 64px 0px 64px;
     }
-    #search-icon {
-        left: 8px;
-    }
+    #search-icon,
     #search-clear {
-        right: 8px;
+        max-height: 64px;
     }
 }
 
