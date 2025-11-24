@@ -62,6 +62,7 @@
 #mokuji-content li::after {
     content: '';
     position: absolute;
+    transition: background-color var(--transition-duration) ease;
     background-color: var(--color-border);
 }
 #mokuji-content li::before {
