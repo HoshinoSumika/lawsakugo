@@ -112,22 +112,39 @@ function generate() {
     });
 
     const hasPart = elements.some(el => el.classList.contains('PartTitle'));
-    const paddingOffset = hasPart ? 1 : 0;
+    const levelOffset = hasPart ? 1 : 0;
 
-    elements.forEach(el => {
-        let padding = 1;
-        if (el.classList.contains('PartTitle')) {
-            padding = 2;
-        } else if (el.classList.contains('ChapterTitle')) {
-            padding = 2 + paddingOffset;
-        } else if (el.classList.contains('SectionTitle')) {
-            padding = 3 + paddingOffset;
-        } else if (el.classList.contains('SubsectionTitle')) {
-            padding = 4 + paddingOffset;
-        } else if (el.classList.contains('DivisionTitle')) {
-            padding = 5 + paddingOffset;
+    const rootUl = document.createElement('ul');
+    const stack = [{ level: 0, ul: rootUl }];
+
+    let nextLevel = 1;
+
+    elements.forEach((el, i) => {
+        const level = nextLevel;
+        const nextEl = elements[i + 1];
+        if (nextEl) {
+            if (nextEl.classList.contains('PartTitle')) {
+                nextLevel = 2;
+            } else if (nextEl.classList.contains('ChapterTitle')) {
+                nextLevel = 2 + levelOffset;
+            } else if (nextEl.classList.contains('SectionTitle')) {
+                nextLevel = 3 + levelOffset;
+            } else if (nextEl.classList.contains('SubsectionTitle')) {
+                nextLevel = 4 + levelOffset;
+            } else if (nextEl.classList.contains('DivisionTitle')) {
+                nextLevel = 5 + levelOffset;
+            } else {
+                nextLevel = 1;
+            }
         }
+
+        while (stack.length > 1 && stack[stack.length - 1].level >= level) {
+            stack.pop();
+        }
+
+        const li = document.createElement('li');
         const item = document.createElement('div');
+
         const isLawNum = el.classList.contains('LawNum');
         const isMainProvision = el.classList.contains('MainProvision');
         const isSupplProvisionAppdxTableTitle = el.classList.contains('SupplProvisionAppdxTableTitle');
@@ -148,16 +165,24 @@ function generate() {
         } else {
             item.textContent = el.textContent;
         }
-        item.style.paddingLeft = padding + 'em';
+
         item.addEventListener('click', () => {
             if (isUnderThreshold()) {
                 hide();
             }
             scrollEl.scrollTo({ top: el.offsetTop - scrollOffset, behavior: 'auto' });
         });
-        fragment.appendChild(item);
+
+        li.appendChild(item);
+        stack[stack.length - 1].ul.appendChild(li);
+        if (nextEl && nextLevel > level) {
+            const childUl = document.createElement('ul');
+            li.appendChild(childUl);
+            stack.push({ level: level, ul: childUl });
+        }
     });
 
+    fragment.appendChild(rootUl);
     mokujiContent.appendChild(fragment);
 }
 
@@ -189,7 +214,9 @@ function scroll(isSmoothScroll) {
     if (!item) {
         return;
     }
-    const position = item.offsetTop - mokujiContent.clientHeight / 3 + item.clientHeight / 2;
+    const contentRect = mokujiContent.getBoundingClientRect();
+    const itemRect = item.getBoundingClientRect();
+    const position = mokujiContent.scrollTop + itemRect.top - contentRect.top - mokujiContent.clientHeight / 3 + item.clientHeight / 2;
     if (isSmoothScroll) {
         mokujiContent.scrollTo({ top: position, behavior: 'smooth' });
     } else {

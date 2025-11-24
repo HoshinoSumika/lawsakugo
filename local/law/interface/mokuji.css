@@ -41,22 +41,74 @@
     color: var(--color-black);
 }
 
-#mokuji-content.desktop > div {
-    width: 100%; padding: 6px 1em 6px 1em;
+#mokuji-content ul {
+    position: relative;
+    margin: 0px; padding: 0px 0px 0px 0px;
+    list-style: none;
+}
+#mokuji-content > ul {
+    padding: 0px 0px 0px 0px;
+}
+#mokuji-content li {
+    position: relative;
+    padding: 0px 0px 0px 2em;
+    list-style: none;
+}
+#mokuji-content > ul > li {
+    padding: 0px 0px 0px 0px;
+}
+
+#mokuji-content li::before,
+#mokuji-content li::after {
+    content: '';
+    position: absolute;
+    background-color: var(--color-border);
+}
+#mokuji-content li::before {
+    top: 0; left: 1em;
+    width: 1px; height: 100%;
+}
+#mokuji-content li::after {
+    top: 1.2em; left: 1em;
+    width: 1em; height: 1px;
+}
+#mokuji-content li:last-child::before {
+    height: 1.2em;
+}
+#mokuji-content > ul > li::before,
+#mokuji-content > ul > li::after {
+    display: none;
+}
+#mokuji-content.mobile li::before,
+#mokuji-content.mobile li::after {
+    background-color: var(--color-gray);
+}
+#mokuji-content:hover li::before,
+#mokuji-content:hover li::after {
+    background-color: var(--color-gray);
+}
+
+#mokuji-content.desktop ul {
+}
+#mokuji-content.mobile ul {
+}
+
+#mokuji-content div {
+    width: 100%; padding: 6px 0.5em 6px 0.5em;
     cursor: pointer;
 }
-#mokuji-content.mobile > div {
-    width: 100%; padding: 12px 1em 12px 1em;
-    cursor: pointer;
+#mokuji-content.desktop div {
+}
+#mokuji-content.mobile div {
     border-radius: var(--radius-normal);
 }
-#mokuji-content > div:hover {
+#mokuji-content div:hover {
     background-color: var(--color-hover);
 }
-#mokuji-content > div:active {
+#mokuji-content div:active {
     background-color: var(--color-active);
 }
-#mokuji-content > div.current {
+#mokuji-content div.current {
     font-weight: bold;
     color: var(--color-black);
 }
