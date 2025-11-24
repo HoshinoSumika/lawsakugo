@@ -261,9 +261,6 @@ function isUnderThreshold() {
 }
 
 function show() {
-    const fontSize = parseFloat(window.getComputedStyle(contentEl).fontSize) - 1.5;
-    mokujiContent.style.fontSize = fontSize + 'px';
-
     mokujiOverlay.style.display = '';
     if (!isUnderThreshold()) {
         mokujiSpacer.style.display = '';
