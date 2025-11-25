@@ -73,10 +73,10 @@
     width: 1px; height: 100%;
 }
 #mokuji-content li:last-child::before {
-    height: 1.3em;
+    height: calc(8px + 0.8em - 0.5px);
 }
 #mokuji-content li::after {
-    top: 1.3em; left: 1em;
+    top: calc(8px + 0.8em - 0.5px); left: 1em;
     width: 1em; height: 1px;
 }
 #mokuji-content > ul > li::before,
