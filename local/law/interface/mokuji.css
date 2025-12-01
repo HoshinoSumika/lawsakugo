@@ -41,7 +41,6 @@
 }
 #mokuji-content:hover {
     scrollbar-width: auto;
-    color: var(--color-black);
 }
 
 #mokuji-content ul {
@@ -69,15 +68,10 @@
     background-color: var(--color-silver);
 }
 #mokuji-content li::before {
-    top: 0; left: 1em;
+    top: 0; left: 1.5em;
     width: 1px; height: 100%;
 }
-#mokuji-content li:last-child::before {
-    height: calc(8px + 0.8em - 0.5px);
-}
 #mokuji-content li::after {
-    top: calc(8px + 0.8em - 0.5px); left: 1em;
-    width: 1em; height: 1px;
 }
 #mokuji-content > ul > li::before,
 #mokuji-content > ul > li::after {
@@ -87,9 +81,8 @@
 #mokuji-content.mobile li::after {
     background-color: var(--color-border);
 }
-#mokuji-content:hover li::before,
-#mokuji-content:hover li::after {
-    background-color: var(--color-border);
+#mokuji-content.desktop li:hover:not(:has(li:hover))::before {
+    background-color: var(--color-black);
 }
 
 #mokuji-content.desktop ul {
@@ -98,18 +91,26 @@
 }
 
 #mokuji-content div {
-    width: 100%; padding: 8px 0.5em 8px 0.5em;
+    width: 100%;
     cursor: pointer;
 }
 #mokuji-content.desktop div {
+    padding: 4px 1em 4px 1em;
 }
 #mokuji-content.mobile div {
+    padding: 8px 1em 8px 1em;
     border-radius: var(--radius-normal);
 }
-#mokuji-content div:hover {
+#mokuji-content.desktop div:hover{
+    color: var(--color-black);
+}
+#mokuji-content.desktop div:active {
+    color: var(--color-black);
+}
+#mokuji-content.mobile div:hover {
     background-color: var(--color-hover);
 }
-#mokuji-content div:active {
+#mokuji-content.mobile div:active {
     background-color: var(--color-active);
 }
 #mokuji-content div.current {
