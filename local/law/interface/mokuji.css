@@ -85,11 +85,6 @@
     background-color: var(--color-black);
 }
 
-#mokuji-content.desktop ul {
-}
-#mokuji-content.mobile ul {
-}
-
 #mokuji-content div {
     width: 100%;
     cursor: pointer;
@@ -101,10 +96,7 @@
     padding: 8px 1em 8px 1em;
     border-radius: var(--radius-normal);
 }
-#mokuji-content.desktop div:hover{
-    color: var(--color-black);
-}
-#mokuji-content.desktop div:active {
+#mokuji-content.desktop li:hover:not(:has(li:hover)) > div {
     color: var(--color-black);
 }
 #mokuji-content.mobile div:hover {
