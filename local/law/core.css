@@ -1,0 +1,58 @@
+html, body {
+    overflow: hidden;
+    height: 100%;
+}
+
+main {
+    overflow-y: auto;
+    display: flex; flex-direction: row; justify-content: center; align-items: start; gap: 16px;
+}
+
+.overlay {
+    z-index: 999;
+    overflow: hidden; touch-action: none;
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex; justify-content: center; align-items: center;
+    transition: opacity var(--transition-duration) ease;
+    background-color: var(--color-translucent-overlay);
+}
+.container {
+    display: flex; flex-direction: column; justify-content: start; align-items: center;
+    transition: transform var(--transition-duration) ease, width var(--transition-duration) ease, height var(--transition-duration) ease;
+    background-color: var(--color-white);
+}
+.bar {
+    width: 100%; min-height: var(--size-large); padding: 0px 8px 0px 8px;
+    display: flex; justify-content: end; align-items: center;
+    border-bottom: 1px solid var(--color-border);
+}
+.title {
+    flex: 1;
+    width: 100%; height: var(--size-normal); padding: 8px 8px 8px 16px;
+    user-select: none; -webkit-user-select: none;
+    display: flex; justify-content: start; align-items: center;
+}
+
+#header-title {
+    flex: 1;
+    height: var(--size-normal); min-width: 0px; padding: 0px 8px 0px 8px;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 20px;
+}
+#header-title > span {
+    overflow: hidden;
+    flex-shrink: 1;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+#message {
+    position: absolute; top: 0; left: 0;
+    width: 100%; padding: 32px;
+    display: flex; justify-content: center; align-items: center;
+}
+
+#content {
+    flex: 0 1 auto;
+}

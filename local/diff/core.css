@@ -1,0 +1,29 @@
+header {
+    border-bottom: 1px solid var(--color-border);
+}
+
+main {
+}
+
+#header-title {
+    flex: 1;
+    height: var(--size-normal); min-width: 0;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 20px;
+}
+#header-title > span {
+    overflow: hidden;
+    flex-shrink: 1;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+#control {
+    width: 100%; padding: 16px;
+    background-color: red;
+}
+
+#content {
+    width: 100%; padding: 16px;
+    background-color: blue;
+}
