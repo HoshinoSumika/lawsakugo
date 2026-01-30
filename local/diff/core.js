@@ -1,6 +1,6 @@
-import { Device } from '/global/device.js?v=20260130';
-import { Service } from '/global/service.js?v=20260130';
-import { Storage } from '/global/storage.js?v=20260130';
+import { Device } from '/global/device.js?v=20260131';
+import { Service } from '/global/service.js?v=20260131';
+import { Storage } from '/global/storage.js?v=20260131';
 
 window.addEventListener('DOMContentLoaded', () => {
     const url = new URL(window.location.href);

@@ -4,9 +4,9 @@ export const Config = {
     show,
 };
 
-import { Interface } from '/global/interface.js?v=20260130';
+import { Interface } from '/global/interface.js?v=20260131';
 
-import { Mokuji } from './mokuji.js?v=20260130';
+import { Mokuji } from './mokuji.js?v=20260131';
 
 let interfaceView;
 let lawContent;

@@ -1,5 +1,5 @@
-import { Device } from '/global/device.js?v=20260130';
-import { Service } from '/global/service.js?v=20260130';
+import { Device } from '/global/device.js?v=20260131';
+import { Service } from '/global/service.js?v=20260131';
 
 let searchInput;
 let searchExec;

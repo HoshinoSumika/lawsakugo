@@ -1,7 +1,7 @@
-import { Device } from '/global/device.js?v=20260130';
-import { Interface } from '/global/interface.js?v=20260130';
+import { Device } from '/global/device.js?v=20260131';
+import { Interface } from '/global/interface.js?v=20260131';
 
-import { Search } from './search.js?v=20260130';
+import { Search } from './search.js?v=20260131';
 
 window.addEventListener('DOMContentLoaded', () => {
     Search.init();

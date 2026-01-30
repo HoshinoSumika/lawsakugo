@@ -4,7 +4,7 @@ export const Service = {
     getLawFullText,
 };
 
-import { convert } from '/global/convert.js?v=20260130';
+import { convert } from '/global/convert.js?v=20260131';
 
 async function search(title) {
     try {

@@ -3,7 +3,7 @@ export const Search = {
     show,
 };
 
-import { Interface } from '/global/interface.js?v=20260130';
+import { Interface } from '/global/interface.js?v=20260131';
 
 let interfaceView;
 let lawContent;
@@ -113,19 +113,6 @@ function updateResult(isUnlimited) {
         searchResult.style.display = '';
     }
 
-    const matched = [];
-
-    const articleNum = convertNum(value);
-    if (articleNum) {
-        const mainProvision = lawContent.querySelector('.MainProvision');
-        if (mainProvision) {
-            const elements = mainProvision.querySelectorAll('.Article' + '[data-num="' + articleNum + '"]');
-            if (elements.length > 0) {
-                Array.from(elements).forEach(el => matched.push(el));
-            }
-        }
-    }
-
     let limit = 100;
     if (isUnlimited) {
         limit = 10000;
@@ -139,6 +126,107 @@ function updateResult(isUnlimited) {
         }
     }
 
+    const matched = [];
+
+    const exactSearch = searchByNum(value);
+    if (exactSearch) {
+        matched.push(exactSearch);
+    }
+
+    const textSearch = searchByText(value, limit);
+    for (const el of textSearch) {
+        matched.push(el);
+    }
+
+    if (matched.length > 0) {
+        const restore = isUnlimited ? searchResult.scrollTop : 0;
+        searchResult.innerHTML = '';
+        renderResult(matched, value);
+        searchResult.scrollTop = restore;
+    } else {
+        searchResult.innerHTML = '';
+        const el = document.createElement('div');
+        el.textContent = '検索結果なし';
+        searchResult.appendChild(el);
+    }
+}
+
+function renderResult(list, value) {
+    searchResult.style.display = 'none';
+    const fragment = document.createDocumentFragment();
+    list.forEach(content => {
+        const item = document.createElement('div');
+
+        if (content.matches('.Article, .ParagraphContainer')) {
+            const contentClone = content.cloneNode(true);
+            highlightText(contentClone, value);
+            const supplProvision = content.closest('.SupplProvision');
+            if (supplProvision) {
+                const labelClone = supplProvision.querySelector('.SupplProvisionLabel').cloneNode(true);
+                if (labelClone) {
+                    item.appendChild(labelClone);
+                }
+            }
+            item.appendChild(contentClone);
+        } else {
+            const contentClone = content.cloneNode(true);
+            if (!content.classList.contains('limit')) {
+                highlightText(contentClone, value);
+            }
+            item.appendChild(contentClone);
+        }
+
+        if (content.classList.contains('limit')) {
+            item.addEventListener('click', () => updateResult(true));
+        } else {
+            item.addEventListener('click', () => scrollToElement(content, value));
+        }
+
+        fragment.appendChild(item);
+    });
+    searchResult.appendChild(fragment);
+    searchResult.style.display = '';
+}
+
+function searchByNum(value) {
+    const articleNum = convertNum(value);
+    if (!articleNum) {
+        return null;
+    }
+
+    const mainProvision = lawContent.querySelector('.MainProvision');
+    if (!mainProvision) {
+        return null;
+    }
+
+    const exactMatch = mainProvision.querySelector('.Article[data-num="' + articleNum + '"]');
+    if (exactMatch) {
+        return exactMatch;
+    }
+
+    const rangeArticles = mainProvision.querySelectorAll('.Article[data-num*=":"]');
+    for (const el of rangeArticles) {
+        const dataNum = el.getAttribute('data-num');
+        const [start, end] = dataNum.split(':');
+        const searchBase = articleNum.replace(/_.*$/, '');
+        const searchInt = parseInt(searchBase, 10);
+        const startBase = start.replace(/_.*$/, '');
+        const startInt = parseInt(startBase, 10);
+        const endBase = end.replace(/_.*$/, '');
+        const endInt = parseInt(endBase, 10);
+
+        if (!isNaN(searchInt) && !isNaN(startInt) && !isNaN(endInt)) {
+            if (searchInt >= startInt && searchInt <= endInt) {
+                return el;
+            }
+        }
+    }
+
+    return null;
+}
+
+function searchByText(value, limit) {
+    const matched = [];
     const lawBody = lawContent.querySelector('.LawBody');
     if (lawBody) {
         let str = '.ArticleCaption, .ParagraphCaption, ';
@@ -190,55 +278,7 @@ function updateResult(isUnlimited) {
             }
         }
     }
-
-    if (matched.length > 0) {
-        const restore = isUnlimited ? searchResult.scrollTop : 0;
-        searchResult.innerHTML = '';
-        renderResult(matched, value);
-        searchResult.scrollTop = restore;
-    } else {
-        searchResult.innerHTML = '';
-        const el = document.createElement('div');
-        el.textContent = '検索結果なし';
-        searchResult.appendChild(el);
-    }
-}
-
-function renderResult(list, value) {
-    searchResult.style.display = 'none';
-    const fragment = document.createDocumentFragment();
-    list.forEach(content => {
-        const item = document.createElement('div');
-
-        if (content.matches('.Article, .ParagraphContainer')) {
-            const contentClone = content.cloneNode(true);
-            highlightText(contentClone, value);
-            const supplProvision = content.closest('.SupplProvision');
-            if (supplProvision) {
-                const labelClone = supplProvision.querySelector('.SupplProvisionLabel').cloneNode(true);
-                if (labelClone) {
-                    item.appendChild(labelClone);
-                }
-            }
-            item.appendChild(contentClone);
-        } else {
-            const contentClone = content.cloneNode(true);
-            if (!content.classList.contains('limit')) {
-                highlightText(contentClone, value);
-            }
-            item.appendChild(contentClone);
-        }
-
-        if (content.classList.contains('limit')) {
-            item.addEventListener('click', () => updateResult(true));
-        } else {
-            item.addEventListener('click', () => scrollToElement(content, value));
-        }
-
-        fragment.appendChild(item);
-    });
-    searchResult.appendChild(fragment);
-    searchResult.style.display = '';
+    return matched;
 }
 
 function convertNum(str) {
