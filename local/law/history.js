@@ -4,30 +4,33 @@ export const History = {
     show,
 };
 
-import { Kaiseki } from '/global/kaiseki.js?v=20260101';
-import { Service } from '/global/service.js?v=20260101';
-import { Storage } from '/global/storage.js?v=20260101';
+import { Interface } from '/global/interface.js?v=20260130';
+import { Kaiseki } from '/global/kaiseki.js?v=20260130';
+import { Service } from '/global/service.js?v=20260130';
+import { Storage } from '/global/storage.js?v=20260130';
 
-let historyOverlay;
-let historyContainer;
+let interfaceView;
 let historyContent;
 
 function init() {
-    historyOverlay = document.querySelector('#history-overlay');
-    historyOverlay.addEventListener('click', () => {
-        hide();
-    });
-
-    historyContainer = document.querySelector('#history-container');
-    historyContainer.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
-
     historyContent = document.querySelector('#history-content');
 
-    const historyClose = document.querySelector('#history-close');
-    historyClose.addEventListener('click', () => {
-        hide();
+    interfaceView = Interface.createModal(historyContent);
+    interfaceView.enableTitleBar();
+    interfaceView.setTitle('改正履歴');
+    interfaceView.getOverlay().classList.add('law-overlay');
+    interfaceView.getOverlay().classList.add('history-overlay');
+    interfaceView.getContainer().classList.add('law-container');
+    interfaceView.getContainer().classList.add('history-container');
+    interfaceView.getContent().classList.add('history-content');
+
+    interfaceView.onShow(() => {
+        requestAnimationFrame(() => {
+            interfaceView.getContainer().classList.add('show');
+        });
+    });
+    interfaceView.onHide(() => {
+        interfaceView.getContainer().classList.remove('show');
     });
 }
 
@@ -41,17 +44,11 @@ function register(name, func) {
 
 function show() {
     updateContent();
-    historyOverlay.style.pointerEvents = 'auto';
-    requestAnimationFrame(() => {
-        historyOverlay.style.opacity = '1';
-        historyContainer.classList.add('show');
-    });
+    interfaceView.show();
 }
 
 function hide() {
-    historyOverlay.style.pointerEvents = 'none';
-    historyOverlay.style.opacity = '0';
-    historyContainer.classList.remove('show');
+    interfaceView.hide();
 }
 
 let revisions;

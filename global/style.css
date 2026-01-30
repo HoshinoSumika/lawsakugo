@@ -26,12 +26,12 @@
         --color-black: whitesmoke;
         --color-gray: darkgray;
         --color-silver: #3d3d3d;
-        --color-smoke: #2e2e2e;
-        --color-white: #121212;
+        --color-smoke: #363636;
+        --color-white: #242424;
 
-        --color-hover: #383838;
-        --color-active: #424242;
-        --color-border: #606060;
+        --color-hover: #484848;
+        --color-active: #606060;
+        --color-border: #727272;
         --color-link: royalblue;
         --color-highlight: teal;
     }
@@ -102,4 +102,15 @@ a {
 
 .highlight {
     background-color: var(--color-highlight);
+}
+
+.law-overlay {
+    display: flex; justify-content: center; align-items: center;
+    transition: opacity var(--transition-duration) ease;
+    background-color: var(--color-translucent-overlay);
+}
+.law-container {
+    display: flex; flex-direction: column; justify-content: start; align-items: center;
+    transition: transform var(--transition-duration) ease, width var(--transition-duration) ease, height var(--transition-duration) ease;
+    background-color: var(--color-white);
 }

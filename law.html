@@ -5,16 +5,16 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
-    <link rel="stylesheet" href="/global/style.css?v=20260101">
-    <link rel="stylesheet" href="/global/interface.css?v=20260101">
-    <link rel="stylesheet" href="/global/law.css?v=20260101">
-    <link rel="stylesheet" href="./local/law/core.css?v=20260101">
-    <link rel="stylesheet" href="./local/law/config.css?v=20260101">
-    <link rel="stylesheet" href="./local/law/history.css?v=20260101">
-    <link rel="stylesheet" href="./local/law/info.css?v=20260101">
-    <link rel="stylesheet" href="./local/law/menu.css?v=20260101">
-    <link rel="stylesheet" href="./local/law/mokuji.css?v=20260101">
-    <link rel="stylesheet" href="./local/law/search.css?v=20260101">
+    <link rel="stylesheet" href="/global/style.css?v=20260130">
+    <link rel="stylesheet" href="/global/interface.css?v=20260130">
+    <link rel="stylesheet" href="/global/law.css?v=20260130">
+    <link rel="stylesheet" href="./local/law/core.css?v=20260130">
+    <link rel="stylesheet" href="./local/law/config.css?v=20260130">
+    <link rel="stylesheet" href="./local/law/history.css?v=20260130">
+    <link rel="stylesheet" href="./local/law/info.css?v=20260130">
+    <link rel="stylesheet" href="./local/law/menu.css?v=20260130">
+    <link rel="stylesheet" href="./local/law/mokuji.css?v=20260130">
+    <link rel="stylesheet" href="./local/law/search.css?v=20260130">
     <title>法令</title>
 </head>
 
@@ -34,28 +34,13 @@
 
     <main>
         <div id="message"></div>
-        <div id="mokuji-overlay" style="display: none; pointer-events: none; opacity: 0;">
-            <div id="mokuji-container" class="container">
-                <div id="mokuji-bar" class="bar">
-                    <div id="mokuji-title" class="title">目次</div>
-                    <div id="mokuji-close" class="button">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
-                    </div>
-                </div>
-                <div id="mokuji-content"></div>
-            </div>
-        </div>
         <div id="content" class="content"></div>
         <div id="mokuji-spacer" style="display: none;"></div>
     </main>
 
-    <div id="menu-overlay" class="overlay" style="pointer-events: none; opacity: 0;">
-        <div id="menu-container" class="container">
-            <div id="menu-bar" class="bar">
-                <div id="menu-close" class="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
-                </div>
-            </div>
+    <div style="display: none;">
+        <div id="mokuji-content"></div>
+        <div id="menu-content">
             <div id="menu-block-action" class="menu-block">
                 <div id="menu-item-index" class="menu-item">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/></svg>
@@ -79,6 +64,10 @@
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="M320-280q17 0 28.5-11.5T360-320q0-17-11.5-28.5T320-360q-17 0-28.5 11.5T280-320q0 17 11.5 28.5T320-280Zm0-160q17 0 28.5-11.5T360-480q0-17-11.5-28.5T320-520q-17 0-28.5 11.5T280-480q0 17 11.5 28.5T320-440Zm0-160q17 0 28.5-11.5T360-640q0-17-11.5-28.5T320-680q-17 0-28.5 11.5T280-640q0 17 11.5 28.5T320-600Zm120 320h240v-80H440v80Zm0-160h240v-80H440v80Zm0-160h240v-80H440v80ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"/></svg>
                     <span>目次</span>
                 </div>
+                <div id="menu-item-print" class="menu-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="M640-640v-120H320v120h-80v-200h480v200h-80Zm-480 80h640-640Zm560 100q17 0 28.5-11.5T760-500q0-17-11.5-28.5T720-540q-17 0-28.5 11.5T680-500q0 17 11.5 28.5T720-460Zm-80 260v-160H320v160h320Zm80 80H240v-160H80v-240q0-51 35-85.5t85-34.5h560q51 0 85.5 34.5T880-520v240H720v160Zm80-240v-160q0-17-11.5-28.5T760-560H200q-17 0-28.5 11.5T160-520v160h80v-80h480v80h80Z"/></svg>
+                    <span>印刷</span>
+                </div>
             </div>
             <div id="menu-block-config" class="menu-block">
                 <div id="menu-item-config" class="menu-item">
@@ -87,10 +76,7 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <div id="search-overlay" class="overlay" style="pointer-events: none; opacity: 0;">
-        <div id="search-container" class="container">
+        <div id="search-content">
             <div id="search-bar">
                 <input id="search-input" type="text" placeholder="">
                 <div id="search-icon">
@@ -102,116 +88,79 @@
             </div>
             <div id="search-result" style="display: none;"></div>
         </div>
-    </div>
-
-    <div id="info-overlay" class="overlay" style="pointer-events: none; opacity: 0;">
-        <div id="info-container" class="container">
-            <div id="info-bar" class="bar">
-                <div id="info-title" class="title">法令詳細</div>
-                <div id="info-close" class="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
-                </div>
+        <div id="info-content"></div>
+        <div id="history-content"></div>
+        <div id="config-content">
+            <div class="config-category">内容</div>
+            <div class="config-divider"></div>
+            <div id="config-item-toc" class="config-item">
+                <div class="config-label">本文中の目次を表示</div>
+                <div class="config-checkbox"></div>
             </div>
-            <div id="info-content"></div>
+            <div class="config-divider"></div>
+            <div id="config-item-suppl-provision" class="config-item">
+                <div class="config-label">附則を表示</div>
+                <div class="config-checkbox"></div>
+            </div>
+            <div class="config-divider"></div>
+            <div class="config-category">強調表示</div>
+            <div class="config-divider"></div>
+            <div id="config-item-paren-color" class="config-item">
+                <div class="config-label">括弧階層を強調表示</div>
+                <div class="config-checkbox"></div>
+            </div>
+            <div class="config-divider"></div>
+            <div id="config-item-paren-background" class="config-item">
+                <div class="config-label">括弧全体に背景を表示</div>
+                <div class="config-checkbox"></div>
+            </div>
+            <div class="config-divider"></div>
+            <div id="config-item-conj-color" class="config-item">
+                <div class="config-label">選択的接続詞・併合的接続詞を強調表示</div>
+                <div class="config-checkbox"></div>
+            </div>
+            <div class="config-divider"></div>
+            <div id="config-item-condition-color" class="config-item">
+                <div class="config-label">条件を表す接続助詞を強調表示</div>
+                <div class="config-checkbox"></div>
+            </div>
+            <div class="config-divider"></div>
+            <div class="config-category">外観</div>
+            <div class="config-divider"></div>
+            <div id="config-item-width-limit" class="config-item">
+                <div class="config-label">横幅制限</div>
+                <div class="config-checkbox"></div>
+            </div>
+            <div class="config-divider"></div>
+            <div id="config-item-font-size" class="config-item">
+                <div class="config-label">文字サイズ</div>
+                <input class="config-seekbar" type="range" min="14" max="18" step="0.5">
+            </div>
+            <div class="config-divider"></div>
+            <div id="config-item-line-height" class="config-item">
+                <div class="config-label">行間</div>
+                <input class="config-seekbar" type="range" min="1.6" max="2.0" step="0.05">
+            </div>
+            <div class="config-divider"></div>
+            <div id="config-item-letter-spacing" class="config-item">
+                <div class="config-label">字間</div>
+                <input class="config-seekbar" type="range" min="0.00" max="0.20" step="0.01">
+            </div>
+            <div class="config-divider"></div>
+            <div id="config-item-block-spacing" class="config-item">
+                <div class="config-label">条文等の間隔</div>
+                <input class="config-seekbar" type="range" min="16" max="32" step="1">
+            </div>
+            <div class="config-divider"></div>
+            <div id="config-item-paragraph-spacing" class="config-item">
+                <div class="config-label">段落間隔</div>
+                <input class="config-seekbar" type="range" min="0.0" max="8.0" step="0.5">
+            </div>
+            <div class="config-divider"></div>
         </div>
     </div>
 
-    <div id="history-overlay" class="overlay" style="pointer-events: none; opacity: 0;">
-        <div id="history-container" class="container">
-            <div id="history-bar" class="bar">
-                <div id="history-title" class="title">改正履歴</div>
-                <div id="history-close" class="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
-                </div>
-            </div>
-            <div id="history-content"></div>
-        </div>
-    </div>
-
-    <div id="config-overlay" class="overlay" style="pointer-events: none; opacity: 0;">
-        <div id="config-container" class="container">
-            <div id="config-bar" class="bar">
-                <div id="config-title" class="title">設定</div>
-                <div id="config-size" class="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="M120-120v-200h80v120h120v80H120Zm520 0v-80h120v-120h80v200H640ZM120-640v-200h200v80H200v120h-80Zm640 0v-120H640v-80h200v200h-80Z"/></svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="M240-120v-120H120v-80h200v200h-80Zm400 0v-200h200v80H720v120h-80ZM120-640v-80h120v-120h80v200H120Zm520 0v-200h80v120h120v80H640Z"/></svg>
-                </div>
-                <div id="config-close" class="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--color-black)"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
-                </div>
-            </div>
-            <div id="config-content">
-                <div class="config-category">内容</div>
-                <div class="config-divider"></div>
-                <div id="config-item-toc" class="config-item">
-                    <div class="config-label">本文中の目次を表示</div>
-                    <div class="config-checkbox"></div>
-                </div>
-                <div class="config-divider"></div>
-                <div id="config-item-suppl-provision" class="config-item">
-                    <div class="config-label">附則を表示</div>
-                    <div class="config-checkbox"></div>
-                </div>
-                <div class="config-divider"></div>
-                <div class="config-category">強調表示</div>
-                <div class="config-divider"></div>
-                <div id="config-item-paren-color" class="config-item">
-                    <div class="config-label">括弧階層を強調表示</div>
-                    <div class="config-checkbox"></div>
-                </div>
-                <div class="config-divider"></div>
-                <div id="config-item-paren-background" class="config-item">
-                    <div class="config-label">括弧全体に背景を表示</div>
-                    <div class="config-checkbox"></div>
-                </div>
-                <div class="config-divider"></div>
-                <div id="config-item-conj-color" class="config-item">
-                    <div class="config-label">選択的接続詞・併合的接続詞を強調表示</div>
-                    <div class="config-checkbox"></div>
-                </div>
-                <div class="config-divider"></div>
-                <div id="config-item-condition-color" class="config-item">
-                    <div class="config-label">条件を表す接続助詞を強調表示</div>
-                    <div class="config-checkbox"></div>
-                </div>
-                <div class="config-divider"></div>
-                <div class="config-category">外観</div>
-                <div class="config-divider"></div>
-                <div id="config-item-width-limit" class="config-item">
-                    <div class="config-label">横幅制限</div>
-                    <div class="config-checkbox"></div>
-                </div>
-                <div class="config-divider"></div>
-                <div id="config-item-font-size" class="config-item">
-                    <div class="config-label">文字サイズ</div>
-                    <input class="config-seekbar" type="range" min="14" max="18" step="0.5">
-                </div>
-                <div class="config-divider"></div>
-                <div id="config-item-line-height" class="config-item">
-                    <div class="config-label">行間</div>
-                    <input class="config-seekbar" type="range" min="1.6" max="2.0" step="0.05">
-                </div>
-                <div class="config-divider"></div>
-                <div id="config-item-letter-spacing" class="config-item">
-                    <div class="config-label">字間</div>
-                    <input class="config-seekbar" type="range" min="0.00" max="0.20" step="0.01">
-                </div>
-                <div class="config-divider"></div>
-                <div id="config-item-block-spacing" class="config-item">
-                    <div class="config-label">条文等の間隔</div>
-                    <input class="config-seekbar" type="range" min="16" max="32" step="1">
-                </div>
-                <div class="config-divider"></div>
-                <div id="config-item-paragraph-spacing" class="config-item">
-                    <div class="config-label">段落間隔</div>
-                    <input class="config-seekbar" type="range" min="0.0" max="8.0" step="0.5">
-                </div>
-                <div class="config-divider"></div>
-            </div>
-        </div>
-    </div>
-
-    <script type="module" src="./local/law/core.js?v=20260101"></script>
+    <script type="module" src="./local/law/core.js?v=20260130"></script>
 
 </body>
 

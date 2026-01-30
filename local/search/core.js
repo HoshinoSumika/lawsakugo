@@ -1,5 +1,5 @@
-import { Sakugo } from '/global/sakugo.js?v=20260101';
-import { Service } from '/global/service.js?v=20260101';
+import { Device } from '/global/device.js?v=20260130';
+import { Service } from '/global/service.js?v=20260130';
 
 let searchInput;
 let searchExec;
@@ -12,7 +12,6 @@ window.addEventListener('DOMContentLoaded', () => {
     searchInput = document.querySelector('#search-input');
     searchExec = document.querySelector('#search-exec');
     searchFilterContainer = document.querySelector('#search-filter-container');
-    searchFilterUnderline = document.querySelector('#search-filter-underline');
     searchMessage = document.querySelector('#search-message');
     searchResult = document.querySelector('#search-result');
 
@@ -49,7 +48,8 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener('load', () => {
-    Sakugo.normalizeTouch();
+    Device.disableHoverOnTouch();
+    Device.disableBodyScrollOnApple(document.querySelector('#content'));
 });
 
 window.addEventListener('popstate', () => {
@@ -224,9 +224,13 @@ function reset() {
 
 function move() {
     const target = searchFilterContainer.querySelector('.current');
-    const style = getComputedStyle(searchFilterContainer);
-    const offset = parseFloat(style.paddingLeft);
+
+    if (!searchFilterUnderline) {
+        searchFilterUnderline = document.createElement('div');
+        searchFilterUnderline.id = 'search-filter-underline';
+        searchFilterContainer.appendChild(searchFilterUnderline);
+    }
 
     searchFilterUnderline.style.width = target.offsetWidth + 'px';
-    searchFilterUnderline.style.transform = 'translateX(' + (target.offsetLeft - offset) + 'px)';
+    searchFilterUnderline.style.transform = 'translateX(' + target.offsetLeft + 'px)';
 }

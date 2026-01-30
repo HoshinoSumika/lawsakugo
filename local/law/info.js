@@ -1,55 +1,62 @@
 export const Info = {
     init,
     show,
+    update,
+    clear,
 };
 
-import { Kaiseki } from '/global/kaiseki.js?v=20260101';
+import { Interface } from '/global/interface.js?v=20260130';
+import { Kaiseki } from '/global/kaiseki.js?v=20260130';
 
-let contentEl;
-let infoOverlay;
-let infoContainer;
+let interfaceView;
+let lawContent;
 let infoContent;
 
 function init(el) {
-    contentEl = el;
-
-    infoOverlay = document.querySelector('#info-overlay');
-    infoOverlay.addEventListener('click', () => {
-        hide();
-    });
-
-    infoContainer = document.querySelector('#info-container');
-    infoContainer.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
+    lawContent = el;
 
     infoContent = document.querySelector('#info-content');
 
-    const infoClose = document.querySelector('#info-close');
-    infoClose.addEventListener('click', () => {
-        hide();
+    interfaceView = Interface.createModal(infoContent);
+    interfaceView.enableTitleBar();
+    interfaceView.setTitle('法令詳細');
+    interfaceView.getOverlay().classList.add('law-overlay');
+    interfaceView.getOverlay().classList.add('info-overlay');
+    interfaceView.getContainer().classList.add('law-container');
+    interfaceView.getContainer().classList.add('info-container');
+    interfaceView.getContent().classList.add('info-content');
+
+    interfaceView.onShow(() => {
+        requestAnimationFrame(() => {
+            interfaceView.getContainer().classList.add('show');
+        });
+    });
+    interfaceView.onHide(() => {
+        interfaceView.getContainer().classList.remove('show');
     });
 }
 
 function show() {
-    updateContent();
-    infoOverlay.style.pointerEvents = 'auto';
-    requestAnimationFrame(() => {
-        infoOverlay.style.opacity = '1';
-        infoContainer.classList.add('show');
-    });
+    interfaceView.show();
 }
 
-function hide() {
-    infoOverlay.style.pointerEvents = 'none';
-    infoOverlay.style.opacity = '0';
-    infoContainer.classList.remove('show');
+function update() {
+    updateContent();
+}
+
+function clear() {
+    infoContent.innerHTML = 'Loading...';
 }
 
 function updateContent() {
     infoContent.innerHTML = '';
-    const infoEl = contentEl.querySelector('.Law');
+
+    const infoEl = lawContent.querySelector('.Law');
     if (!infoEl) {
+        const message = document.createElement('div');
+        message.style.padding = '8px 16px 8px 16px';
+        message.textContent = 'データを取得できませんでした。';
+        infoContent.appendChild(message);
         return;
     }
 

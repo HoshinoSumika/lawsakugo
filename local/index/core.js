@@ -1,7 +1,7 @@
-import { Interface } from '/global/interface.js?v=20260101';
-import { Sakugo } from '/global/sakugo.js?v=20260101';
+import { Device } from '/global/device.js?v=20260130';
+import { Interface } from '/global/interface.js?v=20260130';
 
-import { Search } from './search.js?v=20260101';
+import { Search } from './search.js?v=20260130';
 
 window.addEventListener('DOMContentLoaded', () => {
     Search.init();
@@ -9,17 +9,32 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener('load', () => {
-    Sakugo.normalizeTouch();
+    Device.disableHoverOnTouch();
 });
 
 function init() {
     const content = document.createElement('div');
-    const modal = Interface.createModalWindow(content);
+    const interfaceView = Interface.createModal(content);
+    interfaceView.enableTitleBar();
+    interfaceView.enableExpandButton();
+    interfaceView.getOverlay().classList.add('law-overlay');
+    interfaceView.getContainer().classList.add('law-container');
+    interfaceView.getContainer().classList.add('index-container');
+    interfaceView.getContent().classList.add('help-content');
+
+    interfaceView.onShow(() => {
+        requestAnimationFrame(() => {
+            interfaceView.getContainer().classList.add('show');
+        });
+    });
+    interfaceView.onHide(() => {
+        interfaceView.getContainer().classList.remove('show');
+    });
 
     const help = document.querySelector('#help-button');
     help.addEventListener('click', () => {
         content.innerHTML = document.querySelector('#help-content').innerHTML;
-        modal.setTitle('使い方');
-        modal.show();
+        interfaceView.setTitle('使い方');
+        interfaceView.show();
     });
 }

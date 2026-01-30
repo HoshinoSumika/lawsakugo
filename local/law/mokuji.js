@@ -6,46 +6,51 @@ export const Mokuji = {
     clear,
 };
 
-let contentEl;
-let scrollEl;
-let mokujiOverlay;
+import { Interface } from '/global/interface.js?v=20260130';
+
+let interfaceView;
+let lawContent;
+let lawContainer;
 let mokujiSpacer;
-let mokujiContainer;
 let mokujiContent;
 let mokujiBar;
-let mokujiClose;
 
 function init(el) {
-    contentEl = el;
-    scrollEl = el.parentNode;
-
-    mokujiOverlay = document.querySelector('#mokuji-overlay');
-    mokujiOverlay.addEventListener('click', () => {
-        hide();
-    });
+    lawContent = el;
+    lawContainer = el.parentNode;
 
     mokujiSpacer = document.querySelector('#mokuji-spacer');
 
-    mokujiContainer = document.querySelector('#mokuji-container');
-    mokujiContainer.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
-
     mokujiBar = document.querySelector('#mokuji-bar');
 
-    mokujiClose = document.querySelector('#mokuji-close');
-    mokujiClose.addEventListener('click', () => {
-        hide();
+    mokujiContent = document.querySelector('#mokuji-content');
+
+    interfaceView = Interface.createModal(mokujiContent);
+    interfaceView.enableTitleBar();
+    interfaceView.setTitle('目次');
+    interfaceView.getOverlay().classList.add('law-overlay');
+    interfaceView.getOverlay().classList.add('mokuji-overlay');
+    interfaceView.getContainer().classList.add('law-container');
+    interfaceView.getContainer().classList.add('mokuji-container');
+    interfaceView.getContent().classList.add('mokuji-content');
+
+    interfaceView.onShow(() => {
+        requestAnimationFrame(() => {
+            interfaceView.getContainer().classList.add('show');
+        });
+    });
+    interfaceView.onHide(() => {
+        interfaceView.getContainer().classList.remove('show');
     });
 
-    mokujiContent = document.querySelector('#mokuji-content');
+    lawContent.parentNode.insertBefore(interfaceView.getOverlay(), lawContent);
 
     resize();
     window.addEventListener('resize', () => {
         resize();
     });
 
-    scrollEl.addEventListener('scroll', () => {
+    lawContainer.addEventListener('scroll', () => {
         sync(true);
     });
 
@@ -65,7 +70,7 @@ function register(name, func) {
 }
 
 function toggle() {
-    if (mokujiOverlay.style.pointerEvents === 'none') {
+    if (interfaceView.getOverlay().style.pointerEvents === 'none') {
         show();
         if (!isUnderThreshold()) {
             localStorage.removeItem('mokuji');
@@ -91,7 +96,7 @@ const scrollOffset = 16;
 let elements = [];
 
 function generate() {
-    const law = contentEl.querySelector('.Law');
+    const law = lawContent.querySelector('.Law');
     if (!law) {
         return;
     }
@@ -102,7 +107,6 @@ function generate() {
     str += '.MainProvision .PartTitle, .MainProvision .ChapterTitle, .MainProvision .SectionTitle, ';
     str += '.MainProvision .SubsectionTitle, .MainProvision .DivisionTitle, ';
     str += '.SupplProvision .SupplProvisionLabel, ';
-    str += '.SupplProvisionAppdxTable .SupplProvisionAppdxTableTitle, ';
     str += '.AppdxTable .AppdxTableTitle, ';
     str += '.AppdxNote .AppdxNoteTitle';
     elements = Array.from(law.querySelectorAll(str));
@@ -156,9 +160,8 @@ function generate() {
             item.textContent = '本　則';
         } else if (isSupplProvisionAppdxTableTitle || isAppdxTableTitle || isAppdxNoteTitle) {
             const nextEl = el.nextElementSibling;
-            const space = el.nextSibling.textContent.includes('　') ? '　' : '';
             if (nextEl.classList.contains('RelatedArticleNum')) {
-                item.textContent = el.textContent + space + nextEl.textContent;
+                item.textContent = el.textContent + nextEl.textContent;
             } else {
                 item.textContent = el.textContent;
             }
@@ -170,7 +173,7 @@ function generate() {
             if (isUnderThreshold()) {
                 hide();
             }
-            scrollEl.scrollTo({ top: el.offsetTop - scrollOffset, behavior: 'auto' });
+            lawContainer.scrollTo({ top: el.offsetTop - scrollOffset, behavior: 'auto' });
         });
 
         li.appendChild(item);
@@ -187,7 +190,7 @@ function generate() {
 }
 
 function sync(isSmoothScroll) {
-    const current = scrollEl.scrollTop;
+    const current = lawContainer.scrollTop;
     const items = mokujiContent.querySelectorAll('div');
     let index = -1;
 
@@ -230,15 +233,19 @@ let wasDesktop = false;
 function resize() {
     const isMobile = isUnderThreshold();
     if (isMobile) {
-        mokujiOverlay.className = 'overlay';
-        mokujiContainer.style.transition = '';
-        mokujiBar.style.display = '';
-        mokujiContent.className = 'mobile';
+        interfaceView.getOverlay().classList.add('overlay');
+        interfaceView.getOverlay().classList.remove('desktop');
+        interfaceView.getContainer().style.transition = '';
+        interfaceView.enableTitleBar();
+        mokujiContent.classList.add('mobile');
+        mokujiContent.classList.remove('desktop');
     } else {
-        mokujiOverlay.className = 'desktop';
-        mokujiContainer.style.transition = 'none';
-        mokujiBar.style.display = 'none';
-        mokujiContent.className = 'desktop';
+        interfaceView.getOverlay().classList.add('desktop');
+        interfaceView.getOverlay().classList.remove('overlay');
+        interfaceView.getContainer().style.transition = 'none';
+        interfaceView.disableTitleBar();
+        mokujiContent.classList.add('desktop');
+        mokujiContent.classList.remove('mobile');
     }
     if (!isMobile && !wasDesktop) {
         if (localStorage.getItem('mokuji') === 'false') {
@@ -247,9 +254,9 @@ function resize() {
             show();
         }
     } else if (isMobile && wasDesktop) {
-        wasShown = mokujiOverlay.style.display !== 'none';
+        wasShown = interfaceView.getOverlay().style.display !== 'none';
         hide();
-        mokujiOverlay.style.display = 'none';
+        interfaceView.getOverlay().style.display = 'none';
         mokujiSpacer.style.display = 'none';
         restoreScrollPosition();
     }
@@ -261,27 +268,21 @@ function isUnderThreshold() {
 }
 
 function show() {
-    mokujiOverlay.style.display = '';
+    interfaceView.getOverlay().style.display = '';
     if (!isUnderThreshold()) {
         mokujiSpacer.style.display = '';
     }
 
-    mokujiOverlay.style.pointerEvents = 'auto';
-    requestAnimationFrame(() => {
-        mokujiOverlay.style.opacity = '1';
-        mokujiContainer.classList.add('show');
-    });
+    interfaceView.show();
 
     scroll(false);
 }
 
 function hide() {
     if (!isUnderThreshold()) {
-        mokujiOverlay.style.display = 'none';
+        interfaceView.getOverlay().style.display = 'none';
     }
     mokujiSpacer.style.display = 'none';
 
-    mokujiOverlay.style.pointerEvents = 'none';
-    mokujiOverlay.style.opacity = '0';
-    mokujiContainer.classList.remove('show');
+    interfaceView.hide();
 }

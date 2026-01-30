@@ -4,14 +4,13 @@ export const Config = {
     show,
 };
 
-import { Mokuji } from './mokuji.js?v=20260101';
+import { Interface } from '/global/interface.js?v=20260130';
 
-let contentEl;
-let configOverlay;
-let configContainer;
+import { Mokuji } from './mokuji.js?v=20260130';
+
+let interfaceView;
+let lawContent;
 let configContent;
-let configSize;
-let configClose;
 let configItemTOC;
 let configItemSupplProvision;
 let configItemParenColor;
@@ -26,41 +25,27 @@ let configItemBlockSpacing;
 let configItemParagraphSpacing;
 
 function init(el) {
-    contentEl = el;
-
-    configOverlay = document.querySelector('#config-overlay');
-    configOverlay.addEventListener('click', () => {
-        hide();
-    });
-
-    configContainer = document.querySelector('#config-container');
-    configContainer.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
+    lawContent = el;
 
     configContent = document.querySelector('#config-content');
 
-    configSize = document.querySelector('#config-size');
-    configSize.children[1].style.display = 'none';
-    configSize.addEventListener('click', () => {
-        if (configSize.getAttribute('data-value') === 'true') {
-            configSize.setAttribute('data-value', '');
-            configSize.children[0].style.display = '';
-            configSize.children[1].style.display = 'none';
-            configContainer.style.width = '';
-            configContainer.style.height = '';
-        } else {
-            configSize.setAttribute('data-value', 'true');
-            configSize.children[0].style.display = 'none';
-            configSize.children[1].style.display = '';
-            configContainer.style.width = '100%';
-            configContainer.style.height = '100%';
-        }
-    });
+    interfaceView = Interface.createModal(configContent);
+    interfaceView.enableTitleBar();
+    interfaceView.enableExpandButton();
+    interfaceView.setTitle('設定');
+    interfaceView.getOverlay().classList.add('law-overlay');
+    interfaceView.getOverlay().classList.add('config-overlay');
+    interfaceView.getContainer().classList.add('law-container');
+    interfaceView.getContainer().classList.add('config-container');
+    interfaceView.getContent().classList.add('config-content');
 
-    configClose = document.querySelector('#config-close');
-    configClose.addEventListener('click', () => {
-        hide();
+    interfaceView.onShow(() => {
+        requestAnimationFrame(() => {
+            interfaceView.getContainer().classList.add('show');
+        });
+    });
+    interfaceView.onHide(() => {
+        interfaceView.getContainer().classList.remove('show');
     });
 
     configItemTOC = document.querySelector('#config-item-toc');
@@ -111,11 +96,11 @@ function init(el) {
     configItemFontSize = document.querySelector('#config-item-font-size');
     const fontSizeDefault = 16;
     const fontSizeStored = parseFloat(localStorage.getItem('font-size') ?? fontSizeDefault);
-    contentEl.style.fontSize = fontSizeStored + 'px';
+    lawContent.style.fontSize = fontSizeStored + 'px';
     configItemFontSize.querySelector('.config-seekbar').value = fontSizeStored;
     configItemFontSize.querySelector('.config-seekbar').addEventListener('input', (e) => {
         const value = e.target.value;
-        contentEl.style.fontSize = value + 'px';
+        lawContent.style.fontSize = value + 'px';
         if (parseFloat(e.target.value) === fontSizeDefault) {
             localStorage.removeItem('font-size');
         } else {
@@ -126,11 +111,11 @@ function init(el) {
     configItemLineHeight = document.querySelector('#config-item-line-height');
     const lineHeightDefault = 1.8;
     const lineHeightStored = parseFloat(localStorage.getItem('line-height') ?? lineHeightDefault);
-    contentEl.style.lineHeight = lineHeightStored + '';
+    lawContent.style.lineHeight = lineHeightStored + '';
     configItemLineHeight.querySelector('.config-seekbar').value = lineHeightStored;
     configItemLineHeight.querySelector('.config-seekbar').addEventListener('input', (e) => {
         const value = e.target.value;
-        contentEl.style.lineHeight = value + '';
+        lawContent.style.lineHeight = value + '';
         if (parseFloat(e.target.value) === lineHeightDefault) {
             localStorage.removeItem('line-height');
         } else {
@@ -141,11 +126,11 @@ function init(el) {
     configItemLetterSpacing = document.querySelector('#config-item-letter-spacing');
     const letterSpacingDefault = 0;
     const letterSpacingStored = parseFloat(localStorage.getItem('letter-spacing') ?? letterSpacingDefault);
-    contentEl.style.letterSpacing = letterSpacingStored + 'em';
+    lawContent.style.letterSpacing = letterSpacingStored + 'em';
     configItemLetterSpacing.querySelector('.config-seekbar').value = letterSpacingStored;
     configItemLetterSpacing.querySelector('.config-seekbar').addEventListener('input', (e) => {
         const value = e.target.value;
-        contentEl.style.letterSpacing = value + 'em';
+        lawContent.style.letterSpacing = value + 'em';
         if (parseFloat(e.target.value) === letterSpacingDefault) {
             localStorage.removeItem('letter-spacing');
         } else {
@@ -193,18 +178,8 @@ function register(name, func) {
 }
 
 function show() {
-    configOverlay.style.pointerEvents = 'auto';
-    requestAnimationFrame(() => {
-        configOverlay.style.opacity = '1';
-        configContainer.classList.add('show');
-    });
+    interfaceView.show();
     configContent.scrollTop = 0;
-}
-
-function hide() {
-    configOverlay.style.pointerEvents = 'none';
-    configOverlay.style.opacity = '0';
-    configContainer.classList.remove('show');
 }
 
 function updateConfigItemTOC() {

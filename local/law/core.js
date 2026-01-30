@@ -1,15 +1,14 @@
-import { convert } from '/global/convert.js?v=20260101';
-import { Kaiseki } from '/global/kaiseki.js?v=20260101';
-import { Sakugo } from '/global/sakugo.js?v=20260101';
-import { Service } from '/global/service.js?v=20260101';
-import { Storage } from '/global/storage.js?v=20260101';
+import { Device } from '/global/device.js?v=20260130';
+import { Kaiseki } from '/global/kaiseki.js?v=20260130';
+import { Service } from '/global/service.js?v=20260130';
+import { Storage } from '/global/storage.js?v=20260130';
 
-import { Config } from './config.js?v=20260101';
-import { History } from './history.js?v=20260101';
-import { Info } from './info.js?v=20260101';
-import { Menu } from './menu.js?v=20260101';
-import { Mokuji } from './mokuji.js?v=20260101';
-import { Search } from './search.js?v=20260101';
+import { Config } from './config.js?v=20260130';
+import { History } from './history.js?v=20260130';
+import { Info } from './info.js?v=20260130';
+import { Menu } from './menu.js?v=20260130';
+import { Mokuji } from './mokuji.js?v=20260130';
+import { Search } from './search.js?v=20260130';
 
 const contentEl = document.querySelector('#content');
 const scrollEl = contentEl.parentElement;
@@ -17,12 +16,17 @@ const scrollEl = contentEl.parentElement;
 window.addEventListener('DOMContentLoaded', () => {
     Config.init(contentEl);
     Config.register('restoreScrollPosition', restoreScrollPosition);
+
     History.init();
     History.register('initContent', initContent);
+
     Info.init(contentEl);
+
     Menu.init();
+
     Mokuji.init(contentEl);
     Mokuji.register('restoreScrollPosition', restoreScrollPosition);
+
     Search.init(contentEl);
 
     initMenuButton();
@@ -31,7 +35,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener('load', () => {
-    Sakugo.normalizeTouch();
+    Device.disableHoverOnTouch();
 
     scrollEl.addEventListener('scroll', () => {
         recordScrollPosition();
@@ -86,6 +90,7 @@ async function initContent() {
     content.style.minHeight = content.parentElement.offsetHeight + 'px';
     message.innerHTML = 'Loading...';
 
+    Info.clear();
     Mokuji.clear();
 
     const id = new URLSearchParams(window.location.search).get('id');
@@ -107,7 +112,6 @@ async function initContent() {
     if (!result) {
         result = await Service.getLawFullText(id);
         if (result) {
-            result = convert(result);
             await Storage.setItem(id, result);
         }
     }
@@ -128,6 +132,7 @@ async function initContent() {
     Kaiseki.tagParen(content);
     Kaiseki.tagTerm(content);
 
+    Info.update();
     Mokuji.update();
 
     const lawTitle = content.querySelector('.Law > .LawBody > .LawTitle')?.textContent || '';

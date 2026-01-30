@@ -156,14 +156,14 @@ section {
 /* List */
 
 .List, .Sublist1, .Sublist2, .Sublist3 {
+    margin-left: 0em;
+    text-indent: 0em;
 }
 .ListSentence {
 }
 
 .ListSentence > .Sentence {
-    margin-left: 0em;
     display: block;
-    text-indent: 0em;
 }
 
 /* ParagraphBlankNum */

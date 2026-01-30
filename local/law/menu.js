@@ -3,30 +3,16 @@ export const Menu = {
     show,
 };
 
-import { Config } from './config.js?v=20260101';
-import { History } from './history.js?v=20260101';
-import { Info } from './info.js?v=20260101';
-import { Mokuji } from './mokuji.js?v=20260101';
+import { Interface } from '/global/interface.js?v=20260130';
 
-let menuOverlay;
-let menuContainer;
+import { Config } from './config.js?v=20260130';
+import { History } from './history.js?v=20260130';
+import { Info } from './info.js?v=20260130';
+import { Mokuji } from './mokuji.js?v=20260130';
+
+let interfaceView;
 
 function init() {
-    menuOverlay = document.querySelector('#menu-overlay');
-    menuOverlay.addEventListener('click', () => {
-        hide();
-    });
-
-    menuContainer = document.querySelector('#menu-container');
-    menuContainer.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
-
-    const menuClose = document.querySelector('#menu-close');
-    menuClose.addEventListener('click', () => {
-        hide();
-    });
-
     const menuItemConfig = document.querySelector('#menu-item-config');
     menuItemConfig.addEventListener('click', () => {
         hide();
@@ -62,18 +48,38 @@ function init() {
         hide();
         Mokuji.toggle();
     });
-}
 
-function show() {
-    menuOverlay.style.pointerEvents = 'auto';
-    requestAnimationFrame(() => {
-        menuOverlay.style.opacity = '1';
-        menuContainer.classList.add('show');
+    const menuItemPrint = document.querySelector('#menu-item-print');
+    menuItemPrint.addEventListener('click', () => {
+        hide();
+        window.print();
+    });
+
+    const menuContent = document.querySelector('#menu-content');
+
+    interfaceView = Interface.createModal(menuContent);
+    interfaceView.enableTitleBar();
+    interfaceView.setTitle('');
+    interfaceView.getOverlay().classList.add('law-overlay');
+    interfaceView.getOverlay().classList.add('menu-overlay');
+    interfaceView.getContainer().classList.add('law-container');
+    interfaceView.getContainer().classList.add('menu-container');
+    interfaceView.getContent().classList.add('menu-content');
+
+    interfaceView.onShow(() => {
+        requestAnimationFrame(() => {
+            interfaceView.getContainer().classList.add('show');
+        });
+    });
+    interfaceView.onHide(() => {
+        interfaceView.getContainer().classList.remove('show');
     });
 }
 
+function show() {
+    interfaceView.show();
+}
+
 function hide() {
-    menuOverlay.style.pointerEvents = 'none';
-    menuOverlay.style.opacity = '0';
-    menuContainer.classList.remove('show');
+    interfaceView.hide();
 }

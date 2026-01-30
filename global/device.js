@@ -1,8 +1,9 @@
-export const Sakugo = {
-    normalizeTouch,
+export const Device = {
+    disableHoverOnTouch,
+    disableBodyScrollOnApple,
 };
 
-function normalizeTouch() {
+function disableHoverOnTouch() {
     document.body.setAttribute('ontouchstart', '');
     if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
         for (const sheet of document.styleSheets) {
@@ -28,4 +29,22 @@ function normalizeTouch() {
             }
         }
     }
+}
+
+function disableBodyScrollOnApple(el) {
+    if (isAppleDevice()) {
+        document.documentElement.style.overflow = 'hidden';
+        document.documentElement.style.height = '100%';
+        document.body.style.overflow = 'hidden';
+        document.body.style.height = '100%';
+        if (el) {
+            el.style.overflowY = 'auto';
+        }
+    }
+}
+
+function isAppleDevice() {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isIPadOS = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+    return isIOS || isIPadOS;
 }

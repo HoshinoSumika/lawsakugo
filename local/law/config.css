@@ -1,32 +1,32 @@
-#config-container {
+.config-container {
     transform: scale(0.95);
-    width: min(80%, 640px); height: min(50%, 480px);
+    width: min(80%, 640px); height: min(64%, 640px);
 }
-#config-container.show {
+.config-container.show {
     transform: scale(1.0);
 }
 
 @media (max-width: 640px) {
-    #config-overlay {
+    .config-overlay {
         justify-content: center; align-items: end;
     }
-    #config-container {
+    .config-container {
         transform: translateY(100%);
         width: 100%; height: 50%;
     }
-    #config-container.show {
+    .config-container.show {
         transform: translateY(0);
     }
 }
 
-#config-content {
+.config-content {
     overflow-y: auto;
-    width: 100%; height: 100%; max-width: 720px; padding: 0px 16px 16px 16px;
+    width: 100%; height: 100%; padding: 0px 0px 16px 0px;
     display: flex; flex-direction: column; justify-content: start; align-items: center;
 }
 
 .config-category {
-    width: 100%; padding: 16px 24px 0px 24px;
+    width: 100%; max-width: 720px; padding: 16px 48px 0px 48px;
     user-select: none; -webkit-user-select: none;
     display: flex; justify-content: start; align-items: center;
     font-size: 14px;
@@ -34,11 +34,11 @@
 }
 
 .config-item {
-    width: 100%; padding: 0px 16px 0px 16px;
+    width: 100%; max-width: 720px; padding: 0px 32px 0px 32px;
     cursor: pointer;
     user-select: none; -webkit-user-select: none;
     display: flex; justify-content: start; align-items: center; gap: 16px;
-    border-radius: var(--radius-normal);
+    font-size: 15px;
 }
 .config-item:hover {
     background-color: var(--color-hover);
@@ -48,7 +48,7 @@
 }
 
 .config-divider {
-    width: calc(100% - 16px); min-height: 2px;
+    width: calc(100% - 0px); max-width: 720px; min-height: 1px;
     user-select: none; -webkit-user-select: none;
     background-color: var(--color-smoke);
 }

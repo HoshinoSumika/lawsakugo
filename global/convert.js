@@ -33,8 +33,6 @@ export function convert(xmlStr) {
     temp = addZenkakuSpaceAfterClass(temp, 'Subitem4Title');
     temp = addZenkakuSpaceAfterClass(temp, 'Subitem5Title');
     temp = addZenkakuSpaceAfterClass(temp, 'Column');
-    temp = addZenkakuSpaceAfterClass(temp, 'SupplProvisionAppdxTableTitle');
-    temp = addZenkakuSpaceAfterClass(temp, 'AppdxTableTitle');
 
     return temp.outerHTML;
 }

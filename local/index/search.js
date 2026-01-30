@@ -64,6 +64,8 @@ function init() {
     searchResult.addEventListener('mousedown', (e) => {
         e.preventDefault();
     });
+
+    searchInput.focus();
 }
 
 const QUICK_SEARCH_DATA = [

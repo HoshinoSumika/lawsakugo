@@ -3,25 +3,17 @@ export const Search = {
     show,
 };
 
-let contentEl;
-let searchOverlay;
-let searchContainer;
+import { Interface } from '/global/interface.js?v=20260130';
+
+let interfaceView;
+let lawContent;
+let searchContent;
 let searchInput;
 let searchClear;
 let searchResult;
 
 function init(el) {
-    contentEl = el;
-
-    searchOverlay = document.querySelector('#search-overlay');
-    searchOverlay.addEventListener('click', () => {
-        hide();
-    });
-
-    searchContainer = document.querySelector('#search-container');
-    searchContainer.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
+    lawContent = el;
 
     searchInput = document.querySelector('#search-input');
     searchInput.addEventListener('keydown', (e) => {
@@ -54,22 +46,34 @@ function init(el) {
             searchInput.blur();
         }
     });
+
+    searchContent = document.querySelector('#search-content');
+
+    interfaceView = Interface.createModal(searchContent);
+    interfaceView.getOverlay().classList.add('law-overlay');
+    interfaceView.getOverlay().classList.add('search-overlay');
+    interfaceView.getContainer().classList.add('law-container');
+    interfaceView.getContainer().classList.add('search-container');
+    interfaceView.getContent().classList.add('search-content');
+
+    interfaceView.onShow(onShowBefore, onShowAfter);
+    interfaceView.onHide(onHideBefore, onHideAfter);
 }
 
-function show() {
-    const fontSize = parseFloat(window.getComputedStyle(contentEl).fontSize) - 1.5;
+function onShowBefore() {
+    const fontSize = parseFloat(window.getComputedStyle(lawContent).fontSize) - 1.5;
     searchResult.style.fontSize = fontSize + 'px';
-    const lineHeight = parseFloat(window.getComputedStyle(contentEl).lineHeight) / parseFloat(window.getComputedStyle(contentEl).fontSize) - 0.2;
+    const lineHeight = parseFloat(window.getComputedStyle(lawContent).lineHeight) / parseFloat(window.getComputedStyle(lawContent).fontSize) - 0.2;
     searchResult.style.lineHeight = lineHeight + '';
-    const letterSpacing = window.getComputedStyle(contentEl).letterSpacing;
+    const letterSpacing = window.getComputedStyle(lawContent).letterSpacing;
     searchResult.style.letterSpacing = letterSpacing;
 
-    searchOverlay.style.pointerEvents = 'auto';
     requestAnimationFrame(() => {
-        searchOverlay.style.opacity = '1';
-        searchContainer.classList.add('show');
+        interfaceView.getContainer().classList.add('show');
     });
+}
 
+function onShowAfter() {
     searchInput.value = '';
     searchInput.style.display = '';
     searchInput.style.caretColor = 'transparent';
@@ -82,13 +86,21 @@ function show() {
     updateResult(false);
 }
 
-function hide() {
-    searchOverlay.style.pointerEvents = 'none';
-    searchOverlay.style.opacity = '0';
-    searchContainer.classList.remove('show');
+function onHideBefore() {
+    interfaceView.getContainer().classList.remove('show');
+}
 
+function onHideAfter() {
     searchInput.value = '';
     searchInput.style.display = 'none';
+}
+
+function show() {
+    interfaceView.show();
+}
+
+function hide() {
+    interfaceView.hide();
 }
 
 function updateResult(isUnlimited) {
@@ -105,7 +117,7 @@ function updateResult(isUnlimited) {
 
     const articleNum = convertNum(value);
     if (articleNum) {
-        const mainProvision = contentEl.querySelector('.MainProvision');
+        const mainProvision = lawContent.querySelector('.MainProvision');
         if (mainProvision) {
             const elements = mainProvision.querySelectorAll('.Article' + '[data-num="' + articleNum + '"]');
             if (elements.length > 0) {
@@ -127,7 +139,7 @@ function updateResult(isUnlimited) {
         }
     }
 
-    const lawBody = contentEl.querySelector('.LawBody');
+    const lawBody = lawContent.querySelector('.LawBody');
     if (lawBody) {
         let str = '.ArticleCaption, .ParagraphCaption, ';
         str += '.ArticleTitle, .ParagraphNum, .ItemTitle, ';
@@ -245,7 +257,7 @@ function scrollToElement(el, value) {
     hide();
     const elTop = el.offsetTop;
     const offset = -16;
-    smoothScroll(contentEl.parentNode, elTop + offset, 500);
+    smoothScroll(lawContent.parentNode, elTop + offset, 500);
     highlightText(el, value);
 
     const oldTimer = highlightTimers.get(el);
