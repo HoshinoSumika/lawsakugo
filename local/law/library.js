@@ -72,6 +72,9 @@ function getParenBackground() {
         str += 'repeating-linear-gradient(-45deg, transparent, transparent 1px, rgba(128,128,128,0.2) 1px, rgba(128,128,128,0.2) 2px)';
         return str;
     }
+    if (key === 'none') {
+        return 'none';
+    }
     return 'rgba(128, 128, 128, 0.2)';
 }
 

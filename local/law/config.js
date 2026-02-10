@@ -4,9 +4,9 @@ export const Config = {
     show,
 };
 
-import { Control } from '/global/control.js?v=20260210';
-import { Interface } from '/global/interface.js?v=20260210';
-import { Theme } from '/global/theme.js?v=20260210';
+import { Control } from '/global/control.js?v=20260211';
+import { Interface } from '/global/interface.js?v=20260211';
+import { Theme } from '/global/theme.js?v=20260211';
 
 import {
     createCategory, createDivider,
@@ -14,7 +14,7 @@ import {
     createCheckboxItem, toggleCheckboxItem,
     createSeekbarItem, initSeekbar,
     createRadioItem,
-} from './component.js?v=20260210';
+} from './component.js?v=20260211';
 import {
     showTOC, hideTOC,
     showSupplProvision, hideSupplProvision,
@@ -24,8 +24,8 @@ import {
     showConditionColor, hideConditionColor,
     disableWidthLimit, enableWidthLimit,
     setFontFamily,
-} from './library.js?v=20260210';
-import { Mokuji } from './mokuji.js?v=20260210';
+} from './library.js?v=20260211';
+import { Mokuji } from './mokuji.js?v=20260211';
 
 let controlView;
 let interfaceView;
@@ -343,6 +343,7 @@ const COLOR_OPTIONS = {
     'deeppink': { label: '桃' },
     'goldenrod': { label: '黄' },
     'gray': { label: '灰' },
+    'inherit': { label: 'なし' },
 };
 
 function appendColorNavItems(page, levels) {
@@ -374,6 +375,7 @@ const PAREN_COLOR_LEVELS = [
 const PAREN_BACKGROUND_OPTIONS = {
     'color': { label: '標準' },
     'amikake': { label: '網掛け' },
+    'none': { label: 'なし' },
 };
 
 function initParenDetailPage(item) {
@@ -388,7 +390,7 @@ function initParenDetailPage(item) {
         page.appendChild(createCategory('背景'));
         page.appendChild(createDivider());
 
-        const bgNavItem = createNavigationItem('括弧全体の背景');
+        const bgNavItem = createNavigationItem('括弧全体');
         const bgValueEl = bgNavItem.querySelector('.config-value');
 
         const bgStored = localStorage.getItem('paren-background');
@@ -396,7 +398,7 @@ function initParenDetailPage(item) {
         bgValueEl.textContent = PAREN_BACKGROUND_OPTIONS[bgCurrentKey].label;
 
         bgNavItem.addEventListener('click', () => {
-            initRadioSelectPage(bgNavItem, '括弧全体の背景', 'paren-background', 'color', refreshParenBackground, PAREN_BACKGROUND_OPTIONS);
+            initRadioSelectPage(bgNavItem, '括弧全体', 'paren-background', 'color', refreshParenBackground, PAREN_BACKGROUND_OPTIONS);
         });
 
         page.appendChild(bgNavItem);

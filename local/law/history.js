@@ -4,10 +4,10 @@ export const History = {
     show,
 };
 
-import { Interface } from '/global/interface.js?v=20260210';
-import { Kaiseki } from '/global/kaiseki.js?v=20260210';
-import { Service } from '/global/service.js?v=20260210';
-import { Storage } from '/global/storage.js?v=20260210';
+import { Interface } from '/global/interface.js?v=20260211';
+import { Kaiseki } from '/global/kaiseki.js?v=20260211';
+import { Service } from '/global/service.js?v=20260211';
+import { Storage } from '/global/storage.js?v=20260211';
 
 let interfaceView;
 let historyContent;
