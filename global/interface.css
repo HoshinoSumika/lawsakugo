@@ -1,27 +1,6 @@
 :root {
     --interface-size-container: 48px;
     --interface-size-content: 48px;
-
-    --interface-duration: 0.2s;
-    --interface-background: rgba(0, 0, 0, 0.5);
-
-    --interface-color-black: black;
-    --interface-color-smoke: whitesmoke;
-    --interface-color-white: white;
-
-    --interface-color-hover: #ebebeb;
-    --interface-color-active: #e1e1e1;
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --interface-color-black: whitesmoke;
-        --interface-color-smoke: #363636;
-        --interface-color-white: #242424;
-
-        --interface-color-hover: #484848;
-        --interface-color-active: #606060;
-    }
 }
 
 .interface-overlay {
@@ -43,7 +22,7 @@
     width: 100%; min-height: var(--interface-size-container);
     padding: 0px 0px 0px calc(calc(var(--interface-size-container) - var(--interface-size-content)) / 2);
     display: flex; justify-content: end; align-items: center;
-    background-color: var(--interface-color-smoke);
+    background-color: var(--color-smoke);
 }
 .interface-title {
     flex: 1;
@@ -59,16 +38,37 @@
     display: flex; justify-content: center; align-items: center;
 }
 .interface-button:hover {
-    background-color: var(--interface-color-hover);
+    background-color: var(--color-hover);
 }
 .interface-button:active {
-    background-color: var(--interface-color-active);
+    background-color: var(--color-active);
+}
+
+.interface-back > div {
+    content: "";
+    position: absolute;
+    background-color: var(--color-black);
+}
+.interface-back > div:nth-of-type(1) {
+    top: 50%; left: 36%;
+    transform: translateY(-50%);
+    width: calc(var(--interface-size-content) * 0.32); height: 2px;
+}
+.interface-back > div:nth-of-type(2) {
+    top: 50%; left: 32%;
+    transform: translateY(-20%) rotate(-45deg); transform-origin: left center;
+    width: calc(var(--interface-size-content) * 0.2); height: 2px;
+}
+.interface-back > div:nth-of-type(3) {
+    top: 50%; left: 32%;
+    transform: translateY(-80%) rotate(45deg); transform-origin: left center;
+    width: calc(var(--interface-size-content) * 0.2); height: 2px;
 }
 
 .interface-expand > div {
     content: "";
     position: absolute;
-    background-color: var(--interface-color-black);
+    background-color: var(--color-black);
 }
 .interface-expand > div:nth-of-type(1) {
     top: 32%; left: 32%;
@@ -132,7 +132,7 @@
     content: "";
     position: absolute; top: 50%; left: 50%;
     width: calc(var(--interface-size-content) * 0.36); height: 2px;
-    background-color: var(--interface-color-black);
+    background-color: var(--color-black);
 }
 .interface-close::before {
     transform: translate(-50%, -50%) rotate(45deg);

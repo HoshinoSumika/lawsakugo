@@ -6,7 +6,7 @@ export const Mokuji = {
     clear,
 };
 
-import { Interface } from '/global/interface.js?v=20260131';
+import { Interface } from '/global/interface.js?v=20260210';
 
 let interfaceView;
 let lawContent;
@@ -23,7 +23,7 @@ function init(el) {
 
     mokujiBar = document.querySelector('#mokuji-bar');
 
-    mokujiContent = document.querySelector('#mokuji-content');
+    mokujiContent = document.createElement('div');
 
     interfaceView = Interface.createModal(mokujiContent);
     interfaceView.enableTitleBar();

@@ -1,8 +1,10 @@
-import { Device } from '/global/device.js?v=20260131';
-import { Service } from '/global/service.js?v=20260131';
-import { Storage } from '/global/storage.js?v=20260131';
+import { Device } from '/global/device.js?v=20260210';
+import { Service } from '/global/service.js?v=20260210';
+import { Storage } from '/global/storage.js?v=20260210';
+import { Theme } from '/global/theme.js?v=20260210';
 
 window.addEventListener('DOMContentLoaded', () => {
+    Theme.init();
     const url = new URL(window.location.href);
     url.searchParams.set('l', '129AC0000000089_20250606_507AC0000000057');
     url.searchParams.set('r', '129AC0000000089');

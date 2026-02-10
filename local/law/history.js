@@ -4,16 +4,16 @@ export const History = {
     show,
 };
 
-import { Interface } from '/global/interface.js?v=20260131';
-import { Kaiseki } from '/global/kaiseki.js?v=20260131';
-import { Service } from '/global/service.js?v=20260131';
-import { Storage } from '/global/storage.js?v=20260131';
+import { Interface } from '/global/interface.js?v=20260210';
+import { Kaiseki } from '/global/kaiseki.js?v=20260210';
+import { Service } from '/global/service.js?v=20260210';
+import { Storage } from '/global/storage.js?v=20260210';
 
 let interfaceView;
 let historyContent;
 
 function init() {
-    historyContent = document.querySelector('#history-content');
+    historyContent = document.createElement('div');
 
     interfaceView = Interface.createModal(historyContent);
     interfaceView.enableTitleBar();

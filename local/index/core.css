@@ -25,30 +25,52 @@ main {
     letter-spacing: 0.1em;
 }
 
-.link-container {
-    width: 100%; max-height: var(--size-large); min-height: var(--size-large); padding: 0px 24px 0px 24px;
-    user-select: none; -webkit-user-select: none;
-    display: flex; flex-direction: row-reverse; justify-content: end; align-items: center;
+.button-container {
+    display: flex; flex-direction: row; justify-content: center; align-items: center;
 }
 
-.help-container {
-    position: absolute; bottom: 0; left: 50%;
-    transform: translate(-50%, -50%);
+.button-container > .left,
+.button-container > .center,
+.button-container > .right {
+    flex: 1;
+    max-height: var(--size-large); min-height: var(--size-large); padding: 0px 24px 0px 24px;
     user-select: none; -webkit-user-select: none;
+}
+
+.button-container > .left {
+    display: flex; flex-direction: row; justify-content: start; align-items: center;
+}
+
+.button-container > .center {
+    display: flex; flex-direction: row; justify-content: center; align-items: center;
+}
+
+.button-container > .right {
+    display: flex; flex-direction: row; justify-content: end; align-items: center;
 }
 
 @media (max-width: 1080px) {
-    .link-container {
+    .button-container {
+        padding: 0px 0px 16px 0px;
+        flex-direction: column;
+    }
+    .button-container > .left,
+    .button-container > .center,
+    .button-container > .right {
+        max-height: calc(var(--size-large) - 24px); min-height: calc(var(--size-large) - 24px);
+    }
+    .button-container > .left {
         justify-content: center;
     }
-    .help-container {
-        transform: translate(-50%, -200%);
+    .button-container > .center {
+        justify-content: center;
+    }
+    .button-container > .right {
+        justify-content: center;
     }
 }
 
-.link-container div,
-.help-container div {
-    height: calc(var(--size-large) / 2);
+.button-container div {
     display: flex; justify-content: center; align-items: center;
     font-size: 14px;
     color: var(--color-gray);
@@ -59,19 +81,16 @@ a {
     text-decoration: none;
 }
 
-.link-container > a > div,
-.help-container > div {
+.button-link {
     cursor: pointer;
     user-select: none; -webkit-user-select: none;
     text-decoration: none;
     color: var(--color-gray);
 }
-.link-container > a > div:hover,
-.help-container > div:hover {
+.button-link:hover {
     text-decoration: underline;
 }
-.link-container > a > div:active,
-.help-container > div:active {
+.button-link:active {
     text-decoration: underline;
 }
 

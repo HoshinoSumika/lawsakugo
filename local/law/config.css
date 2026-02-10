@@ -20,6 +20,10 @@
 }
 
 .config-content {
+    width: 100%; height: 100%;
+}
+
+.config-content > div {
     overflow-y: auto;
     width: 100%; height: 100%; padding: 0px 0px 16px 0px;
     display: flex; flex-direction: column; justify-content: start; align-items: center;

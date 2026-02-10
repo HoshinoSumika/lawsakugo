@@ -5,8 +5,8 @@ export const Info = {
     clear,
 };
 
-import { Interface } from '/global/interface.js?v=20260131';
-import { Kaiseki } from '/global/kaiseki.js?v=20260131';
+import { Interface } from '/global/interface.js?v=20260210';
+import { Kaiseki } from '/global/kaiseki.js?v=20260210';
 
 let interfaceView;
 let lawContent;
@@ -15,7 +15,7 @@ let infoContent;
 function init(el) {
     lawContent = el;
 
-    infoContent = document.querySelector('#info-content');
+    infoContent = document.createElement('div');
 
     interfaceView = Interface.createModal(infoContent);
     interfaceView.enableTitleBar();

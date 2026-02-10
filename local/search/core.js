@@ -1,5 +1,6 @@
-import { Device } from '/global/device.js?v=20260131';
-import { Service } from '/global/service.js?v=20260131';
+import { Device } from '/global/device.js?v=20260210';
+import { Service } from '/global/service.js?v=20260210';
+import { Theme } from '/global/theme.js?v=20260210';
 
 let searchInput;
 let searchExec;
@@ -9,6 +10,8 @@ let searchMessage;
 let searchResult;
 
 window.addEventListener('DOMContentLoaded', () => {
+    Theme.init();
+
     searchInput = document.querySelector('#search-input');
     searchExec = document.querySelector('#search-exec');
     searchFilterContainer = document.querySelector('#search-filter-container');

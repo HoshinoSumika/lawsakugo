@@ -18,6 +18,10 @@ html, body {
     height: 100%;
 }
 
+header {
+    border-bottom: 1px solid var(--color-border);
+}
+
 main {
     overflow-y: auto;
     display: flex; flex-direction: row; justify-content: center; align-items: start; gap: 16px;

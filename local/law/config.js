@@ -4,30 +4,104 @@ export const Config = {
     show,
 };
 
-import { Interface } from '/global/interface.js?v=20260131';
+import { Control } from '/global/control.js?v=20260210';
+import { Interface } from '/global/interface.js?v=20260210';
+import { Theme } from '/global/theme.js?v=20260210';
 
-import { Mokuji } from './mokuji.js?v=20260131';
+import {
+    createCategory, createDivider,
+    createLabelItem, createNavigationItem,
+    createCheckboxItem, toggleCheckboxItem,
+    createSeekbarItem, initSeekbar,
+    createRadioItem,
+} from './component.js?v=20260210';
+import {
+    showTOC, hideTOC,
+    showSupplProvision, hideSupplProvision,
+    showParenColor, hideParenColor,
+    showParenBackground, hideParenBackground,
+    showConjColor, hideConjColor,
+    showConditionColor, hideConditionColor,
+    disableWidthLimit, enableWidthLimit,
+    setFontFamily,
+} from './library.js?v=20260210';
+import { Mokuji } from './mokuji.js?v=20260210';
 
+let controlView;
 let interfaceView;
 let lawContent;
-let configContent;
-let configItemTOC;
-let configItemSupplProvision;
-let configItemParenColor;
-let configItemParenBackground;
-let configItemConjColor;
-let configItemConditionColor;
-let configItemWidthLimit;
-let configItemFontSize;
-let configItemLineHeight;
-let configItemLetterSpacing;
-let configItemBlockSpacing;
-let configItemParagraphSpacing;
 
 function init(el) {
     lawContent = el;
 
-    configContent = document.querySelector('#config-content');
+    const fragment = document.createDocumentFragment();
+    fragment.appendChild(createCategory('内容'));
+    fragment.appendChild(createDivider());
+
+    const configItemTOC = createCheckboxItem('本文中の目次を表示');
+    fragment.appendChild(configItemTOC);
+    fragment.appendChild(createDivider());
+
+    const configItemSupplProvision = createCheckboxItem('附則を表示');
+    fragment.appendChild(configItemSupplProvision);
+    fragment.appendChild(createDivider());
+
+    fragment.appendChild(createCategory('強調表示'));
+    fragment.appendChild(createDivider());
+
+    const configItemParen = createCheckboxItem('括弧を強調表示');
+    fragment.appendChild(configItemParen);
+    fragment.appendChild(createDivider());
+
+    const configItemParenNav = createNavigationItem('括弧の強調表示の詳細設定');
+    fragment.appendChild(configItemParenNav);
+    fragment.appendChild(createDivider());
+
+    const configItemConj = createCheckboxItem('接続詞を強調表示');
+    fragment.appendChild(configItemConj);
+    fragment.appendChild(createDivider());
+
+    const configItemConjNav = createNavigationItem('接続詞の強調表示の詳細設定');
+    fragment.appendChild(configItemConjNav);
+    fragment.appendChild(createDivider());
+
+    fragment.appendChild(createCategory('機能'));
+    fragment.appendChild(createDivider());
+
+    const configItemWidthLimit = createCheckboxItem('横幅制限');
+    fragment.appendChild(configItemWidthLimit);
+    fragment.appendChild(createDivider());
+
+    fragment.appendChild(createCategory('外観'));
+    fragment.appendChild(createDivider());
+
+    const configItemTheme = createNavigationItem('テーマ');
+    fragment.appendChild(configItemTheme);
+    fragment.appendChild(createDivider());
+
+    const configItemFontFamily = createNavigationItem('書体');
+    fragment.appendChild(configItemFontFamily);
+    fragment.appendChild(createDivider());
+
+    const configItemFontSize = createSeekbarItem('文字サイズ', '14', '18', '0.5');
+    fragment.appendChild(configItemFontSize);
+    fragment.appendChild(createDivider());
+
+    const configItemLineHeight = createSeekbarItem('行間', '1.6', '2.0', '0.05');
+    fragment.appendChild(configItemLineHeight);
+    fragment.appendChild(createDivider());
+
+    const configItemLetterSpacing = createSeekbarItem('字間', '0.00', '0.20', '0.01');
+    fragment.appendChild(configItemLetterSpacing);
+    fragment.appendChild(createDivider());
+
+    const configContent = document.createElement('div');
+
+    const page = document.createElement('div');
+    page.appendChild(fragment);
+
+    controlView = Control.createInstance(configContent);
+    controlView.open(page);
 
     interfaceView = Interface.createModal(configContent);
     interfaceView.enableTitleBar();
@@ -48,124 +122,64 @@ function init(el) {
         interfaceView.getContainer().classList.remove('show');
     });
 
-    configItemTOC = document.querySelector('#config-item-toc');
-    updateConfigItemTOC();
+    toggleCheckboxItem(configItemTOC, 'toc', false, showTOC, hideTOC);
     configItemTOC.addEventListener('click', () => {
-        updateConfigItemTOC();
+        toggleCheckboxItem(configItemTOC, 'toc', false, showTOC, hideTOC);
         Mokuji.update();
     });
 
-    configItemSupplProvision = document.querySelector('#config-item-suppl-provision');
-    updateConfigItemSupplProvision();
+    toggleCheckboxItem(configItemSupplProvision, 'suppl-provision', false, showSupplProvision, hideSupplProvision);
     configItemSupplProvision.addEventListener('click', () => {
-        updateConfigItemSupplProvision();
+        toggleCheckboxItem(configItemSupplProvision, 'suppl-provision', false, showSupplProvision, hideSupplProvision);
         Mokuji.update();
     });
 
-    configItemParenColor = document.querySelector('#config-item-paren-color');
-    updateConfigItemParenColor();
-    configItemParenColor.addEventListener('click', () => {
-        updateConfigItemParenColor();
-    });
+    const showParenAll = () => {
+        showParenColor();
+        showParenBackground();
+    };
 
-    configItemParenBackground = document.querySelector('#config-item-paren-background');
-    updateConfigItemParenBackground();
-    configItemParenBackground.addEventListener('click', () => {
-        updateConfigItemParenBackground();
-    });
+    const hideParenAll = () => {
+        hideParenColor();
+        hideParenBackground();
+    };
 
-    configItemConjColor = document.querySelector('#config-item-conj-color');
-    updateConfigItemConjColor();
-    configItemConjColor.addEventListener('click', () => {
-        updateConfigItemConjColor();
-    });
+    initToggleWithNav(configItemParen, configItemParenNav, 'paren-highlight', false, showParenAll, hideParenAll);
+    initParenDetailPage(configItemParenNav);
 
-    configItemConditionColor = document.querySelector('#config-item-condition-color');
-    updateConfigItemConditionColor();
-    configItemConditionColor.addEventListener('click', () => {
-        updateConfigItemConditionColor();
-    });
+    const showConjAll = () => {
+        showConjColor();
+        showConditionColor();
+    };
 
-    configItemWidthLimit = document.querySelector('#config-item-width-limit');
-    updateConfigItemWidthLimit();
+    const hideConjAll = () => {
+        hideConjColor();
+        hideConditionColor();
+    };
+
+    initToggleWithNav(configItemConj, configItemConjNav, 'conj-highlight', false, showConjAll, hideConjAll);
+    initConjDetailPage(configItemConjNav);
+
+    toggleCheckboxItem(configItemWidthLimit, 'width-limit', true, enableWidthLimit, disableWidthLimit);
     configItemWidthLimit.addEventListener('click', () => {
-        updateConfigItemWidthLimit();
+        toggleCheckboxItem(configItemWidthLimit, 'width-limit', true, enableWidthLimit, disableWidthLimit);
         restoreScrollPosition();
     });
 
-    configItemFontSize = document.querySelector('#config-item-font-size');
-    const fontSizeDefault = 16;
-    const fontSizeStored = parseFloat(localStorage.getItem('font-size') ?? fontSizeDefault);
-    lawContent.style.fontSize = fontSizeStored + 'px';
-    configItemFontSize.querySelector('.config-seekbar').value = fontSizeStored;
-    configItemFontSize.querySelector('.config-seekbar').addEventListener('input', (e) => {
-        const value = e.target.value;
+    initThemePage(configItemTheme);
+
+    initFontFamilyPage(configItemFontFamily);
+
+    initSeekbar(configItemFontSize, 'font-size', 16, (value) => {
         lawContent.style.fontSize = value + 'px';
-        if (parseFloat(e.target.value) === fontSizeDefault) {
-            localStorage.removeItem('font-size');
-        } else {
-            localStorage.setItem('font-size', value);
-        }
     });
 
-    configItemLineHeight = document.querySelector('#config-item-line-height');
-    const lineHeightDefault = 1.8;
-    const lineHeightStored = parseFloat(localStorage.getItem('line-height') ?? lineHeightDefault);
-    lawContent.style.lineHeight = lineHeightStored + '';
-    configItemLineHeight.querySelector('.config-seekbar').value = lineHeightStored;
-    configItemLineHeight.querySelector('.config-seekbar').addEventListener('input', (e) => {
-        const value = e.target.value;
+    initSeekbar(configItemLineHeight, 'line-height', 1.8, (value) => {
         lawContent.style.lineHeight = value + '';
-        if (parseFloat(e.target.value) === lineHeightDefault) {
-            localStorage.removeItem('line-height');
-        } else {
-            localStorage.setItem('line-height', value);
-        }
     });
 
-    configItemLetterSpacing = document.querySelector('#config-item-letter-spacing');
-    const letterSpacingDefault = 0;
-    const letterSpacingStored = parseFloat(localStorage.getItem('letter-spacing') ?? letterSpacingDefault);
-    lawContent.style.letterSpacing = letterSpacingStored + 'em';
-    configItemLetterSpacing.querySelector('.config-seekbar').value = letterSpacingStored;
-    configItemLetterSpacing.querySelector('.config-seekbar').addEventListener('input', (e) => {
-        const value = e.target.value;
+    initSeekbar(configItemLetterSpacing, 'letter-spacing', 0, (value) => {
         lawContent.style.letterSpacing = value + 'em';
-        if (parseFloat(e.target.value) === letterSpacingDefault) {
-            localStorage.removeItem('letter-spacing');
-        } else {
-            localStorage.setItem('letter-spacing', value);
-        }
-    });
-
-    configItemBlockSpacing = document.querySelector('#config-item-block-spacing');
-    const blockSpacingDefault = 16;
-    const blockSpacingStored = parseFloat(localStorage.getItem('block-spacing') ?? blockSpacingDefault);
-    setBlockSpacing(blockSpacingStored + 'px');
-    configItemBlockSpacing.querySelector('.config-seekbar').value = blockSpacingStored;
-    configItemBlockSpacing.querySelector('.config-seekbar').addEventListener('input', (e) => {
-        const value = e.target.value;
-        setBlockSpacing(value + 'px');
-        if (parseFloat(e.target.value) === blockSpacingDefault) {
-            localStorage.removeItem('block-spacing');
-        } else {
-            localStorage.setItem('block-spacing', value);
-        }
-    });
-
-    configItemParagraphSpacing = document.querySelector('#config-item-paragraph-spacing');
-    const paragraphSpacingDefault = 0;
-    const paragraphSpacingStored = parseFloat(localStorage.getItem('paragraph-spacing') ?? paragraphSpacingDefault);
-    setParagraphSpacing(paragraphSpacingStored + 'px');
-    configItemParagraphSpacing.querySelector('.config-seekbar').value = paragraphSpacingStored;
-    configItemParagraphSpacing.querySelector('.config-seekbar').addEventListener('input', (e) => {
-        const value = e.target.value;
-        setParagraphSpacing(value + 'px');
-        if (parseFloat(e.target.value) === paragraphSpacingDefault) {
-            localStorage.removeItem('paragraph-spacing');
-        } else {
-            localStorage.setItem('paragraph-spacing', value);
-        }
     });
 }
 
@@ -179,303 +193,261 @@ function register(name, func) {
 
 function show() {
     interfaceView.show();
-    configContent.scrollTop = 0;
 }
 
-function updateConfigItemTOC() {
-    if (!configItemTOC.getAttribute('data-value')) {
-        if (localStorage.getItem('toc') === 'enable') {
-            showTOC();
-            configItemTOC.setAttribute('data-value', 'enable');
-            configItemTOC.querySelector('.config-checkbox').classList.add('checked');
-        } else {
-            hideTOC();
-            configItemTOC.setAttribute('data-value', 'disable');
-            configItemTOC.querySelector('.config-checkbox').classList.remove('checked');
+function initToggleWithNav(checkbox, nav, storageKey, defaultValue, showFn, hideFn) {
+    const updateNavVisibility = () => {
+        const isOn = checkbox.getAttribute('data-value') === 'enable';
+        nav.style.display = isOn ? '' : 'none';
+        nav.nextElementSibling.style.display = isOn ? '' : 'none';
+    };
+
+    toggleCheckboxItem(checkbox, storageKey, defaultValue, showFn, hideFn);
+    updateNavVisibility();
+
+    checkbox.addEventListener('click', () => {
+        toggleCheckboxItem(checkbox, storageKey, defaultValue, showFn, hideFn);
+        updateNavVisibility();
+    });
+}
+
+function createRefresher(styleId, hideFn, showFn) {
+    return () => {
+        if (document.getElementById(styleId)) {
+            hideFn();
+            showFn();
         }
-    } else {
-        if (configItemTOC.getAttribute('data-value') === 'disable') {
-            showTOC();
-            configItemTOC.setAttribute('data-value', 'enable');
-            configItemTOC.querySelector('.config-checkbox').classList.add('checked');
-            localStorage.setItem('toc', 'enable');
-        } else {
-            hideTOC();
-            configItemTOC.setAttribute('data-value', 'disable');
-            configItemTOC.querySelector('.config-checkbox').classList.remove('checked');
-            localStorage.removeItem('toc');
+    };
+}
+
+const refreshParenColor = createRefresher('style-paren-color', hideParenColor, showParenColor);
+const refreshParenBackground = createRefresher('style-paren-background', hideParenBackground, showParenBackground);
+const refreshConjColor = createRefresher('style-conj-color', hideConjColor, showConjColor);
+const refreshConditionColor = createRefresher('style-condition-color', hideConditionColor, showConditionColor);
+
+function openPage() {
+    const page = document.createElement('div');
+
+    interfaceView.enableBackButton();
+    interfaceView.setTitle('');
+
+    interfaceView.onBack(() => {
+        controlView.back();
+        if (controlView.isRoot()) {
+            interfaceView.disableBackButton();
+            interfaceView.setTitle('設定');
         }
+    });
+
+    controlView.open(page);
+
+    return page;
+}
+
+function initPage(item, { title, options, defaultKey, storageKey, onSelect }) {
+    const valueEl = item.querySelector('.config-value');
+    const stored = localStorage.getItem(storageKey);
+    const key = (stored && options[stored]) ? stored : defaultKey;
+
+    onSelect(key);
+    valueEl.textContent = options[key].label;
+
+    item.addEventListener('click', () => {
+        const page = openPage();
+
+        page.appendChild(createCategory(title));
+        page.appendChild(createDivider());
+
+        const raw = localStorage.getItem(storageKey);
+        const currentKey = (raw && options[raw]) ? raw : defaultKey;
+        const items = {};
+
+        for (const k of Object.keys(options)) {
+            const option = createRadioItem(options[k].label);
+            const checkmark = option.querySelector('.config-checkmark');
+
+            if (k === currentKey) {
+                checkmark.style.visibility = 'visible';
+            }
+
+            option.addEventListener('click', () => {
+                for (const x of Object.keys(items)) {
+                    items[x].querySelector('.config-checkmark').style.visibility = 'hidden';
+                }
+
+                checkmark.style.visibility = 'visible';
+                onSelect(k);
+                valueEl.textContent = options[k].label;
+
+                if (k === defaultKey) {
+                    localStorage.removeItem(storageKey);
+                } else {
+                    localStorage.setItem(storageKey, k);
+                }
+            });
+
+            items[k] = option;
+            page.appendChild(option);
+            page.appendChild(createDivider());
+        }
+    });
+}
+
+function initRadioSelectPage(navItem, title, storageKey, defaultKey, onChanged, options) {
+    const page = openPage();
+
+    page.appendChild(createCategory(title));
+    page.appendChild(createDivider());
+
+    const valueEl = navItem.querySelector('.config-value');
+    const raw = localStorage.getItem(storageKey);
+    const currentKey = (raw && options[raw]) ? raw : defaultKey;
+    const items = {};
+
+    for (const k of Object.keys(options)) {
+        const option = createRadioItem(options[k].label);
+        const checkmark = option.querySelector('.config-checkmark');
+
+        if (k === currentKey) {
+            checkmark.style.visibility = 'visible';
+        }
+
+        option.addEventListener('click', () => {
+            for (const x of Object.keys(items)) {
+                items[x].querySelector('.config-checkmark').style.visibility = 'hidden';
+            }
+
+            checkmark.style.visibility = 'visible';
+            valueEl.textContent = options[k].label;
+
+            if (k === defaultKey) {
+                localStorage.removeItem(storageKey);
+            } else {
+                localStorage.setItem(storageKey, k);
+            }
+
+            onChanged();
+        });
+
+        items[k] = option;
+        page.appendChild(option);
+        page.appendChild(createDivider());
     }
 }
 
-function showTOC() {
-    const style = document.getElementById('style-toc');
-    if (style) style.remove();
-}
+const COLOR_OPTIONS = {
+    'mediumorchid': { label: '紫' },
+    'mediumseagreen': { label: '緑' },
+    'coral': { label: '橙' },
+    'deepskyblue': { label: '青' },
+    'deeppink': { label: '桃' },
+    'goldenrod': { label: '黄' },
+    'gray': { label: '灰' },
+};
 
-function hideTOC() {
-    if (document.getElementById('style-toc')) return;
-    const style = document.createElement('style');
-    style.id = 'style-toc';
-    style.textContent = '.LawBody > .TOC { display: none; }';
-    document.head.appendChild(style);
-}
+function appendColorNavItems(page, levels) {
+    for (const level of levels) {
+        const navItem = createNavigationItem(level.title);
+        const valueEl = navItem.querySelector('.config-value');
 
-function updateConfigItemSupplProvision() {
-    if (!configItemSupplProvision.getAttribute('data-value')) {
-        if (localStorage.getItem('suppl-provision') === 'enable') {
-            showSupplProvision();
-            configItemSupplProvision.setAttribute('data-value', 'enable');
-            configItemSupplProvision.querySelector('.config-checkbox').classList.add('checked');
-        } else {
-            hideSupplProvision();
-            configItemSupplProvision.setAttribute('data-value', 'disable');
-            configItemSupplProvision.querySelector('.config-checkbox').classList.remove('checked');
-        }
-    } else {
-        if (configItemSupplProvision.getAttribute('data-value') === 'disable') {
-            showSupplProvision();
-            configItemSupplProvision.setAttribute('data-value', 'enable');
-            configItemSupplProvision.querySelector('.config-checkbox').classList.add('checked');
-            localStorage.setItem('suppl-provision', 'enable');
-        } else {
-            hideSupplProvision();
-            configItemSupplProvision.setAttribute('data-value', 'disable');
-            configItemSupplProvision.querySelector('.config-checkbox').classList.remove('checked');
-            localStorage.removeItem('suppl-provision');
-        }
+        const stored = localStorage.getItem(level.storageKey);
+        const currentKey = (stored && COLOR_OPTIONS[stored]) ? stored : level.defaultKey;
+        valueEl.textContent = COLOR_OPTIONS[currentKey].label;
+
+        navItem.addEventListener('click', () => {
+            initRadioSelectPage(navItem, level.title, level.storageKey, level.defaultKey, level.onChanged, COLOR_OPTIONS);
+        });
+
+        page.appendChild(navItem);
+        page.appendChild(createDivider());
     }
 }
 
-function showSupplProvision() {
-    const style = document.getElementById('style-suppl-provision');
-    if (style) style.remove();
+const PAREN_COLOR_LEVELS = [
+    { title: '第一階層', storageKey: 'paren-color-1', defaultKey: 'mediumorchid', onChanged: refreshParenColor },
+    { title: '第二階層', storageKey: 'paren-color-2', defaultKey: 'mediumseagreen', onChanged: refreshParenColor },
+    { title: '第三階層', storageKey: 'paren-color-3', defaultKey: 'coral', onChanged: refreshParenColor },
+    { title: '第四階層', storageKey: 'paren-color-4', defaultKey: 'gray', onChanged: refreshParenColor },
+    { title: '第五階層', storageKey: 'paren-color-5', defaultKey: 'gray', onChanged: refreshParenColor },
+];
+
+const PAREN_BACKGROUND_OPTIONS = {
+    'color': { label: '標準' },
+    'amikake': { label: '網掛け' },
+};
+
+function initParenDetailPage(item) {
+    item.addEventListener('click', () => {
+        const page = openPage();
+
+        page.appendChild(createCategory('色'));
+        page.appendChild(createDivider());
+
+        appendColorNavItems(page, PAREN_COLOR_LEVELS);
+
+        page.appendChild(createCategory('背景'));
+        page.appendChild(createDivider());
+
+        const bgNavItem = createNavigationItem('括弧全体の背景');
+        const bgValueEl = bgNavItem.querySelector('.config-value');
+
+        const bgStored = localStorage.getItem('paren-background');
+        const bgCurrentKey = (bgStored && PAREN_BACKGROUND_OPTIONS[bgStored]) ? bgStored : 'color';
+        bgValueEl.textContent = PAREN_BACKGROUND_OPTIONS[bgCurrentKey].label;
+
+        bgNavItem.addEventListener('click', () => {
+            initRadioSelectPage(bgNavItem, '括弧全体の背景', 'paren-background', 'color', refreshParenBackground, PAREN_BACKGROUND_OPTIONS);
+        });
+
+        page.appendChild(bgNavItem);
+        page.appendChild(createDivider());
+    });
 }
 
-function hideSupplProvision() {
-    if (document.getElementById('style-suppl-provision')) return;
-    const style = document.createElement('style');
-    style.id = 'style-suppl-provision';
-    style.textContent = '.LawBody > .SupplProvision { display: none; }';
-    document.head.appendChild(style);
+const CONJ_COLOR_LEVELS = [
+    { title: '選択的接続詞の色', storageKey: 'conj-color-s', defaultKey: 'deepskyblue', onChanged: refreshConjColor },
+    { title: '併合的接続詞の色', storageKey: 'conj-color-h', defaultKey: 'deepskyblue', onChanged: refreshConjColor },
+    { title: '条件を表す接続助詞の色', storageKey: 'conj-color-c', defaultKey: 'deeppink', onChanged: refreshConditionColor },
+];
+
+function initConjDetailPage(item) {
+    item.addEventListener('click', () => {
+        const page = openPage();
+
+        page.appendChild(createCategory('接続詞の強調表示'));
+        page.appendChild(createDivider());
+
+        appendColorNavItems(page, CONJ_COLOR_LEVELS);
+    });
 }
 
-function updateConfigItemParenColor() {
-    if (!configItemParenColor.getAttribute('data-value')) {
-        if (localStorage.getItem('paren-color') === 'enable') {
-            showParenColor();
-            configItemParenColor.setAttribute('data-value', 'enable');
-            configItemParenColor.querySelector('.config-checkbox').classList.add('checked');
-        } else {
-            hideParenColor();
-            configItemParenColor.setAttribute('data-value', 'disable');
-            configItemParenColor.querySelector('.config-checkbox').classList.remove('checked');
-        }
-    } else {
-        if (configItemParenColor.getAttribute('data-value') === 'enable') {
-            hideParenColor();
-            configItemParenColor.setAttribute('data-value', 'disable');
-            configItemParenColor.querySelector('.config-checkbox').classList.remove('checked');
-            localStorage.removeItem('paren-color');
-        } else {
-            showParenColor();
-            configItemParenColor.setAttribute('data-value', 'enable');
-            configItemParenColor.querySelector('.config-checkbox').classList.add('checked');
-            localStorage.setItem('paren-color', 'enable');
-        }
-    }
+function initThemePage(item) {
+    initPage(item, {
+        title: 'テーマ',
+        options: {
+            'system': { label: '自動' },
+            'light': { label: 'ライト' },
+            'dark': { label: 'ダーク' },
+            'paper': { label: '和紙' },
+            'sepia': { label: 'セピア' },
+            'nord': { label: '青灰' },
+            'chocolate': { label: 'チョコレート' },
+        },
+        defaultKey: 'system',
+        storageKey: 'theme',
+        onSelect: Theme.set,
+    });
 }
 
-function showParenColor() {
-    if (document.getElementById('style-paren-color')) return;
-    const style = document.createElement('style');
-    style.id = 'style-paren-color';
-    style.textContent = '.Sentence .tag-paren { color: mediumorchid; }';
-    style.textContent += '.Sentence .tag-paren > .tag-paren { color: mediumseagreen; }';
-    style.textContent += '.Sentence .tag-paren > .tag-paren > .tag-paren { color: coral; }';
-    style.textContent += '.Sentence .tag-paren > .tag-paren > .tag-paren > .tag-paren { color: gray; }';
-    document.head.appendChild(style);
-}
-
-function hideParenColor() {
-    const style = document.getElementById('style-paren-color');
-    if (style) style.remove();
-}
-
-function updateConfigItemParenBackground() {
-    if (!configItemParenBackground.getAttribute('data-value')) {
-        if (localStorage.getItem('paren-background') === 'enable') {
-            showParenBackground();
-            configItemParenBackground.setAttribute('data-value', 'enable');
-            configItemParenBackground.querySelector('.config-checkbox').classList.add('checked');
-        } else {
-            hideParenBackground();
-            configItemParenBackground.setAttribute('data-value', 'disable');
-            configItemParenBackground.querySelector('.config-checkbox').classList.remove('checked');
-        }
-    } else {
-        if (configItemParenBackground.getAttribute('data-value') === 'enable') {
-            hideParenBackground();
-            configItemParenBackground.setAttribute('data-value', 'disable');
-            configItemParenBackground.querySelector('.config-checkbox').classList.remove('checked');
-            localStorage.removeItem('paren-background');
-        } else {
-            showParenBackground();
-            configItemParenBackground.setAttribute('data-value', 'enable');
-            configItemParenBackground.querySelector('.config-checkbox').classList.add('checked');
-            localStorage.setItem('paren-background', 'enable');
-        }
-    }
-}
-
-function showParenBackground() {
-    if (document.getElementById('style-paren-background')) return;
-    const style = document.createElement('style');
-    style.id = 'style-paren-background';
-    style.textContent = '.Sentence .tag-paren { background: rgba(128, 128, 128, 0.2); }';
-    style.textContent += '.Sentence .tag-paren .tag-paren { background: none; }';
-    document.head.appendChild(style);
-}
-
-function hideParenBackground() {
-    const style = document.getElementById('style-paren-background');
-    if (style) style.remove();
-}
-
-function updateConfigItemConjColor() {
-    if (!configItemConjColor.getAttribute('data-value')) {
-        if (localStorage.getItem('conj-color') === 'enable') {
-            showConjColor();
-            configItemConjColor.setAttribute('data-value', 'enable');
-            configItemConjColor.querySelector('.config-checkbox').classList.add('checked');
-        } else {
-            hideConjColor();
-            configItemConjColor.setAttribute('data-value', 'disable');
-            configItemConjColor.querySelector('.config-checkbox').classList.remove('checked');
-        }
-    } else {
-        if (configItemConjColor.getAttribute('data-value') === 'enable') {
-            hideConjColor();
-            configItemConjColor.setAttribute('data-value', 'disable');
-            configItemConjColor.querySelector('.config-checkbox').classList.remove('checked');
-            localStorage.removeItem('conj-color');
-        } else {
-            showConjColor();
-            configItemConjColor.setAttribute('data-value', 'enable');
-            configItemConjColor.querySelector('.config-checkbox').classList.add('checked');
-            localStorage.setItem('conj-color', 'enable');
-        }
-    }
-}
-
-function showConjColor() {
-    if (document.getElementById('style-conj-color')) return;
-    const style = document.createElement('style');
-    style.id = 'style-conj-color';
-    style.textContent = '.Sentence .tag-conj-h { color: deepskyblue; }';
-    style.textContent += '.Sentence .tag-conj-s { color: deepskyblue; }';
-    document.head.appendChild(style);
-}
-
-function hideConjColor() {
-    const style = document.getElementById('style-conj-color');
-    if (style) style.remove();
-}
-
-function updateConfigItemConditionColor() {
-    if (!configItemConditionColor.getAttribute('data-value')) {
-        if (localStorage.getItem('condition-color') === 'enable') {
-            showConditionColor();
-            configItemConditionColor.setAttribute('data-value', 'enable');
-            configItemConditionColor.querySelector('.config-checkbox').classList.add('checked');
-        } else {
-            hideConditionColor();
-            configItemConditionColor.setAttribute('data-value', 'disable');
-            configItemConditionColor.querySelector('.config-checkbox').classList.remove('checked');
-        }
-    } else {
-        if (configItemConditionColor.getAttribute('data-value') === 'enable') {
-            hideConditionColor();
-            configItemConditionColor.setAttribute('data-value', 'disable');
-            configItemConditionColor.querySelector('.config-checkbox').classList.remove('checked');
-            localStorage.removeItem('condition-color');
-        } else {
-            showConditionColor();
-            configItemConditionColor.setAttribute('data-value', 'enable');
-            configItemConditionColor.querySelector('.config-checkbox').classList.add('checked');
-            localStorage.setItem('condition-color', 'enable');
-        }
-    }
-}
-
-function showConditionColor() {
-    if (document.getElementById('style-condition-color')) return;
-    const style = document.createElement('style');
-    style.id = 'style-condition-color';
-    style.textContent = '.Sentence .tag-condition { color: deeppink; }';
-    document.head.appendChild(style);
-}
-
-function hideConditionColor() {
-    const style = document.getElementById('style-condition-color');
-    if (style) style.remove();
-}
-
-function updateConfigItemWidthLimit() {
-    if (!configItemWidthLimit.getAttribute('data-value')) {
-        if (localStorage.getItem('width-limit') === 'disable') {
-            disableWidthLimit();
-            configItemWidthLimit.setAttribute('data-value', 'disable');
-            configItemWidthLimit.querySelector('.config-checkbox').classList.remove('checked');
-        } else {
-            enableWidthLimit();
-            configItemWidthLimit.setAttribute('data-value', 'enable');
-            configItemWidthLimit.querySelector('.config-checkbox').classList.add('checked');
-        }
-    } else {
-        if (configItemWidthLimit.getAttribute('data-value') === 'disable') {
-            enableWidthLimit();
-            configItemWidthLimit.setAttribute('data-value', 'enable');
-            configItemWidthLimit.querySelector('.config-checkbox').classList.add('checked');
-            localStorage.removeItem('width-limit');
-        } else {
-            disableWidthLimit();
-            configItemWidthLimit.setAttribute('data-value', 'disable');
-            configItemWidthLimit.querySelector('.config-checkbox').classList.remove('checked');
-            localStorage.setItem('width-limit', 'disable');
-        }
-    }
-}
-
-function disableWidthLimit() {
-    if (document.getElementById('style-width-limit')) return;
-    const style = document.createElement('style');
-    style.id = 'style-width-limit';
-    style.textContent = ':root { --width-limit: 9999px; }';
-    document.head.appendChild(style);
-}
-
-function enableWidthLimit() {
-    const style = document.getElementById('style-width-limit');
-    if (style) style.remove();
-}
-
-function setBlockSpacing(str) {
-    let style = document.getElementById('style-block-spacing');
-    if (!style) {
-        style = document.createElement('style');
-        style.id = 'style-block-spacing';
-        document.head.appendChild(style);
-    }
-    style.textContent = ':root { --law-margin: ' + str + '; }';
-}
-
-function setParagraphSpacing(str) {
-    let style = document.getElementById('style-paragraph-spacing');
-    if (!style) {
-        style = document.createElement('style');
-        style.id = 'style-paragraph-spacing';
-        document.head.appendChild(style);
-    }
-    style.textContent = '.Paragraph { margin-top: ' + str + '; }';
+function initFontFamilyPage(item) {
+    initPage(item, {
+        title: '書体',
+        options: {
+            'sans-serif': { label: 'ゴシック' },
+            'serif': { label: '明朝' },
+        },
+        defaultKey: 'sans-serif',
+        storageKey: 'font-family',
+        onSelect: setFontFamily,
+    });
 }

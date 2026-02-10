@@ -20,12 +20,25 @@ function createModal(content) {
     });
 
     let isExpanded = false;
+    let originalWidth = '';
+    let originalHeight = '';
+
+    let onShowBefore;
+    let onShowAfter;
+    let onHideBefore;
+    let onHideAfter;
+    let onBack;
 
     const container = document.createElement('div');
     container.className = 'interface-container';
     const bar = document.createElement('div');
     bar.className = 'interface-bar';
     bar.style.display = 'none';
+    const back = document.createElement('div');
+    back.className = 'interface-back';
+    back.classList.add('interface-button');
+    back.style.display = 'none';
+    back.innerHTML = '<div></div><div></div><div></div>';
     const title = document.createElement('div');
     title.className = 'interface-title';
     const expand = document.createElement('div');
@@ -41,17 +54,23 @@ function createModal(content) {
         e.stopPropagation();
     });
 
+    back.addEventListener('click', () => {
+        onBack?.();
+    });
+
     expand.addEventListener('click', () => {
         if (!isExpanded) {
             isExpanded = true;
+            originalWidth = container.style.width;
+            originalHeight = container.style.height;
             expand.classList.add('isExpanded');
             container.style.width = '100%';
             container.style.height = '100%';
         } else {
             isExpanded = false;
             expand.classList.remove('isExpanded');
-            container.style.width = '';
-            container.style.height = '';
+            container.style.width = originalWidth;
+            container.style.height = originalHeight;
         }
     });
 
@@ -59,6 +78,7 @@ function createModal(content) {
         api.hide();
     });
 
+    bar.appendChild(back);
     bar.appendChild(title);
     bar.appendChild(expand);
     bar.appendChild(close);
@@ -67,10 +87,6 @@ function createModal(content) {
     overlay.appendChild(container);
     document.body.appendChild(overlay);
 
-    let onShowBefore;
-    let onShowAfter;
-    let onHideBefore;
-    let onHideAfter;
     api.onShow = (before, after) => {
         onShowBefore = before;
         onShowAfter = after;
@@ -78,6 +94,9 @@ function createModal(content) {
     api.onHide = (before, after) => {
         onHideBefore = before;
         onHideAfter = after;
+    };
+    api.onBack = (f) => {
+        onBack = f;
     };
     api.getOverlay = () => overlay;
     api.getTitleBar = () => bar;
@@ -96,6 +115,12 @@ function createModal(content) {
         overlay.style.pointerEvents = 'none';
         overlay.style.opacity = '0';
         onHideAfter?.();
+    };
+    api.enableBackButton = () => {
+        back.style.display = '';
+    };
+    api.disableBackButton = () => {
+        back.style.display = 'none';
     };
     api.enableTitleBar = () => {
         bar.style.display = '';
