@@ -3,12 +3,12 @@ export const Menu = {
     show,
 };
 
-import { Interface } from '/global/interface.js?v=20260211';
+import { Interface } from '/global/interface.js?v=20260212';
 
-import { Config } from './config.js?v=20260211';
-import { History } from './history.js?v=20260211';
-import { Info } from './info.js?v=20260211';
-import { Mokuji } from './mokuji.js?v=20260211';
+import { Config } from './config.js?v=20260212';
+import { History } from './history.js?v=20260212';
+import { Info } from './info.js?v=20260212';
+import { Mokuji } from './mokuji.js?v=20260212';
 
 let interfaceView;
 

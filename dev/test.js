@@ -1,6 +1,6 @@
-import { Control } from '/global/control.js?v=20260211';
-import { Device } from '/global/device.js?v=20260211';
-import { Interface } from '/global/interface.js?v=20260211';
+import { Control } from '/global/control.js?v=20260212';
+import { Device } from '/global/device.js?v=20260212';
+import { Interface } from '/global/interface.js?v=20260212';
 
 window.addEventListener('DOMContentLoaded', () => {
     init();

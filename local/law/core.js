@@ -1,15 +1,15 @@
-import { Device } from '/global/device.js?v=20260211';
-import { Kaiseki } from '/global/kaiseki.js?v=20260211';
-import { Service } from '/global/service.js?v=20260211';
-import { Storage } from '/global/storage.js?v=20260211';
-import { Theme } from '/global/theme.js?v=20260211';
+import { Device } from '/global/device.js?v=20260212';
+import { Kaiseki } from '/global/kaiseki.js?v=20260212';
+import { Service } from '/global/service.js?v=20260212';
+import { Storage } from '/global/storage.js?v=20260212';
+import { Theme } from '/global/theme.js?v=20260212';
 
-import { Config } from './config.js?v=20260211';
-import { History } from './history.js?v=20260211';
-import { Info } from './info.js?v=20260211';
-import { Menu } from './menu.js?v=20260211';
-import { Mokuji } from './mokuji.js?v=20260211';
-import { Search } from './search.js?v=20260211';
+import { Config } from './config.js?v=20260212';
+import { History } from './history.js?v=20260212';
+import { Info } from './info.js?v=20260212';
+import { Menu } from './menu.js?v=20260212';
+import { Mokuji } from './mokuji.js?v=20260212';
+import { Search } from './search.js?v=20260212';
 
 const contentEl = document.querySelector('#content');
 const scrollEl = contentEl.parentElement;

@@ -1,4 +1,4 @@
-import { Service } from '/global/service.js?v=20260211';
+import { Service } from '/global/service.js?v=20260212';
 
 let inputEl;
 let execEl;

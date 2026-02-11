@@ -1,7 +1,7 @@
-import { Device } from '/global/device.js?v=20260211';
-import { Service } from '/global/service.js?v=20260211';
-import { Storage } from '/global/storage.js?v=20260211';
-import { Theme } from '/global/theme.js?v=20260211';
+import { Device } from '/global/device.js?v=20260212';
+import { Service } from '/global/service.js?v=20260212';
+import { Storage } from '/global/storage.js?v=20260212';
+import { Theme } from '/global/theme.js?v=20260212';
 
 window.addEventListener('DOMContentLoaded', () => {
     Theme.init();
