@@ -3,7 +3,7 @@ export const Search = {
     show,
 };
 
-import { Interface } from '/global/interface.js?v=20260212';
+import { Interface } from '/global/interface.js?v=20260213';
 
 let interfaceView;
 let lawContent;

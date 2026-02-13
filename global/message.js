@@ -4,7 +4,7 @@ export const Message = {
     notify,
 };
 
-import { Interface } from '/global/interface.js?v=20260212';
+import { Interface } from '/global/interface.js?v=20260213';
 
 function alert(title, message, exec) {
     const container = document.createElement('div');

@@ -23,25 +23,26 @@
 
 .mokuji-content {
     overflow-y: auto;
+    scrollbar-gutter: stable;
     width: 100%; height: 100%;
     user-select: none; -webkit-user-select: none;
     transition: color var(--transition-duration) ease;
     line-height: 1.6;
 }
 .mokuji-content.desktop {
-    scrollbar-width: none;
+    scrollbar-color: transparent transparent;
     padding: 0px;
     font-size: 14px;
     color: var(--color-gray);
 }
 .mokuji-content.mobile {
-    scrollbar-width: auto;
+    scrollbar-color: inherit;
     padding: 16px;
     font-size: 15px;
     color: var(--color-black);
 }
 .mokuji-content:hover {
-    scrollbar-width: auto;
+    scrollbar-color: inherit;
 }
 
 .mokuji-content ul {

@@ -4,9 +4,9 @@ export const Config = {
     show,
 };
 
-import { Control } from '/global/control.js?v=20260212';
-import { Interface } from '/global/interface.js?v=20260212';
-import { Theme } from '/global/theme.js?v=20260212';
+import { Control } from '/global/control.js?v=20260213';
+import { Interface } from '/global/interface.js?v=20260213';
+import { Theme } from '/global/theme.js?v=20260213';
 
 import {
     createCategory, createDivider,
@@ -14,18 +14,20 @@ import {
     createCheckboxItem, toggleCheckboxItem,
     createSeekbarItem, initSeekbar,
     createRadioItem,
-} from './component.js?v=20260212';
+} from './component.js?v=20260213';
 import {
     showTOC, hideTOC,
     showSupplProvision, hideSupplProvision,
     showParenColor, hideParenColor,
     showParenBackground, hideParenBackground,
+    showParenFontSize, hideParenFontSize,
     showConjColor, hideConjColor,
     showConditionColor, hideConditionColor,
+    showTitleColor, hideTitleColor,
     disableWidthLimit, enableWidthLimit,
     setFontFamily,
-} from './library.js?v=20260212';
-import { Mokuji } from './mokuji.js?v=20260212';
+} from './library.js?v=20260213';
+import { Mokuji } from './mokuji.js?v=20260213';
 
 let controlView;
 let interfaceView;
@@ -63,6 +65,14 @@ function init(el) {
 
     const configItemConjNav = createNavigationItem('接続詞の強調表示の詳細設定');
     fragment.appendChild(configItemConjNav);
+    fragment.appendChild(createDivider());
+
+    const configItemTitle = createCheckboxItem('編・章・節・款・目を強調表示');
+    fragment.appendChild(configItemTitle);
+    fragment.appendChild(createDivider());
+
+    const configItemTitleNav = createNavigationItem('編・章・節・款・目の強調表示の詳細設定');
+    fragment.appendChild(configItemTitleNav);
     fragment.appendChild(createDivider());
 
     fragment.appendChild(createCategory('機能'));
@@ -137,11 +147,13 @@ function init(el) {
     const showParenAll = () => {
         showParenColor();
         showParenBackground();
+        showParenFontSize();
     };
 
     const hideParenAll = () => {
         hideParenColor();
         hideParenBackground();
+        hideParenFontSize();
     };
 
     initToggleWithNav(configItemParen, configItemParenNav, 'paren-highlight', false, showParenAll, hideParenAll);
@@ -159,6 +171,9 @@ function init(el) {
 
     initToggleWithNav(configItemConj, configItemConjNav, 'conj-highlight', false, showConjAll, hideConjAll);
     initConjDetailPage(configItemConjNav);
+
+    initToggleWithNav(configItemTitle, configItemTitleNav, 'title-highlight', false, showTitleColor, hideTitleColor);
+    initTitleDetailPage(configItemTitleNav);
 
     toggleCheckboxItem(configItemWidthLimit, 'width-limit', true, enableWidthLimit, disableWidthLimit);
     configItemWidthLimit.addEventListener('click', () => {
@@ -222,8 +237,10 @@ function createRefresher(styleId, hideFn, showFn) {
 
 const refreshParenColor = createRefresher('style-paren-color', hideParenColor, showParenColor);
 const refreshParenBackground = createRefresher('style-paren-background', hideParenBackground, showParenBackground);
+const refreshParenFontSize = createRefresher('style-paren-font-size', hideParenFontSize, showParenFontSize);
 const refreshConjColor = createRefresher('style-conj-color', hideConjColor, showConjColor);
 const refreshConditionColor = createRefresher('style-condition-color', hideConditionColor, showConditionColor);
+const refreshTitleColor = createRefresher('style-title-color', hideTitleColor, showTitleColor);
 
 function openPage() {
     const page = document.createElement('div');
@@ -365,11 +382,11 @@ function appendColorNavItems(page, levels) {
 }
 
 const PAREN_COLOR_LEVELS = [
-    { title: '第一階層', storageKey: 'paren-color-1', defaultKey: 'mediumorchid', onChanged: refreshParenColor },
-    { title: '第二階層', storageKey: 'paren-color-2', defaultKey: 'mediumseagreen', onChanged: refreshParenColor },
-    { title: '第三階層', storageKey: 'paren-color-3', defaultKey: 'coral', onChanged: refreshParenColor },
-    { title: '第四階層', storageKey: 'paren-color-4', defaultKey: 'gray', onChanged: refreshParenColor },
-    { title: '第五階層', storageKey: 'paren-color-5', defaultKey: 'gray', onChanged: refreshParenColor },
+    { title: '第一階層の色', storageKey: 'paren-color-1', defaultKey: 'mediumorchid', onChanged: refreshParenColor },
+    { title: '第二階層の色', storageKey: 'paren-color-2', defaultKey: 'mediumseagreen', onChanged: refreshParenColor },
+    { title: '第三階層の色', storageKey: 'paren-color-3', defaultKey: 'coral', onChanged: refreshParenColor },
+    { title: '第四階層の色', storageKey: 'paren-color-4', defaultKey: 'gray', onChanged: refreshParenColor },
+    { title: '第五階層の色', storageKey: 'paren-color-5', defaultKey: 'gray', onChanged: refreshParenColor },
 ];
 
 const PAREN_BACKGROUND_OPTIONS = {
@@ -378,19 +395,27 @@ const PAREN_BACKGROUND_OPTIONS = {
     'none': { label: 'なし' },
 };
 
+const PAREN_FONT_SIZE_OPTIONS = {
+    '1.00': { label: '標準' },
+    '0.95': { label: '95%' },
+    '0.90': { label: '90%' },
+    '0.85': { label: '85%' },
+    '0.80': { label: '80%' },
+};
+
 function initParenDetailPage(item) {
     item.addEventListener('click', () => {
         const page = openPage();
 
-        page.appendChild(createCategory('色'));
+        page.appendChild(createCategory('括弧階層'));
         page.appendChild(createDivider());
 
         appendColorNavItems(page, PAREN_COLOR_LEVELS);
 
-        page.appendChild(createCategory('背景'));
+        page.appendChild(createCategory('括弧全体'));
         page.appendChild(createDivider());
 
-        const bgNavItem = createNavigationItem('括弧全体');
+        const bgNavItem = createNavigationItem('背景');
         const bgValueEl = bgNavItem.querySelector('.config-value');
 
         const bgStored = localStorage.getItem('paren-background');
@@ -398,10 +423,24 @@ function initParenDetailPage(item) {
         bgValueEl.textContent = PAREN_BACKGROUND_OPTIONS[bgCurrentKey].label;
 
         bgNavItem.addEventListener('click', () => {
-            initRadioSelectPage(bgNavItem, '括弧全体', 'paren-background', 'color', refreshParenBackground, PAREN_BACKGROUND_OPTIONS);
+            initRadioSelectPage(bgNavItem, '背景', 'paren-background', 'color', refreshParenBackground, PAREN_BACKGROUND_OPTIONS);
         });
 
         page.appendChild(bgNavItem);
+        page.appendChild(createDivider());
+
+        const fsNavItem = createNavigationItem('文字サイズ');
+        const fsValueEl = fsNavItem.querySelector('.config-value');
+
+        const fsStored = localStorage.getItem('paren-font-size');
+        const fsCurrentKey = (fsStored && PAREN_FONT_SIZE_OPTIONS[fsStored]) ? fsStored : '1.00';
+        fsValueEl.textContent = PAREN_FONT_SIZE_OPTIONS[fsCurrentKey].label;
+
+        fsNavItem.addEventListener('click', () => {
+            initRadioSelectPage(fsNavItem, '文字サイズ', 'paren-font-size', '1.00', refreshParenFontSize, PAREN_FONT_SIZE_OPTIONS);
+        });
+
+        page.appendChild(fsNavItem);
         page.appendChild(createDivider());
     });
 }
@@ -420,6 +459,25 @@ function initConjDetailPage(item) {
         page.appendChild(createDivider());
 
         appendColorNavItems(page, CONJ_COLOR_LEVELS);
+    });
+}
+
+const TITLE_COLOR_LEVELS = [
+    { title: '編の色', storageKey: 'title-color-part', defaultKey: 'deeppink', onChanged: refreshTitleColor },
+    { title: '章の色', storageKey: 'title-color-chapter', defaultKey: 'deepskyblue', onChanged: refreshTitleColor },
+    { title: '節の色', storageKey: 'title-color-section', defaultKey: 'mediumorchid', onChanged: refreshTitleColor },
+    { title: '款の色', storageKey: 'title-color-subsection', defaultKey: 'mediumseagreen', onChanged: refreshTitleColor },
+    { title: '目の色', storageKey: 'title-color-division', defaultKey: 'coral', onChanged: refreshTitleColor },
+];
+
+function initTitleDetailPage(item) {
+    item.addEventListener('click', () => {
+        const page = openPage();
+
+        page.appendChild(createCategory('編・章・節・款・目の強調表示'));
+        page.appendChild(createDivider());
+
+        appendColorNavItems(page, TITLE_COLOR_LEVELS);
     });
 }
 

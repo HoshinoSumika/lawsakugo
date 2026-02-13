@@ -5,8 +5,8 @@ export const Info = {
     clear,
 };
 
-import { Interface } from '/global/interface.js?v=20260212';
-import { Kaiseki } from '/global/kaiseki.js?v=20260212';
+import { Interface } from '/global/interface.js?v=20260213';
+import { Kaiseki } from '/global/kaiseki.js?v=20260213';
 
 let interfaceView;
 let lawContent;
@@ -134,6 +134,28 @@ function updateContent() {
         th.textContent = '改正法令';
         const td = document.createElement('td');
         td.textContent = value;
+        tr.appendChild(th);
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+    }
+
+    value = dataAttributes['revision_info_repeal_status'];
+    if (value !== 'None') {
+        let str = '';
+        if (value === 'Repeal') {
+            str = '廃止';
+        } else if (value === 'Expire') {
+            str = '失効';
+        } else if (value === 'Suspend') {
+            str = '停止';
+        } else if (value === 'LossOfEffectiveness') {
+            str = '実効性喪失';
+        }
+        const tr = document.createElement('tr');
+        const th = document.createElement('th');
+        th.textContent = '状態';
+        const td = document.createElement('td');
+        td.textContent = str;
         tr.appendChild(th);
         tr.appendChild(td);
         tbody.appendChild(tr);

@@ -26,7 +26,7 @@ function wareki(dateStr) {
         const taishoYear = year - 1911;
         const taishoLabel = taishoYear === 1 ? '大正元年' : `大正${taishoYear}年`;
         return `${taishoLabel}${month}月${day}日`;
-    }else if (year >= 1868) {
+    } else if (year >= 1868) {
         const meijiYear = year - 1867;
         const meijiLabel = meijiYear === 1 ? '明治元年' : `明治${meijiYear}年`;
         return `${meijiLabel}${month}月${day}日`;

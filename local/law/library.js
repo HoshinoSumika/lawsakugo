@@ -95,6 +95,27 @@ export function hideParenBackground() {
     if (style) style.remove();
 }
 
+function getParenFontSize() {
+    return localStorage.getItem('paren-font-size') || '1.00';
+}
+
+export function showParenFontSize() {
+    if (document.getElementById('style-paren-font-size')) return;
+
+    const size = getParenFontSize();
+
+    const style = document.createElement('style');
+    style.id = 'style-paren-font-size';
+    style.textContent = '.Sentence .tag-paren { font-size: ' + size + 'em; }';
+    style.textContent += '.Sentence .tag-paren .tag-paren { font-size: 1em; }';
+    document.head.appendChild(style);
+}
+
+export function hideParenFontSize() {
+    const style = document.getElementById('style-paren-font-size');
+    if (style) style.remove();
+}
+
 function getConjColor(type) {
     return localStorage.getItem('conj-color-' + type) || 'deepskyblue';
 }
@@ -134,6 +155,42 @@ export function showConditionColor() {
 
 export function hideConditionColor() {
     const style = document.getElementById('style-condition-color');
+    if (style) style.remove();
+}
+
+const TITLE_COLOR_DEFAULTS = {
+    'part': 'deeppink',
+    'chapter': 'deepskyblue',
+    'section': 'mediumorchid',
+    'subsection': 'mediumseagreen',
+    'division': 'coral',
+};
+
+function getTitleColor(type) {
+    return localStorage.getItem('title-color-' + type) || TITLE_COLOR_DEFAULTS[type];
+}
+
+export function showTitleColor() {
+    if (document.getElementById('style-title-color')) return;
+
+    const partColor = getTitleColor('part');
+    const chapterColor = getTitleColor('chapter');
+    const sectionColor = getTitleColor('section');
+    const subsectionColor = getTitleColor('subsection');
+    const divisionColor = getTitleColor('division');
+
+    const style = document.createElement('style');
+    style.id = 'style-title-color';
+    style.textContent = '.PartTitle { color: ' + partColor + '; }';
+    style.textContent += '.ChapterTitle { color: ' + chapterColor + '; }';
+    style.textContent += '.SectionTitle { color: ' + sectionColor + '; }';
+    style.textContent += '.SubsectionTitle { color: ' + subsectionColor + '; }';
+    style.textContent += '.DivisionTitle { color: ' + divisionColor + '; }';
+    document.head.appendChild(style);
+}
+
+export function hideTitleColor() {
+    const style = document.getElementById('style-title-color');
     if (style) style.remove();
 }
 
