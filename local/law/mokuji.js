@@ -6,7 +6,7 @@ export const Mokuji = {
     clear,
 };
 
-import { Interface } from '/global/interface.js?v=20260213';
+import { Interface } from '/global/interface.js?v=20260303';
 
 let interfaceView;
 let lawContent;

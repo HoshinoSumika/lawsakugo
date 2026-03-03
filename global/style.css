@@ -47,7 +47,6 @@ html, body {
 }
 body {
     position: relative;
-    min-height: 100vh;
     display: flex; flex-direction: column;
     font-family: sans-serif;
     font-size: 16px;

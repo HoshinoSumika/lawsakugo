@@ -4,9 +4,9 @@ export const Config = {
     show,
 };
 
-import { Control } from '/global/control.js?v=20260213';
-import { Interface } from '/global/interface.js?v=20260213';
-import { Theme } from '/global/theme.js?v=20260213';
+import { Control } from '/global/control.js?v=20260303';
+import { Interface } from '/global/interface.js?v=20260303';
+import { Theme } from '/global/theme.js?v=20260303';
 
 import {
     createCategory, createDivider,
@@ -14,7 +14,7 @@ import {
     createCheckboxItem, toggleCheckboxItem,
     createSeekbarItem, initSeekbar,
     createRadioItem,
-} from './component.js?v=20260213';
+} from './component.js?v=20260303';
 import {
     showTOC, hideTOC,
     showSupplProvision, hideSupplProvision,
@@ -26,8 +26,8 @@ import {
     showTitleColor, hideTitleColor,
     disableWidthLimit, enableWidthLimit,
     setFontFamily,
-} from './library.js?v=20260213';
-import { Mokuji } from './mokuji.js?v=20260213';
+} from './library.js?v=20260303';
+import { Mokuji } from './mokuji.js?v=20260303';
 
 let controlView;
 let interfaceView;
