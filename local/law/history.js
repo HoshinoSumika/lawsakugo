@@ -4,10 +4,10 @@ export const History = {
     show,
 };
 
-import { Interface } from '/global/interface.js?v=20260303';
-import { Kaiseki } from '/global/kaiseki.js?v=20260303';
-import { Service } from '/global/service.js?v=20260303';
-import { Storage } from '/global/storage.js?v=20260303';
+import { Interface } from '/global/interface.js?v=20260703';
+import { Kaiseki } from '/global/kaiseki.js?v=20260703';
+import { Service } from '/global/service.js?v=20260703';
+import { Storage } from '/global/storage.js?v=20260703';
 
 let interfaceView;
 let historyContent;
@@ -67,11 +67,13 @@ async function updateContent() {
         await Storage.cleanup();
         try {
             revisions = await Storage.getItem(id);
+            check();
         } catch (e) {
         }
         if (!revisions) {
             const data = await Service.getLawRevisions(id);
             revisions = data ? data.revisions : null;
+            check();
             if (revisions) {
                 await Storage.setItem(id, revisions);
             }
@@ -150,5 +152,31 @@ function renderContent() {
 
     if (scrollTarget) {
         historyContent.scrollTop = scrollTarget.offsetTop - parseFloat(window.getComputedStyle(historyContent).paddingTop);
+    }
+}
+
+function check() {
+    if (!Array.isArray(revisions) || revisions.length === 0) {
+        return;
+    }
+
+    const hasCurrentEnforced = revisions.some(revision => revision.current_revision_status === 'CurrentEnforced');
+    if (hasCurrentEnforced) {
+        return;
+    }
+
+    let foundUnEnforced = false;
+
+    for (const revision of revisions) {
+        if (revision.current_revision_status === 'UnEnforced') {
+            foundUnEnforced = true;
+            continue;
+        }
+
+        if (revision.current_revision_status === 'PreviousEnforced') {
+            revision.current_revision_status = 'CurrentEnforced';
+        }
+
+        break;
     }
 }

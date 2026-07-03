@@ -5,8 +5,8 @@ export const Info = {
     clear,
 };
 
-import { Interface } from '/global/interface.js?v=20260303';
-import { Kaiseki } from '/global/kaiseki.js?v=20260303';
+import { Interface } from '/global/interface.js?v=20260703';
+import { Kaiseki } from '/global/kaiseki.js?v=20260703';
 
 let interfaceView;
 let lawContent;

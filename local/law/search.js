@@ -3,7 +3,7 @@ export const Search = {
     show,
 };
 
-import { Interface } from '/global/interface.js?v=20260303';
+import { Interface } from '/global/interface.js?v=20260703';
 
 let interfaceView;
 let lawContent;
@@ -287,7 +287,8 @@ function convertNum(str) {
     }
     str = str.replace(/０/g, '0').replace(/１/g, '1').replace(/２/g, '2').replace(/３/g, '3').replace(/４/g, '4');
     str = str.replace(/５/g, '5').replace(/６/g, '6').replace(/７/g, '7').replace(/８/g, '8').replace(/９/g, '9');
-    str = str.replace(/の/g, '_').replace(/-/g, '_').replace(/ /g, '_').replace(/　/g, '_');
+    str = str.replace(/の/g, '_').replace(/ /g, '_').replace(/　/g, '_');
+    str = str.replace(/-/g, '_').replace(/－/g, '_').replace(/ー/g, '_').replace(/＿/g, '_');
     return str;
 }
 
