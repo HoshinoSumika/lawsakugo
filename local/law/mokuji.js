@@ -1,49 +1,43 @@
 export const Mokuji = {
     init,
-    register,
     toggle,
     update,
     clear,
 };
 
-import { Interface } from '/global/interface.js?v=20260703';
+import { Shell } from '/lib/shell.js?v=20260822';
+import { Storage } from '/lib/storage.js?v=20260822';
 
-let interfaceView;
+let api;
 let lawContent;
 let lawContainer;
 let mokujiSpacer;
 let mokujiContent;
-let mokujiBar;
+let mokujiSidebar;
+let mokujiModal;
+let mokujiModalContent;
 
-function init(el) {
-    lawContent = el;
-    lawContainer = el.parentNode;
+function init(value) {
+    api = value;
+    lawContent = api.getContent();
+    lawContainer = api.getContainer();
 
     mokujiSpacer = document.querySelector('#mokuji-spacer');
 
-    mokujiBar = document.querySelector('#mokuji-bar');
-
     mokujiContent = document.createElement('div');
+    mokujiContent.classList.add('mokuji-content');
 
-    interfaceView = Interface.createModal(mokujiContent);
-    interfaceView.enableTitleBar();
-    interfaceView.setTitle('目次');
-    interfaceView.getOverlay().classList.add('law-overlay');
-    interfaceView.getOverlay().classList.add('mokuji-overlay');
-    interfaceView.getContainer().classList.add('law-container');
-    interfaceView.getContainer().classList.add('mokuji-container');
-    interfaceView.getContent().classList.add('mokuji-content');
+    mokujiSidebar = document.createElement('div');
+    mokujiSidebar.classList.add('mokuji-sidebar');
+    lawContainer.insertBefore(mokujiSidebar, lawContent);
 
-    interfaceView.onShow(() => {
-        requestAnimationFrame(() => {
-            interfaceView.getContainer().classList.add('show');
-        });
-    });
-    interfaceView.onHide(() => {
-        interfaceView.getContainer().classList.remove('show');
-    });
+    mokujiModalContent = document.createElement('div');
 
-    lawContent.parentNode.insertBefore(interfaceView.getOverlay(), lawContent);
+    mokujiModal = Shell.createModal(mokujiModalContent);
+    mokujiModal.setPlacement('bottom');
+    mokujiModal.setHeight('100%');
+    mokujiModal.setTitle('目次');
+    mokujiModal.enableCloseButton(hide);
 
     resize();
     window.addEventListener('resize', () => {
@@ -53,32 +47,18 @@ function init(el) {
     lawContainer.addEventListener('scroll', () => {
         sync(true);
     });
-
-    if (!isUnderThreshold()) {
-        if (localStorage.getItem('mokuji') === 'false') {
-            hide();
-        }
-    }
-}
-
-let restoreScrollPosition = () => {};
-
-function register(name, func) {
-    if (name === 'restoreScrollPosition') {
-        restoreScrollPosition = func;
-    }
 }
 
 function toggle() {
-    if (interfaceView.getOverlay().style.pointerEvents === 'none') {
-        show();
-        if (!isUnderThreshold()) {
-            localStorage.removeItem('mokuji');
-        }
-    } else {
+    if (isOpen) {
         hide();
         if (!isUnderThreshold()) {
-            localStorage.setItem('mokuji', 'false');
+            Storage.set('mokuji', false);
+        }
+    } else {
+        show();
+        if (!isUnderThreshold()) {
+            Storage.remove('mokuji');
         }
     }
 }
@@ -108,7 +88,9 @@ function generate() {
     str += '.MainProvision .SubsectionTitle, .MainProvision .DivisionTitle, ';
     str += '.SupplProvision .SupplProvisionLabel, ';
     str += '.AppdxTable .AppdxTableTitle, ';
-    str += '.AppdxNote .AppdxNoteTitle';
+    str += '.AppdxNote .AppdxNoteTitle, ';
+    str += '.AppdxFig .AppdxFigTitle, ';
+    str += '.AppdxStyle .AppdxStyleTitle';
     elements = Array.from(law.querySelectorAll(str));
 
     elements = elements.filter(el => {
@@ -154,11 +136,13 @@ function generate() {
         const isSupplProvisionAppdxTableTitle = el.classList.contains('SupplProvisionAppdxTableTitle');
         const isAppdxTableTitle = el.classList.contains('AppdxTableTitle');
         const isAppdxNoteTitle = el.classList.contains('AppdxNoteTitle');
+        const isAppdxFigTitle = el.classList.contains('AppdxFigTitle');
+        const isAppdxStyleTitle = el.classList.contains('AppdxStyleTitle');
         if (isLawNum) {
             item.textContent = '法令情報';
         } else if (isMainProvision) {
             item.textContent = '本　則';
-        } else if (isSupplProvisionAppdxTableTitle || isAppdxTableTitle || isAppdxNoteTitle) {
+        } else if (isSupplProvisionAppdxTableTitle || isAppdxTableTitle || isAppdxNoteTitle || isAppdxFigTitle || isAppdxStyleTitle) {
             const nextEl = el.nextElementSibling;
             if (nextEl.classList.contains('RelatedArticleNum')) {
                 item.textContent = el.textContent + nextEl.textContent;
@@ -227,40 +211,41 @@ function scroll(isSmoothScroll) {
     }
 }
 
-let wasShown = true;
-let wasDesktop = false;
+let isOpen = false;
+let wasOpen = true;
+let wasDesktop = null;
 
 function resize() {
-    const isMobile = isUnderThreshold();
-    if (isMobile) {
-        interfaceView.getOverlay().classList.add('overlay');
-        interfaceView.getOverlay().classList.remove('desktop');
-        interfaceView.getContainer().style.transition = '';
-        interfaceView.enableTitleBar();
-        mokujiContent.classList.add('mobile');
-        mokujiContent.classList.remove('desktop');
-    } else {
-        interfaceView.getOverlay().classList.add('desktop');
-        interfaceView.getOverlay().classList.remove('overlay');
-        interfaceView.getContainer().style.transition = 'none';
-        interfaceView.disableTitleBar();
+    const isDesktop = !isUnderThreshold();
+    if (wasDesktop === isDesktop) {
+        return;
+    }
+
+    if (isDesktop) {
         mokujiContent.classList.add('desktop');
         mokujiContent.classList.remove('mobile');
-    }
-    if (!isMobile && !wasDesktop) {
-        if (localStorage.getItem('mokuji') === 'false') {
-            hide();
-        } else if (wasShown) {
+        mokujiSidebar.appendChild(mokujiContent);
+
+        if (wasOpen && Storage.get('mokuji', true)) {
             show();
+        } else {
+            hide();
         }
-    } else if (isMobile && wasDesktop) {
-        wasShown = interfaceView.getOverlay().style.display !== 'none';
+    } else {
+        mokujiContent.classList.add('mobile');
+        mokujiContent.classList.remove('desktop');
+        mokujiModalContent.appendChild(mokujiContent);
+
+        if (wasDesktop !== null) {
+            wasOpen = isOpen;
+        }
         hide();
-        interfaceView.getOverlay().style.display = 'none';
-        mokujiSpacer.style.display = 'none';
-        restoreScrollPosition();
+        if (wasDesktop !== null) {
+            api.restoreScroll();
+        }
     }
-    wasDesktop = !isMobile;
+
+    wasDesktop = isDesktop;
 }
 
 function isUnderThreshold() {
@@ -268,21 +253,25 @@ function isUnderThreshold() {
 }
 
 function show() {
-    interfaceView.getOverlay().style.display = '';
-    if (!isUnderThreshold()) {
+    isOpen = true;
+
+    if (isUnderThreshold()) {
+        mokujiSidebar.style.display = 'none';
+        mokujiSpacer.style.display = 'none';
+        mokujiModal.show();
+    } else {
+        mokujiModal.hide();
+        mokujiSidebar.style.display = '';
         mokujiSpacer.style.display = '';
     }
-
-    interfaceView.show();
 
     scroll(false);
 }
 
 function hide() {
-    if (!isUnderThreshold()) {
-        interfaceView.getOverlay().style.display = 'none';
-    }
-    mokujiSpacer.style.display = 'none';
+    isOpen = false;
 
-    interfaceView.hide();
+    mokujiModal.hide();
+    mokujiSidebar.style.display = 'none';
+    mokujiSpacer.style.display = 'none';
 }

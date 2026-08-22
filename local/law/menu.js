@@ -3,20 +3,15 @@ export const Menu = {
     show,
 };
 
-import { Interface } from '/global/interface.js?v=20260703';
+import { Shell } from '/lib/shell.js?v=20260822';
 
-import { Config } from './config.js?v=20260703';
-import { History } from './history.js?v=20260703';
-import { Info } from './info.js?v=20260703';
-import { Mokuji } from './mokuji.js?v=20260703';
+let modal;
 
-let interfaceView;
-
-function init() {
+function init(api) {
     const menuItemConfig = document.querySelector('#menu-item-config');
     menuItemConfig.addEventListener('click', () => {
         hide();
-        Config.show();
+        api.onConfigSelect();
     });
 
     const menuItemIndex = document.querySelector('#menu-item-index');
@@ -27,26 +22,25 @@ function init() {
     const menuItemInfo = document.querySelector('#menu-item-info');
     menuItemInfo.addEventListener('click', () => {
         hide();
-        Info.show();
+        api.onInfoSelect();
     });
 
     const menuItemHistory = document.querySelector('#menu-item-history');
     menuItemHistory.addEventListener('click', () => {
         hide();
-        History.show();
+        api.onHistorySelect();
     });
 
     const menuItemDiff = document.querySelector('#menu-item-diff');
     menuItemDiff.addEventListener('click', () => {
-        const url = new URL('./diff.html', window.location);
-        url.searchParams.set('id', new URLSearchParams(window.location.search).get('id'));
-        window.location.href = url;
+        hide();
+        api.onDiffSelect();
     });
 
     const menuItemMokuji = document.querySelector('#menu-item-mokuji');
     menuItemMokuji.addEventListener('click', () => {
         hide();
-        Mokuji.toggle();
+        api.onMokujiSelect();
     });
 
     const menuItemPrint = document.querySelector('#menu-item-print');
@@ -56,30 +50,18 @@ function init() {
     });
 
     const menuContent = document.querySelector('#menu-content');
+    menuContent.classList.add('menu-content');
 
-    interfaceView = Interface.createModal(menuContent);
-    interfaceView.enableTitleBar();
-    interfaceView.setTitle('');
-    interfaceView.getOverlay().classList.add('law-overlay');
-    interfaceView.getOverlay().classList.add('menu-overlay');
-    interfaceView.getContainer().classList.add('law-container');
-    interfaceView.getContainer().classList.add('menu-container');
-    interfaceView.getContent().classList.add('menu-content');
-
-    interfaceView.onShow(() => {
-        requestAnimationFrame(() => {
-            interfaceView.getContainer().classList.add('show');
-        });
-    });
-    interfaceView.onHide(() => {
-        interfaceView.getContainer().classList.remove('show');
-    });
+    modal = Shell.createModal(menuContent);
+    modal.setPlacement('left');
+    modal.setTitle('');
+    modal.enableCloseButton(hide);
 }
 
 function show() {
-    interfaceView.show();
+    modal.show();
 }
 
 function hide() {
-    interfaceView.hide();
+    modal.hide();
 }

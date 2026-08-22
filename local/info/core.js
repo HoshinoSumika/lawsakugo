@@ -1,5 +1,6 @@
-import { Device } from '/global/device.js?v=20260703';
-import { Theme } from '/global/theme.js?v=20260703';
+import { Device } from '/lib/device.js?v=20260822';
+
+import { Theme } from '/global/theme.js?v=20260822';
 
 window.addEventListener('DOMContentLoaded', () => {
     Theme.init();
@@ -14,7 +15,9 @@ window.addEventListener('load', () => {
 function initTitle() {
     const info = getInfo();
     let title = '';
-    if (info === 'about') {
+    if (info === 'help') {
+        title = '使い方';
+    } else if (info === 'about') {
         title = '当サイトについて';
     } else if (info === 'privacy') {
         title = 'プライバシー';

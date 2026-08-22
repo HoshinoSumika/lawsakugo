@@ -5,39 +5,31 @@ export const Info = {
     clear,
 };
 
-import { Interface } from '/global/interface.js?v=20260703';
-import { Kaiseki } from '/global/kaiseki.js?v=20260703';
+import { Shell } from '/lib/shell.js?v=20260822';
 
-let interfaceView;
+import { Convert } from '/global/convert.js?v=20260822';
+
+let modal;
 let lawContent;
 let infoContent;
 
-function init(el) {
-    lawContent = el;
+function init(api) {
+    lawContent = api.getContent();
 
     infoContent = document.createElement('div');
+    infoContent.classList.add('info-content');
 
-    interfaceView = Interface.createModal(infoContent);
-    interfaceView.enableTitleBar();
-    interfaceView.setTitle('法令詳細');
-    interfaceView.getOverlay().classList.add('law-overlay');
-    interfaceView.getOverlay().classList.add('info-overlay');
-    interfaceView.getContainer().classList.add('law-container');
-    interfaceView.getContainer().classList.add('info-container');
-    interfaceView.getContent().classList.add('info-content');
-
-    interfaceView.onShow(() => {
-        requestAnimationFrame(() => {
-            interfaceView.getContainer().classList.add('show');
-        });
-    });
-    interfaceView.onHide(() => {
-        interfaceView.getContainer().classList.remove('show');
-    });
+    modal = Shell.createModal(infoContent);
+    modal.setTitle('法令詳細');
+    modal.enableCloseButton(hide);
 }
 
 function show() {
-    interfaceView.show();
+    modal.show();
+}
+
+function hide() {
+    modal.hide();
 }
 
 function update() {
@@ -109,7 +101,7 @@ function updateContent() {
         const th = document.createElement('th');
         th.textContent = '公布日';
         const td = document.createElement('td');
-        td.textContent = Kaiseki.wareki(value);
+        td.textContent = Convert.date(value);
         tr.appendChild(th);
         tr.appendChild(td);
         tbody.appendChild(tr);
@@ -121,7 +113,7 @@ function updateContent() {
         const th = document.createElement('th');
         th.textContent = '施行日';
         const td = document.createElement('td');
-        td.textContent = Kaiseki.wareki(value);
+        td.textContent = Convert.date(value);
         tr.appendChild(th);
         tr.appendChild(td);
         tbody.appendChild(tr);

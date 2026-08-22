@@ -1,84 +1,57 @@
 export const History = {
     init,
-    register,
     show,
 };
 
-import { Interface } from '/global/interface.js?v=20260703';
-import { Kaiseki } from '/global/kaiseki.js?v=20260703';
-import { Service } from '/global/service.js?v=20260703';
-import { Storage } from '/global/storage.js?v=20260703';
+import { Scroll } from '/lib/scroll.js?v=20260822';
+import { Shell } from '/lib/shell.js?v=20260822';
 
-let interfaceView;
+import { Convert } from '/global/convert.js?v=20260822';
+import { Service } from '/global/service.js?v=20260822';
+
+const SCROLL_DELAY = 200;
+const SCROLL_DURATION = 800;
+
+let api;
+let modal;
 let historyContent;
 
-function init() {
+function init(value) {
+    api = value;
+
     historyContent = document.createElement('div');
+    historyContent.classList.add('history-content');
 
-    interfaceView = Interface.createModal(historyContent);
-    interfaceView.enableTitleBar();
-    interfaceView.setTitle('改正履歴');
-    interfaceView.getOverlay().classList.add('law-overlay');
-    interfaceView.getOverlay().classList.add('history-overlay');
-    interfaceView.getContainer().classList.add('law-container');
-    interfaceView.getContainer().classList.add('history-container');
-    interfaceView.getContent().classList.add('history-content');
-
-    interfaceView.onShow(() => {
-        requestAnimationFrame(() => {
-            interfaceView.getContainer().classList.add('show');
-        });
-    });
-    interfaceView.onHide(() => {
-        interfaceView.getContainer().classList.remove('show');
-    });
-}
-
-let initContent = () => {};
-
-function register(name, func) {
-    if (name === 'initContent') {
-        initContent = func;
-    }
+    modal = Shell.createModal(historyContent);
+    modal.setPlacement('left');
+    modal.setTitle('改正履歴');
+    modal.enableCloseButton(hide);
 }
 
 function show() {
+    modal.show();
     updateContent();
-    interfaceView.show();
 }
 
 function hide() {
-    interfaceView.hide();
+    modal.hide();
 }
 
 let revisions;
+let revisionsLawId = '';
 
 async function updateContent() {
-    let id = new URLSearchParams(window.location.search).get('id');
+    let id = api.getLawId();
     if (!id) {
         return;
     }
     if (id.includes('_')) {
         id = id.split('_')[0];
     }
-    if (!revisions) {
+    if (!revisions || revisionsLawId !== id) {
         historyContent.innerHTML = '<div style="width: 100%; height: 32px; text-align: center;">' + 'Loading...' + '</div>';
-        await Storage.init('LawRevisionsBeta');
-        await Storage.cleanup();
-        try {
-            revisions = await Storage.getItem(id);
-            check();
-        } catch (e) {
-        }
-        if (!revisions) {
-            const data = await Service.getLawRevisions(id);
-            revisions = data ? data.revisions : null;
-            check();
-            if (revisions) {
-                await Storage.setItem(id, revisions);
-            }
-        }
-        await Storage.cleanup();
+        revisionsLawId = id;
+        revisions = await Service.getLawRevisions(id);
     }
     if (revisions) {
         historyContent.innerHTML = '';
@@ -105,14 +78,14 @@ function renderContent() {
                 str = '<div>' + enforcementComment + '　施行予定' + '</div>';
             } else {
                 const enforcementDate = revision.amendment_enforcement_date || '';
-                str = '<div>' + Kaiseki.wareki(enforcementDate) + '　施行予定' + '</div>';
+                str = '<div>' + Convert.date(enforcementDate) + '　施行予定' + '</div>';
             }
         } else if (revision.current_revision_status === 'CurrentEnforced') {
             const enforcementDate = revision.amendment_enforcement_date || '';
-            str = '<div>' + Kaiseki.wareki(enforcementDate) + '　現在施行' + '</div>';
+            str = '<div>' + Convert.date(enforcementDate) + '　現在施行' + '</div>';
         } else if (revision.current_revision_status === 'PreviousEnforced') {
             const enforcementDate = revision.amendment_enforcement_date || '';
-            str = '<div>' + Kaiseki.wareki(enforcementDate) + '　施行' + '</div>';
+            str = '<div>' + Convert.date(enforcementDate) + '　施行' + '</div>';
         }
         if (revision.amendment_law_num) {
             str += '<div>' + '（' + revision.amendment_law_num + '）' + '</div>';
@@ -120,11 +93,11 @@ function renderContent() {
             str += '<div>' + '（' + '新規制定' + '）' + '</div>';
         }
 
-        if (revision.law_revision_id === new URLSearchParams(window.location.search).get('id')) {
+        if (revision.law_revision_id === api.getLawId()) {
             item.style.fontWeight = 'bold';
             scrollTarget = item;
         } else if (revision.current_revision_status === 'CurrentEnforced') {
-            if (revision.law_revision_id.split('_')[0] === new URLSearchParams(window.location.search).get('id')) {
+            if (revision.law_revision_id.split('_')[0] === api.getLawId()) {
                 item.style.fontWeight = 'bold';
                 scrollTarget = item;
             }
@@ -141,42 +114,20 @@ function renderContent() {
             }
             if (item.style.fontWeight === 'bold') {
             } else {
-                const url = new URL(window.location.href);
-                url.searchParams.set('id', id);
-                window.history.pushState(null, '', url);
-                initContent();
+                api.onRevisionSelect(id);
             }
         });
         historyContent.appendChild(item);
     });
 
+    historyContent.scrollTop = 0;
     if (scrollTarget) {
-        historyContent.scrollTop = scrollTarget.offsetTop - parseFloat(window.getComputedStyle(historyContent).paddingTop);
+        setTimeout(() => scrollToRevision(scrollTarget), SCROLL_DELAY);
     }
 }
 
-function check() {
-    if (!Array.isArray(revisions) || revisions.length === 0) {
-        return;
-    }
-
-    const hasCurrentEnforced = revisions.some(revision => revision.current_revision_status === 'CurrentEnforced');
-    if (hasCurrentEnforced) {
-        return;
-    }
-
-    let foundUnEnforced = false;
-
-    for (const revision of revisions) {
-        if (revision.current_revision_status === 'UnEnforced') {
-            foundUnEnforced = true;
-            continue;
-        }
-
-        if (revision.current_revision_status === 'PreviousEnforced') {
-            revision.current_revision_status = 'CurrentEnforced';
-        }
-
-        break;
-    }
+function scrollToRevision(item) {
+    if (!item.isConnected) return;
+    const paddingTop = parseFloat(window.getComputedStyle(historyContent).paddingTop);
+    Scroll.smooth(historyContent, item.offsetTop - paddingTop, SCROLL_DURATION);
 }

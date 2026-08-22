@@ -1,36 +1,62 @@
-import { Device } from '/global/device.js?v=20260703';
-import { Kaiseki } from '/global/kaiseki.js?v=20260703';
-import { Service } from '/global/service.js?v=20260703';
-import { Storage } from '/global/storage.js?v=20260703';
-import { Theme } from '/global/theme.js?v=20260703';
+import { Device } from '/lib/device.js?v=20260822';
+import { Message } from '/lib/message.js?v=20260822';
 
-import { Config } from './config.js?v=20260703';
-import { History } from './history.js?v=20260703';
-import { Info } from './info.js?v=20260703';
-import { Menu } from './menu.js?v=20260703';
-import { Mokuji } from './mokuji.js?v=20260703';
-import { Search } from './search.js?v=20260703';
+import { Convert } from '/global/convert.js?v=20260822';
+import { Route } from '/global/route.js?v=20260822';
+import { Service } from '/global/service.js?v=20260822';
+import { Theme } from '/global/theme.js?v=20260822';
+
+import { Config } from './config.js?v=20260822';
+import { History } from './history.js?v=20260822';
+import { Info } from './info.js?v=20260822';
+import { Menu } from './menu.js?v=20260822';
+import { Mokuji } from './mokuji.js?v=20260822';
+import { Sabun } from './sabun.js?v=20260822';
+import { Search } from './search.js?v=20260822';
+
+const PAREN = {
+    pair: ['（', '）'],
+    quote: ['「', '」'],
+    className: 'tag-paren',
+    dataName: 'depth',
+};
+
+const TERMS = {
+    '及び': 'tag-conj-h',
+    '並びに': 'tag-conj-h',
+    '又は': 'tag-conj-s',
+    '若しくは': 'tag-conj-s',
+    'とき': 'tag-condition',
+    '場合': 'tag-condition',
+};
 
 const contentEl = document.querySelector('#content');
 const scrollEl = contentEl.parentElement;
 
+const api = {
+    getContent: () => contentEl,
+    getContainer: () => scrollEl,
+    getLawId: () => Route.getLawId(),
+    restoreScroll: () => restoreScrollPosition(),
+    onDisplayChange: () => Mokuji.update(),
+    onRevisionSelect: (id) => moveToLaw(id),
+    onConfigSelect: () => Config.show(),
+    onDiffSelect: () => Sabun.show(),
+    onHistorySelect: () => History.show(),
+    onInfoSelect: () => Info.show(),
+    onMokujiSelect: () => Mokuji.toggle(),
+};
+
 window.addEventListener('DOMContentLoaded', () => {
-    Theme.init();
+    Theme.init(api);
 
-    Config.init(contentEl);
-    Config.register('restoreScrollPosition', restoreScrollPosition);
-
-    History.init();
-    History.register('initContent', initContent);
-
-    Info.init(contentEl);
-
-    Menu.init();
-
-    Mokuji.init(contentEl);
-    Mokuji.register('restoreScrollPosition', restoreScrollPosition);
-
-    Search.init(contentEl);
+    Config.init(api);
+    History.init(api);
+    Info.init(api);
+    Menu.init(api);
+    Mokuji.init(api);
+    Sabun.init(api);
+    Search.init(api);
 
     initMenuButton();
     initSearchButton();
@@ -80,6 +106,11 @@ function initSearchButton() {
     button.addEventListener('click', () => Search.show());
 }
 
+function moveToLaw(id) {
+    window.history.pushState(null, '', Route.getLawHref(id));
+    initContent().then(() => {});
+}
+
 let contentVersion = 0;
 
 async function initContent() {
@@ -96,7 +127,7 @@ async function initContent() {
     Info.clear();
     Mokuji.clear();
 
-    const id = new URLSearchParams(window.location.search).get('id');
+    const id = Route.getLawId();
 
     if (!id) {
         content.style.minHeight = '';
@@ -104,36 +135,32 @@ async function initContent() {
         return;
     }
 
-    let result;
-    await Storage.init('LawFullTextBeta');
-    await Storage.cleanup();
-
-    try {
-        result = await Storage.getItem(id);
-    } catch (e) {
-    }
-    if (!result) {
-        result = await Service.getLawFullText(id);
-        if (result) {
-            await Storage.setItem(id, result);
-        }
-    }
+    const result = await Service.getLawFullText(id);
     if (!result) {
         message.innerHTML = 'データを取得できませんでした。';
         return;
     }
-    await Storage.cleanup();
 
     if (functionVersion < contentVersion) {
         return;
     }
 
-    content.innerHTML = result;
+    const source = document.createElement('div');
+    source.innerHTML = result;
+
+    let law = source.firstElementChild;
+    if (!law) {
+        message.innerHTML = 'データを取得できませんでした。';
+        return;
+    }
+
+    law = Convert.nest(law, PAREN);
+    law = Convert.term(law, TERMS);
+
+    content.innerHTML = '';
+    content.appendChild(law);
     content.style.minHeight = '';
     message.innerHTML = '';
-
-    Kaiseki.tagParen(content);
-    Kaiseki.tagTerm(content);
 
     Info.update();
     Mokuji.update();
@@ -142,5 +169,21 @@ async function initContent() {
     if (lawTitle) {
         document.title = lawTitle;
         document.querySelector('#header-title').innerHTML = '<span>' + lawTitle + '</span>';
+    }
+
+    notifyLawEffectivenessStatus(content);
+}
+
+function notifyLawEffectivenessStatus(content) {
+    const status = content.querySelector('.Law')?.dataset.revision_info_repeal_status;
+    const statusLabels = {
+        Repeal: '廃止',
+        Expire: '失効',
+        Suspend: '停止',
+        LossOfEffectiveness: '実効性喪失',
+    };
+
+    if (statusLabels[status]) {
+        Message.warning('この法令は「' + statusLabels[status] + '」となっています。', 0);
     }
 }

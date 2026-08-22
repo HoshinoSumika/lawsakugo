@@ -1,17 +1,31 @@
-export function createCategory(text) {
+export const Component = {
+    createCategory,
+    createDivider,
+    createLabelItem,
+    createCheckboxItem,
+    createNavigationItem,
+    createRadioItem,
+    createSeekbarItem,
+    toggleCheckboxItem,
+    initSeekbar,
+};
+
+import { Storage } from '/lib/storage.js?v=20260822';
+
+function createCategory(text) {
     const div = document.createElement('div');
     div.className = 'config-category';
     div.textContent = text;
     return div;
 }
 
-export function createDivider() {
+function createDivider() {
     const div = document.createElement('div');
     div.className = 'config-divider';
     return div;
 }
 
-export function createLabelItem(labelText) {
+function createLabelItem(labelText) {
     const div = document.createElement('div');
     div.className = 'config-item';
 
@@ -24,7 +38,7 @@ export function createLabelItem(labelText) {
     return div;
 }
 
-export function createCheckboxItem(labelText) {
+function createCheckboxItem(labelText) {
     const div = document.createElement('div');
     div.className = 'config-item';
 
@@ -41,7 +55,7 @@ export function createCheckboxItem(labelText) {
     return div;
 }
 
-export function createNavigationItem(labelText) {
+function createNavigationItem(labelText) {
     const div = document.createElement('div');
     div.className = 'config-item';
 
@@ -58,7 +72,7 @@ export function createNavigationItem(labelText) {
     return div;
 }
 
-export function createRadioItem(labelText) {
+function createRadioItem(labelText) {
     const div = document.createElement('div');
     div.className = 'config-item';
 
@@ -77,7 +91,7 @@ export function createRadioItem(labelText) {
     return div;
 }
 
-export function createSeekbarItem(labelText, min, max, step) {
+function createSeekbarItem(labelText, min, max, step) {
     const div = document.createElement('div');
     div.className = 'config-item';
 
@@ -98,11 +112,11 @@ export function createSeekbarItem(labelText, min, max, step) {
     return div;
 }
 
-export function toggleCheckboxItem(item, storageKey, defaultEnabled, onEnable, onDisable) {
+function toggleCheckboxItem(item, storageKey, defaultEnabled, onEnable, onDisable) {
     const checkbox = item.querySelector('.config-checkbox');
 
     if (!item.getAttribute('data-value')) {
-        const stored = localStorage.getItem(storageKey);
+        const stored = Storage.get(storageKey, null);
         const enabled = defaultEnabled ? (stored !== 'disable') : (stored === 'enable');
 
         if (enabled) {
@@ -122,37 +136,37 @@ export function toggleCheckboxItem(item, storageKey, defaultEnabled, onEnable, o
             item.setAttribute('data-value', 'disable');
             checkbox.classList.remove('checked');
             if (defaultEnabled) {
-                localStorage.setItem(storageKey, 'disable');
+                Storage.set(storageKey, 'disable');
             } else {
-                localStorage.removeItem(storageKey);
+                Storage.remove(storageKey);
             }
         } else {
             onEnable();
             item.setAttribute('data-value', 'enable');
             checkbox.classList.add('checked');
             if (defaultEnabled) {
-                localStorage.removeItem(storageKey);
+                Storage.remove(storageKey);
             } else {
-                localStorage.setItem(storageKey, 'enable');
+                Storage.set(storageKey, 'enable');
             }
         }
     }
 }
 
-export function initSeekbar(item, storageKey, defaultValue, applyValue) {
+function initSeekbar(item, storageKey, defaultValue, applyValue) {
     const seekbar = item.querySelector('.config-seekbar');
-    const stored = parseFloat(localStorage.getItem(storageKey) ?? defaultValue);
+    const stored = Storage.get(storageKey, defaultValue);
 
     applyValue(stored);
     seekbar.value = stored;
 
     seekbar.addEventListener('input', (e) => {
-        const value = e.target.value;
-        applyValue(parseFloat(value));
-        if (parseFloat(value) === defaultValue) {
-            localStorage.removeItem(storageKey);
+        const value = parseFloat(e.target.value);
+        applyValue(value);
+        if (value === defaultValue) {
+            Storage.remove(storageKey);
         } else {
-            localStorage.setItem(storageKey, value);
+            Storage.set(storageKey, value);
         }
     });
 }
