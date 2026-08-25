@@ -4,10 +4,10 @@ export const Service = {
     getLawFullText,
 };
 
-import { Storage } from '/lib/storage.js?v=20260822';
+import { Storage } from '/lib/storage.js?v=20260825';
 
-import { Cache } from '/global/cache.js?v=20260822';
-import { Convert } from '/global/convert.js?v=20260822';
+import { Cache } from '/global/cache.js?v=20260825';
+import { Convert } from '/global/convert.js?v=20260825';
 
 const CACHE_NAME_FULL_TEXT = 'LawFullTextBeta';
 const CACHE_NAME_REVISIONS = 'LawRevisionsBeta';

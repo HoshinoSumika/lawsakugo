@@ -3,12 +3,12 @@ export const Sabun = {
     show,
 };
 
-import { Scroll } from '/lib/scroll.js?v=20260822';
-import { Shell } from '/lib/shell.js?v=20260822';
+import { Scroll } from '/lib/scroll.js?v=20260825';
+import { Shell } from '/lib/shell.js?v=20260825';
 
-import { Convert } from '/global/convert.js?v=20260822';
-import { Diff } from '/global/diff.js?v=20260822';
-import { Service } from '/global/service.js?v=20260822';
+import { Convert } from '/global/convert.js?v=20260825';
+import { Diff } from '/global/diff.js?v=20260825';
+import { Service } from '/global/service.js?v=20260825';
 
 const DELETION_CLASS = 'diff-inline-deletion';
 const ADDITION_CLASS = 'diff-inline-addition';
@@ -61,13 +61,18 @@ function init(value) {
 
     modal = Shell.createModal(content);
     modal.setTitle('条文比較');
-    modal.setWidth('min(560px, 94vw)');
-    modal.setHeight('min(720px, 86dvh)');
     modal.enableCloseButton(hide);
     modal.setDismiss(hide);
     modalElement = content.parentElement;
+    clearModalStyles();
 
     showSelectionView();
+}
+
+function clearModalStyles() {
+    ['width', 'height', 'maxHeight', 'border', 'borderRadius', 'transition'].forEach(property => {
+        modalElement.style[property] = '';
+    });
 }
 
 async function show() {
@@ -318,6 +323,7 @@ function renderGuidance() {
     if (!compareButton) return;
     const disabled = busy || selectedIds.length !== 2;
     compareButton.classList.toggle('diff-button-disabled', disabled);
+    compareButton.style.cursor = disabled ? 'default' : 'pointer';
     compareButton.setAttribute('aria-disabled', String(disabled));
 }
 

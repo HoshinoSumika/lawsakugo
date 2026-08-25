@@ -5,8 +5,8 @@ export const Mokuji = {
     clear,
 };
 
-import { Shell } from '/lib/shell.js?v=20260822';
-import { Storage } from '/lib/storage.js?v=20260822';
+import { Shell } from '/lib/shell.js?v=20260825';
+import { Storage } from '/lib/storage.js?v=20260825';
 
 let api;
 let lawContent;

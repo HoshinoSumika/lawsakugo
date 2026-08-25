@@ -2,7 +2,7 @@ export const Cache = {
     open,
 };
 
-import { Storage } from '/lib/storage.js?v=20260822';
+import { Storage } from '/lib/storage.js?v=20260825';
 
 const STORAGE_NAME_CONTENT = 'Content';
 const STORAGE_NAME_SIZE = 'Size';

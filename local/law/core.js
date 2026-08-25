@@ -1,18 +1,18 @@
-import { Device } from '/lib/device.js?v=20260822';
-import { Message } from '/lib/message.js?v=20260822';
+import { Device } from '/lib/device.js?v=20260825';
+import { Message } from '/lib/message.js?v=20260825';
 
-import { Convert } from '/global/convert.js?v=20260822';
-import { Route } from '/global/route.js?v=20260822';
-import { Service } from '/global/service.js?v=20260822';
-import { Theme } from '/global/theme.js?v=20260822';
+import { Convert } from '/global/convert.js?v=20260825';
+import { Route } from '/global/route.js?v=20260825';
+import { Service } from '/global/service.js?v=20260825';
+import { Theme } from '/global/theme.js?v=20260825';
 
-import { Config } from './config.js?v=20260822';
-import { History } from './history.js?v=20260822';
-import { Info } from './info.js?v=20260822';
-import { Menu } from './menu.js?v=20260822';
-import { Mokuji } from './mokuji.js?v=20260822';
-import { Sabun } from './sabun.js?v=20260822';
-import { Search } from './search.js?v=20260822';
+import { Config } from './config.js?v=20260825';
+import { History } from './history.js?v=20260825';
+import { Info } from './info.js?v=20260825';
+import { Menu } from './menu.js?v=20260825';
+import { Mokuji } from './mokuji.js?v=20260825';
+import { Sabun } from './sabun.js?v=20260825';
+import { Search } from './search.js?v=20260825';
 
 const PAREN = {
     pair: ['（', '）'],

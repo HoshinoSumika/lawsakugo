@@ -1,11 +1,11 @@
-import { Device } from '/lib/device.js?v=20260822';
-import { Frame } from '/lib/frame.js?v=20260822';
-import { Message } from '/lib/message.js?v=20260822';
-import { Shell } from '/lib/shell.js?v=20260822';
-import { Storage } from '/lib/storage.js?v=20260822';
+import { Device } from '/lib/device.js?v=20260825';
+import { Frame } from '/lib/frame.js?v=20260825';
+import { Message } from '/lib/message.js?v=20260825';
+import { Shell } from '/lib/shell.js?v=20260825';
+import { Storage } from '/lib/storage.js?v=20260825';
 
-import { Route } from '/global/route.js?v=20260822';
-import { Theme } from '/global/theme.js?v=20260822';
+import { Route } from '/global/route.js?v=20260825';
+import { Theme } from '/global/theme.js?v=20260825';
 
 let logEl;
 

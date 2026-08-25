@@ -3,7 +3,7 @@ export const Menu = {
     show,
 };
 
-import { Shell } from '/lib/shell.js?v=20260822';
+import { Shell } from '/lib/shell.js?v=20260825';
 
 let modal;
 

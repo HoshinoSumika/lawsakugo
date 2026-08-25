@@ -3,12 +3,12 @@ export const Search = {
     show,
 };
 
-import { Frame } from '/lib/frame.js?v=20260822';
+import { Frame } from '/lib/frame.js?v=20260825';
 
-import { Data } from './search/data.js?v=20260822';
-import { Highlight } from './search/highlight.js?v=20260822';
-import { Navigation } from './search/navigation.js?v=20260822';
-import { UI } from './search/ui.js?v=20260822';
+import { Data } from './search/data.js?v=20260825';
+import { Highlight } from './search/highlight.js?v=20260825';
+import { Navigation } from './search/navigation.js?v=20260825';
+import { UI } from './search/ui.js?v=20260825';
 
 let lawContent;
 let lawContainer;
