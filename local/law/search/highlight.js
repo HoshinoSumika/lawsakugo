@@ -3,7 +3,7 @@ export const Highlight = {
     clear,
 };
 
-import { Convert } from '/global/convert.js?v=20260825';
+import { Convert } from '/global/convert.js?v=20260831';
 
 const HIGHLIGHT_CLASS = 'highlight';
 
