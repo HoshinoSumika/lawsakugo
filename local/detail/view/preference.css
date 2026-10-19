@@ -1,0 +1,123 @@
+.preference-content {
+    position: relative;
+    width: 100%; padding: 8px 0px 16px 0px;
+}
+
+.preference-ghost {
+    overflow: hidden;
+    position: absolute; left: 0px;
+    width: 100%; padding: 8px 0px 16px 0px;
+    pointer-events: none;
+}
+
+.preference-page {
+    width: 100%;
+    display: flex; flex-direction: column;
+}
+.preference-page.confirm {
+    padding: 8px 24px 8px 24px;
+    font-size: 15px;
+}
+
+.preference-item {
+    width: 100%; min-height: var(--size-normal); padding: 8px 24px 8px 24px;
+    user-select: none; -webkit-user-select: none;
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    font-size: 15px;
+}
+.preference-item.clickable {
+    cursor: pointer;
+}
+.preference-item.clickable:hover {
+    background-color: var(--color-hover);
+}
+.preference-item.clickable:active {
+    background-color: var(--color-active);
+}
+
+.preference-item.danger {
+    color: var(--color-red);
+}
+.preference-item.seekbar {
+    flex-direction: column; align-items: stretch; gap: 4px;
+}
+.preference-item.choice {
+    flex-wrap: wrap; row-gap: 8px;
+}
+.preference-item.choice > .preference-label {
+    flex: 1 0 auto;
+}
+.preference-item.choice > :last-child {
+    margin-left: auto;
+}
+
+.preference-label {
+    flex: 1;
+}
+
+.preference-icon {
+    height: 24px;
+    display: flex; align-items: center;
+}
+
+.preference-value {
+    font-size: 13px;
+    color: var(--color-gray);
+}
+
+.preference-divider {
+    width: 100%; height: 1px; margin: 8px 0px 8px 0px;
+    background-color: var(--color-smoke);
+}
+
+.preference-seekbar-header {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+}
+
+.preference-page.input {
+    padding: 8px 24px 8px 24px;
+}
+
+.preference-input {
+    width: 100%; height: 40px; padding: 0px 12px 0px 12px;
+    outline: none; font: inherit;
+    color: var(--color-black); background-color: transparent;
+    border: 1px solid var(--color-border); border-radius: var(--radius-small);
+}
+.preference-input:focus {
+    border-color: var(--color-black);
+}
+
+.preference-preview {
+    width: auto; margin: 8px 24px 8px 24px; padding: 12px 16px 12px 16px;
+    user-select: none; -webkit-user-select: none;
+    border: 1px solid var(--color-border); border-radius: var(--radius-small);
+}
+
+.preference-preview > .Article:first-child {
+    margin-top: 0px;
+}
+.preference-preview > .Article:last-child {
+    margin-bottom: 0px;
+}
+
+.preference-caption {
+    width: 100%; padding: 8px 24px 0px 24px;
+    user-select: none; -webkit-user-select: none;
+    font-size: 13px;
+    color: var(--color-gray);
+}
+
+.preference-remove {
+    width: 32px; height: 32px; padding: 0px;
+    cursor: pointer;
+    display: flex; justify-content: center; align-items: center;
+    background-color: transparent;
+    border: none; border-radius: var(--radius-max);
+}
+.preference-remove:hover {
+    background-color: var(--color-hover);
+}
+.preference-remove:active {
+    background-color: var(--color-active);
+}

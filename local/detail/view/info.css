@@ -1,0 +1,16 @@
+.info-content {
+    width: 100%; padding: 16px;
+    font-size: 14px;
+}
+
+.info-content table {
+    border-collapse: collapse;
+}
+.info-content th,
+.info-content td {
+    padding: 8px;
+    vertical-align: top;
+}
+.info-content th {
+    white-space: nowrap;
+}

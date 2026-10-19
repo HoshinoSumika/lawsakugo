@@ -1,34 +1,21 @@
 export const Service = {
     search,
-    getLawRevisions,
+    getLawRevisionList,
     getLawFullText,
 };
 
-import { Storage } from '/lib/storage.js?v=20260831';
-
-import { Cache } from '/global/cache.js?v=20260831';
-import { Convert } from '/global/convert.js?v=20260831';
+import { Cache } from '/global/cache.js';
+import { Config } from '/global/config.js';
+import { Convert } from '/global/convert.js';
 
 const CACHE_NAME_FULL_TEXT = 'LawFullTextBeta';
-const CACHE_NAME_REVISIONS = 'LawRevisionsBeta';
+const CACHE_NAME_REVISION_LIST = 'LawRevisionListBeta';
 
-async function search(title) {
-    try {
-        const url = '/ignore/' + title + '.json';
-        const res = await fetch(url);
-        if (res.ok) {
-            const result = await res.json();
-            return result;
-        }
-    } catch (e) {
-        console.error(e);
-    }
+async function search(title, limit) {
     try {
         const apiBaseUrl = 'https://laws.e-gov.go.jp/api/2/laws';
-        const queryParams = '?response_format=json' + '&limit=9999' + '&law_title=' + title;
-        const encodedApiUrl = encodeURIComponent(apiBaseUrl + queryParams);
-        const proxyUrl = '/proxy?url=' + encodedApiUrl;
-        const res = await fetch(proxyUrl);
+        const query = '?response_format=json' + '&limit=' + limit + '&law_title=' + encodeURIComponent(title);
+        const res = await fetch(apiBaseUrl + query);
         if (res.ok) {
             const result = await res.json();
             return result;
@@ -39,17 +26,17 @@ async function search(title) {
     return null;
 }
 
-async function getLawRevisions(id) {
-    const revisions = await loadCached(
-        CACHE_NAME_REVISIONS,
+async function getLawRevisionList(id) {
+    const revisionList = await loadCached(
+        CACHE_NAME_REVISION_LIST,
         id,
         async () => {
-            const data = await fetchLawRevisions(id);
+            const data = await fetchLawRevisionList(id);
             return data ? data.revisions : null;
         },
         value => Array.isArray(value),
     );
-    return revisions ? normalizeCurrentRevision(revisions) : null;
+    return revisionList ? normalizeCurrentRevision(revisionList) : null;
 }
 
 function getLawFullText(id) {
@@ -57,27 +44,15 @@ function getLawFullText(id) {
         CACHE_NAME_FULL_TEXT,
         id,
         () => fetchLawFullText(id),
-        value => typeof value === 'string' && value.length > 0,
+        value => typeof value === 'string',
     );
 }
 
-async function fetchLawRevisions(id) {
-    try {
-        const url = '/ignore/' + id + '.json';
-        const res = await fetch(url);
-        if (res.ok) {
-            const result = await res.json();
-            return result;
-        }
-    } catch (e) {
-        console.error(e);
-    }
+async function fetchLawRevisionList(id) {
     try {
         const apiBaseUrl = 'https://laws.e-gov.go.jp/api/2/law_revisions/';
-        const queryParams = '?response_format=json';
-        const encodedApiUrl = encodeURIComponent(apiBaseUrl + id + queryParams);
-        const proxyUrl = '/proxy?url=' + encodedApiUrl;
-        const res = await fetch(proxyUrl);
+        const query = '?response_format=json';
+        const res = await fetch(apiBaseUrl + id + query);
         if (res.ok) {
             const result = await res.json();
             return result;
@@ -90,25 +65,12 @@ async function fetchLawRevisions(id) {
 
 async function fetchLawFullText(id) {
     try {
-        const url = '/ignore/' + id + '.xml';
-        const res = await fetch(url);
-        if (res.ok) {
-            let result = await res.text();
-            result = Convert.henkan(result);
-            return result;
-        }
-    } catch (e) {
-        console.error(e);
-    }
-    try {
         const apiBaseUrl = 'https://laws.e-gov.go.jp/api/2/law_data/';
-        const queryParams = '?law_full_text_format=xml&response_format=xml';
-        const encodedApiUrl = encodeURIComponent(apiBaseUrl + id + queryParams);
-        const proxyUrl = '/proxy?url=' + encodedApiUrl;
-        const res = await fetch(proxyUrl);
+        const query = '?law_full_text_format=xml&response_format=xml';
+        const res = await fetch(apiBaseUrl + id + query);
         if (res.ok) {
             let result = await res.text();
-            result = Convert.henkan(result);
+            result = Convert.encode(result);
             return result;
         }
     } catch (e) {
@@ -117,13 +79,12 @@ async function fetchLawFullText(id) {
     return null;
 }
 
-function normalizeCurrentRevision(revisions) {
-    const normalized = revisions.map(revision => ({ ...revision }));
-    if (normalized.some(revision => revision.current_revision_status === 'CurrentEnforced')) {
-        return normalized;
+function normalizeCurrentRevision(revisionList) {
+    if (revisionList.some(revision => revision.current_revision_status === 'CurrentEnforced')) {
+        return revisionList;
     }
 
-    for (const revision of normalized) {
+    for (const revision of revisionList) {
         if (revision.current_revision_status === 'UnEnforced') {
             continue;
         }
@@ -132,7 +93,7 @@ function normalizeCurrentRevision(revisions) {
         }
         break;
     }
-    return normalized;
+    return revisionList;
 }
 
 async function loadCached(name, key, fetchValue, isValid) {
@@ -158,14 +119,10 @@ async function loadCached(name, key, fetchValue, isValid) {
 async function openCache(name) {
     try {
         const cache = await Cache.open(name);
-        try {
-            await cache.cleanup();
-        } catch (error) {
-            console.error(error);
-        }
+        await cache.cleanup();
         return cache;
-    } catch (error) {
-        console.error(error);
+    } catch (e) {
+        console.error(e);
         return null;
     }
 }
@@ -174,18 +131,17 @@ async function closeCache(cache) {
     if (!cache) return;
     try {
         await cache.cleanup();
-    } catch (error) {
-        console.error(error);
-    } finally {
-        cache.close();
+    } catch (e) {
+        console.error(e);
     }
+    cache.close();
 }
 
 async function getCachedItem(cache, key) {
     try {
         return await cache.getItem(key);
-    } catch (error) {
-        console.error(error);
+    } catch (e) {
+        console.error(e);
         return null;
     }
 }
@@ -193,16 +149,11 @@ async function getCachedItem(cache, key) {
 async function setCachedItem(cache, key, value) {
     try {
         await cache.setItem(key, value);
-    } catch (error) {
-        console.error(error);
+    } catch (e) {
+        console.error(e);
     }
 }
 
 function isCacheEnabled() {
-    try {
-        return !Storage.get('dev', false);
-    } catch (error) {
-        console.error(error);
-        return false;
-    }
+    return !Config.getDev();
 }

@@ -2,200 +2,290 @@ export const Diff = {
     compare,
 };
 
-const MAX_EDIT_DISTANCE = 1000;
+const MAX_EDIT_DISTANCE = 2000;
+const MATCH_LENGTH_MIN = 4;
+const BOUNDARY_SCORE_MAP = { '。': 2, '）': 2, '　': 2, '、': 1 };
 
-function compare(oldItems, newItems) {
-    const rows = [];
-    alignItems(oldItems, newItems).forEach(({ oldItem, newItem }) => {
+function compare(oldList, newList) {
+    const rowList = [];
+    buildPairList(oldList, newList).forEach(({ oldItem, newItem }) => {
         if (!oldItem || !newItem) {
-            rows.push({ oldItem, newItem, oldRanges: null, newRanges: null });
+            rowList.push({ oldItem, newItem, oldRangeList: null, newRangeList: null });
             return;
         }
-        if (normalizeText(oldItem.text) === normalizeText(newItem.text)) return;
-
-        const { oldRanges, newRanges } = diffText(
-            oldItem.text,
-            newItem.text,
-            MAX_EDIT_DISTANCE,
-        );
-        rows.push({ oldItem, newItem, oldRanges, newRanges });
+        if (normalizeText(oldItem.text) === normalizeText(newItem.text)) {
+            return;
+        }
+        const { oldRangeList, newRangeList } = diffText(oldItem.text, newItem.text, MAX_EDIT_DISTANCE);
+        rowList.push({ oldItem, newItem, oldRangeList, newRangeList });
     });
-    return rows;
+    return rowList;
 }
 
 function normalizeText(text) {
     return text.normalize('NFC').replace(/\s+/gu, '');
 }
 
-function alignItems(oldItems, newItems) {
-    const oldLength = oldItems.length;
-    const newLength = newItems.length;
-    const lcs = Array.from(
-        { length: oldLength + 1 },
-        () => new Uint32Array(newLength + 1),
-    );
+function buildPairList(oldList, newList) {
+    const oldLength = oldList.length;
+    const newLength = newList.length;
+    const lcsList = Array.from({ length: oldLength + 1 }, () => new Uint32Array(newLength + 1));
 
     for (let i = oldLength - 1; i >= 0; i--) {
         for (let j = newLength - 1; j >= 0; j--) {
-            lcs[i][j] = oldItems[i].key === newItems[j].key
-                ? lcs[i + 1][j + 1] + 1
-                : Math.max(lcs[i + 1][j], lcs[i][j + 1]);
+            if (oldList[i].key === newList[j].key) {
+                lcsList[i][j] = lcsList[i + 1][j + 1] + 1;
+            } else {
+                lcsList[i][j] = Math.max(lcsList[i + 1][j], lcsList[i][j + 1]);
+            }
         }
     }
 
-    const pairs = [];
+    const pairList = [];
     let i = 0;
     let j = 0;
     while (i < oldLength || j < newLength) {
-        if (i < oldLength && j < newLength && oldItems[i].key === newItems[j].key) {
-            pairs.push({ oldItem: oldItems[i], newItem: newItems[j] });
-            i++;
-            j++;
-        } else if (j >= newLength || (i < oldLength && lcs[i + 1][j] >= lcs[i][j + 1])) {
-            pairs.push({ oldItem: oldItems[i], newItem: null });
-            i++;
+        if (i < oldLength && j < newLength && oldList[i].key === newList[j].key) {
+            pairList.push({ oldItem: oldList[i], newItem: newList[j] });
+            i = i + 1;
+            j = j + 1;
+        } else if (j >= newLength || (i < oldLength && lcsList[i + 1][j] >= lcsList[i][j + 1])) {
+            pairList.push({ oldItem: oldList[i], newItem: null });
+            i = i + 1;
         } else {
-            pairs.push({ oldItem: null, newItem: newItems[j] });
-            j++;
+            pairList.push({ oldItem: null, newItem: newList[j] });
+            j = j + 1;
         }
     }
-    return pairs;
+    return pairList;
 }
 
 function diffText(oldText, newText, maxEditDistance) {
-    const oldChars = Array.from(oldText);
-    const newChars = Array.from(newText);
+    const oldCharList = oldText.split('');
+    const newCharList = newText.split('');
 
     let prefix = 0;
-    while (
-        prefix < oldChars.length
-        && prefix < newChars.length
-        && oldChars[prefix] === newChars[prefix]
-    ) {
-        prefix++;
+    while (prefix < oldCharList.length && prefix < newCharList.length && oldCharList[prefix] === newCharList[prefix]) {
+        prefix = prefix + 1;
     }
 
     let suffix = 0;
-    while (
-        suffix < oldChars.length - prefix
-        && suffix < newChars.length - prefix
-        && oldChars[oldChars.length - 1 - suffix] === newChars[newChars.length - 1 - suffix]
-    ) {
-        suffix++;
+    while (suffix < oldCharList.length - prefix && suffix < newCharList.length - prefix
+        && oldCharList[oldCharList.length - 1 - suffix] === newCharList[newCharList.length - 1 - suffix]) {
+        suffix = suffix + 1;
     }
 
-    const operations = diffChars(
-        oldChars.slice(prefix, oldChars.length - suffix),
-        newChars.slice(prefix, newChars.length - suffix),
+    const middleList = findOperationList(
+        oldCharList.slice(prefix, oldCharList.length - suffix),
+        newCharList.slice(prefix, newCharList.length - suffix),
         maxEditDistance,
     );
-    if (!operations) {
-        return { oldRanges: null, newRanges: null };
+    if (!middleList) {
+        return { oldRangeList: null, newRangeList: null };
     }
 
-    const base = oldChars.slice(0, prefix).join('').length;
-    const oldRanges = [];
-    const newRanges = [];
-    let oldOffset = base;
-    let newOffset = base;
+    const prefixList = oldCharList.slice(0, prefix).map(value => ({ type: 'equal', value }));
+    const suffixList = oldCharList.slice(oldCharList.length - suffix).map(value => ({ type: 'equal', value }));
+    const operationList = prefixList.concat(middleList, suffixList);
+    moveHunkToBoundary(operationList);
 
-    operations.forEach(operation => {
-        const length = operation.value.length;
+    const oldRangeList = [];
+    const newRangeList = [];
+    let oldOffset = 0;
+    let newOffset = 0;
+    absorbShortMatch(operationList).forEach(operation => {
         if (operation.type === 'equal') {
-            oldOffset += length;
-            newOffset += length;
+            oldOffset = oldOffset + 1;
+            newOffset = newOffset + 1;
         } else if (operation.type === 'delete') {
-            appendRange(oldRanges, oldOffset, oldOffset + length);
-            oldOffset += length;
+            appendRange(oldRangeList, oldOffset, oldOffset + 1);
+            oldOffset = oldOffset + 1;
         } else {
-            appendRange(newRanges, newOffset, newOffset + length);
-            newOffset += length;
+            appendRange(newRangeList, newOffset, newOffset + 1);
+            newOffset = newOffset + 1;
         }
     });
-    return { oldRanges, newRanges };
+    return { oldRangeList, newRangeList };
 }
 
-function appendRange(ranges, start, end) {
-    const previous = ranges[ranges.length - 1];
+function appendRange(rangeList, start, end) {
+    const previous = rangeList[rangeList.length - 1];
     if (previous && previous.end === start) {
         previous.end = end;
-    } else {
-        ranges.push({ start, end });
+        return;
+    }
+    rangeList.push({ start, end });
+}
+
+function moveHunkToBoundary(operationList) {
+    let index = 0;
+    while (index < operationList.length) {
+        if (operationList[index].type === 'equal') {
+            index = index + 1;
+            continue;
+        }
+        let end = index;
+        while (end < operationList.length && operationList[end].type !== 'equal') {
+            end = end + 1;
+        }
+        const type = operationList[index].type;
+        if (operationList.slice(index, end).every(operation => operation.type === type)) {
+            index = slideHunk(operationList, index, end);
+        } else {
+            index = end;
+        }
     }
 }
 
-function diffChars(oldChars, newChars, maxEditDistance) {
-    const limit = Math.min(oldChars.length + newChars.length, maxEditDistance);
-    const trace = [];
-    let previous = new Map([[1, 0]]);
+function slideHunk(operationList, start, end) {
+    const hunk = { start, end };
+    while (canSlideLeft(operationList, hunk)) {
+        slideLeft(operationList, hunk);
+    }
+
+    let bestStep = 0;
+    let bestScore = scoreHunk(operationList, hunk);
+    let step = 0;
+    while (canSlideRight(operationList, hunk)) {
+        slideRight(operationList, hunk);
+        step = step + 1;
+        const score = scoreHunk(operationList, hunk);
+        if (score >= bestScore) {
+            bestScore = score;
+            bestStep = step;
+        }
+    }
+
+    while (step > bestStep) {
+        slideLeft(operationList, hunk);
+        step = step - 1;
+    }
+    return hunk.end;
+}
+
+function canSlideLeft(operationList, hunk) {
+    const before = operationList[hunk.start - 1];
+    return Boolean(before) && before.type === 'equal' && before.value === operationList[hunk.end - 1].value;
+}
+
+function canSlideRight(operationList, hunk) {
+    const after = operationList[hunk.end];
+    return Boolean(after) && after.type === 'equal' && after.value === operationList[hunk.start].value;
+}
+
+function slideLeft(operationList, hunk) {
+    const type = operationList[hunk.start].type;
+    operationList[hunk.end - 1] = { type: 'equal', value: operationList[hunk.end - 1].value };
+    operationList[hunk.start - 1] = { type, value: operationList[hunk.start - 1].value };
+    hunk.start = hunk.start - 1;
+    hunk.end = hunk.end - 1;
+}
+
+function slideRight(operationList, hunk) {
+    const type = operationList[hunk.start].type;
+    operationList[hunk.start] = { type: 'equal', value: operationList[hunk.start].value };
+    operationList[hunk.end] = { type, value: operationList[hunk.end].value };
+    hunk.start = hunk.start + 1;
+    hunk.end = hunk.end + 1;
+}
+
+function scoreHunk(operationList, hunk) {
+    const before = operationList[hunk.start - 1];
+    const last = operationList[hunk.end - 1];
+    const beforeScore = before ? BOUNDARY_SCORE_MAP[before.value] || 0 : 2;
+    return beforeScore + (BOUNDARY_SCORE_MAP[last.value] || 0);
+}
+
+function absorbShortMatch(operationList) {
+    const resultList = [];
+    let matchList = [];
+    operationList.forEach(operation => {
+        if (operation.type === 'equal') {
+            matchList.push(operation);
+            return;
+        }
+        if (resultList.length > 0 && matchList.length < MATCH_LENGTH_MIN) {
+            matchList = matchList.flatMap(({ value }) => [{ type: 'delete', value }, { type: 'insert', value }]);
+        }
+        matchList.forEach(match => {
+            resultList.push(match);
+        });
+        resultList.push(operation);
+        matchList = [];
+    });
+    return resultList.concat(matchList);
+}
+
+function findOperationList(oldCharList, newCharList, maxEditDistance) {
+    const limit = Math.min(oldCharList.length + newCharList.length, maxEditDistance);
+    const traceList = [];
+    let previous = new Int32Array(1);
 
     for (let distance = 0; distance <= limit; distance++) {
-        const current = new Map();
+        const current = new Int32Array(distance + 1);
         for (let diagonal = -distance; diagonal <= distance; diagonal += 2) {
-            const left = previous.get(diagonal - 1) ?? -1;
-            const right = previous.get(diagonal + 1) ?? -1;
+            const index = (diagonal + distance) / 2;
+            const left = previous[index - 1];
+            const right = previous[index];
             let oldIndex = diagonal === -distance || (diagonal !== distance && left < right)
-                ? Math.max(0, right)
-                : Math.max(0, left + 1);
+                ? right
+                : left + 1;
             let newIndex = oldIndex - diagonal;
 
-            while (
-                oldIndex < oldChars.length
-                && newIndex < newChars.length
-                && oldChars[oldIndex] === newChars[newIndex]
-            ) {
-                oldIndex++;
-                newIndex++;
+            while (oldIndex < oldCharList.length && newIndex < newCharList.length && oldCharList[oldIndex] === newCharList[newIndex]) {
+                oldIndex = oldIndex + 1;
+                newIndex = newIndex + 1;
             }
-            current.set(diagonal, oldIndex);
+            current[index] = oldIndex;
 
-            if (oldIndex >= oldChars.length && newIndex >= newChars.length) {
-                trace.push(current);
-                return backtrack(trace, oldChars, newChars);
+            if (oldIndex >= oldCharList.length && newIndex >= newCharList.length) {
+                traceList.push(current);
+                return backtrack(traceList, oldCharList, newCharList);
             }
         }
-        trace.push(current);
+        traceList.push(current);
         previous = current;
     }
     return null;
 }
 
-function backtrack(trace, oldChars, newChars) {
-    const operations = [];
-    let oldIndex = oldChars.length;
-    let newIndex = newChars.length;
+function backtrack(traceList, oldCharList, newCharList) {
+    const operationList = [];
+    let oldIndex = oldCharList.length;
+    let newIndex = newCharList.length;
 
-    for (let distance = trace.length - 1; distance > 0; distance--) {
-        const previous = trace[distance - 1];
+    for (let distance = traceList.length - 1; distance > 0; distance--) {
+        const previous = traceList[distance - 1];
         const diagonal = oldIndex - newIndex;
-        const left = previous.get(diagonal - 1) ?? -1;
-        const right = previous.get(diagonal + 1) ?? -1;
+        const index = (diagonal + distance) / 2;
+        const left = previous[index - 1];
+        const right = previous[index];
         const previousDiagonal = diagonal === -distance || (diagonal !== distance && left < right)
             ? diagonal + 1
             : diagonal - 1;
-        const previousOldIndex = Math.max(0, previous.get(previousDiagonal) ?? 0);
+        const previousOldIndex = previous[(previousDiagonal + distance - 1) / 2];
         const previousNewIndex = previousOldIndex - previousDiagonal;
 
         while (oldIndex > previousOldIndex && newIndex > previousNewIndex) {
-            operations.push({ type: 'equal', value: oldChars[oldIndex - 1] });
-            oldIndex--;
-            newIndex--;
+            operationList.push({ type: 'equal', value: oldCharList[oldIndex - 1] });
+            oldIndex = oldIndex - 1;
+            newIndex = newIndex - 1;
         }
 
         if (oldIndex === previousOldIndex) {
-            operations.push({ type: 'insert', value: newChars[newIndex - 1] });
-            newIndex--;
+            operationList.push({ type: 'insert', value: newCharList[newIndex - 1] });
+            newIndex = newIndex - 1;
         } else {
-            operations.push({ type: 'delete', value: oldChars[oldIndex - 1] });
-            oldIndex--;
+            operationList.push({ type: 'delete', value: oldCharList[oldIndex - 1] });
+            oldIndex = oldIndex - 1;
         }
     }
 
     while (oldIndex > 0 && newIndex > 0) {
-        operations.push({ type: 'equal', value: oldChars[oldIndex - 1] });
-        oldIndex--;
-        newIndex--;
+        operationList.push({ type: 'equal', value: oldCharList[oldIndex - 1] });
+        oldIndex = oldIndex - 1;
+        newIndex = newIndex - 1;
     }
 
-    return operations.reverse();
+    return operationList.reverse();
 }
